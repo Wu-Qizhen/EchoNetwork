@@ -1,0 +1,30 @@
+/*
+代码不注释，同事两行泪！（给！爷！写！）
+Elegance is not a dispensable luxury but a quality that decides between success and failure!
+Created by Wu Qizhen on 2025.10.9
+*/
+:root {
+    --theme-color: #0a53f2; /* 定义主题色变量 */
+    --theme-color-rgb: 10, 83, 242; /* RGB 格式，用于暗度等效果 */
+    /* --theme-color-darken: rgb(8, 64, 183); */ /* 默认透明度实现暗度效果，可使用实色 */
+    --theme-color-darken: rgba(var(--theme-color-rgb), 0.7); /* 用于压暗等微暗场景 */
+    --theme-color-fade: rgba(var(--theme-color-rgb), 0.4); /* 用于阴影等更暗场景 */
+
+    /* 其它自定义颜色 */
+    --grey_normal: #78797a;
+    --grey_highlight: #a5a5a7;
+}
+
+h1, h2, h3, h4, h5, h6, p, li {
+    color: white;
+}
+
+.remark-normal {
+    color: var(--grey_normal);
+    text-decoration: none;
+}
+
+.remark-highlight {
+    color: var(--grey_highlight);
+    text-decoration: none;
+}

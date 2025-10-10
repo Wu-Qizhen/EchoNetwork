@@ -1,0 +1,46 @@
+/*
+代码不注释，同事两行泪！（给！爷！写！）
+Elegance is not a dispensable luxury but a quality that decides between success and failure!
+Created by Wu Qizhen on 2025.10.9
+*/
+* {
+    font-family: 'MiSans Medium', sans-serif;
+}
+
+.en {
+    font-family: "Google Sans Medium", sans-serif;
+}
+
+.zh {
+    font-family: "MiSans Medium", sans-serif;
+}
+
+.theme {
+    font-family: "方正翔黑 简", sans-serif;
+}
+
+.h1 {
+    font-size: 3.5rem;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    line-height: 1;
+}
+
+.h2_5 {
+    font-size: 1.2rem;
+    line-height: 1;
+    font-weight: lighter;
+}
+
+p.main {
+    font-size: 1.2em;
+}
+
+p.sub {
+    font-size: 0.8em;
+}

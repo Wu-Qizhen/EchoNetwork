@@ -1,0 +1,99 @@
+/*
+代码不注释，同事两行泪！（给！爷！写！）
+Elegance is not a dispensable luxury but a quality that decides between success and failure!
+Created by Wu Qizhen on 2025.10.9
+*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    overflow-x: hidden;
+    display: block;
+}
+
+*::-webkit-scrollbar {
+    width: 12px; /* 滚动条宽度 */
+}
+
+*::-webkit-scrollbar-track {
+    background: black; /* 轨道背景色（深色） */
+    border-radius: 6px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: #333333; /* 滑块颜色（深色） */
+    border-radius: 6px;
+    border: 2px solid #121212; /* 滑块与轨道的边框 */
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: #444444; /* 悬停时颜色 */
+}
+
+/* 适用于 Firefox */
+* {
+    scrollbar-color: #333333 #121212; /* 滑块颜色 轨道颜色 */
+}
+
+.protected-content {
+    -webkit-user-select: none; /* Chrome, Safari, Opera */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+    user-select: none; /* 标准语法 */
+}
+
+.protected-content img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    pointer-events: none; /* 可选：完全禁用图片的鼠标事件 */
+}
+
+.spacer-top {
+    margin-top: 20px;
+}
+
+.spacer-top-ss {
+    margin-top: 5px;
+}
+
+.spacer-top-s {
+    margin-top: 10px;
+}
+
+.spacer-top-m {
+    margin-top: 20px;
+}
+
+.spacer-top-l {
+    margin-top: 30px;
+}
+
+.spacer-bottom {
+    margin-bottom: 20px;
+}
+
+.spacer-bottom-ss {
+    margin-bottom: 5px;
+}
+
+.spacer-bottom-s {
+    margin-bottom: 10px;
+}
+
+.spacer-bottom-m {
+    margin-bottom: 20px;
+}
+
+.spacer-bottom-l {
+    margin-bottom: 30px;
+}

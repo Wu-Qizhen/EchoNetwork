@@ -1,0 +1,62 @@
+/*
+代码不注释，同事两行泪！（给！爷！写！）
+Elegance is not a dispensable luxury but a quality that decides between success and failure!
+Created by Wu Qizhen on 2025.10.9
+*/
+.btn {
+    display: inline-block;
+    padding: 15px 30px;
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px var(--theme-color-fade);
+}
+
+.btn.theme {
+    background-color: var(--theme-color);
+}
+
+.btn.lightblue {
+    background-color: rgba(0, 199, 228);
+}
+
+.btn.green {
+    background-color: rgba(82, 224, 166);
+}
+
+.btn.yellow {
+    background-color: rgba(253, 205, 34);
+}
+
+.btn:hover {
+    background-color: var(--theme-color-darken);
+    color: rgba(255, 255, 255, 0.7);
+    transform: translateY(-2px);
+    font-weight: 400;
+    box-shadow: 0 6px 15px var(--theme-color-fade);
+}
+
+.card {
+    display: flex;
+    text-decoration: none;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 400;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px black;
+}
+
+.card:hover {
+    color: white;
+    transform: translateY(-2px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 6px 15px black;
+}
+
+.divider {
+    border: 0; /* 移除默认边框 */
+    height: 1px; /* 设置高度 */
+    background: rgba(255, 255, 255, 0.2); /* 渐变背景 */
+}
