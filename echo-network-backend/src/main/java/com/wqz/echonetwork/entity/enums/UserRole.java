@@ -6,7 +6,25 @@ package com.wqz.echonetwork.entity.enums;
  * Created by Wu Qizhen on 2025.10.10
  */
 public enum UserRole {
-    USER,           // 普通用户
-    ADMIN,          // 管理员
-    SUPER_USER      // 超级用户
+    USER(0), // 普通用户
+    SUPER_USER(1), // 超级用户
+    ADMIN(3); // 管理员
+    private final int id;
+
+    UserRole(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public static UserRole fromId(int id) {
+        for (UserRole role : values()) {
+            if (role.id == id) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("未找到对应枚举：" + id);
+    }
 }

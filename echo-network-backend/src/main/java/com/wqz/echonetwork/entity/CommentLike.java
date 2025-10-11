@@ -7,14 +7,15 @@ import java.time.LocalDateTime;
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.10
  */
-public class Follow { // 关注
-    private Long id; // 关注 ID
+public class CommentLike { // 评论点赞
 
-    private LocalDateTime createTime; // 创建时间
+    private Long id; // 点赞 ID
 
-    private Long followerUserId; // 关注者 ID
+    private LocalDateTime createTime; // 点赞时间
 
-    private Long followingUserId; // 被关注者 ID
+    private Long userId; // 点赞用户 ID
+
+    private Long commentId; // 点赞评论 ID
 
     protected void onCreate() {
         createTime = LocalDateTime.now();

@@ -13,43 +13,47 @@ import java.util.Set;
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.10
  */
-public class Article {
-    private Long id;
+public class Article { // 文章
+    private Long id; // 文章 ID
 
-    private String title;
+    private String title; // 文章标题
 
-    private String content;
+    private String content; // 文章内容
 
-    private LocalDateTime createdTime;
+    private LocalDateTime createTime; // 创建时间
 
-    private LocalDateTime updatedTime;
+    private LocalDateTime updateTime; // 更新时间
 
-    private LocalDateTime publishedTime;
+    private LocalDateTime publishTime; // 发布时间
 
-    private ArticleStatus status = ArticleStatus.DRAFT;
+    private Integer status = ArticleStatus.DRAFT.getId(); // 文章状态 0 草稿 1 发布 2 删除
 
-    private Integer viewCount = 0;
+    private Integer viewCount = 0; // 浏览次数
 
-    private Integer likeCount = 0;
+    private Integer likeCount = 0; // 点赞数
 
-    private Integer commentCount = 0;
+    private Integer starCount = 0; // 收藏数
 
-    private Long authorId;
+    private Integer commentCount = 0; // 评论数
 
-    private List<Long> commentIds = new ArrayList<>();
+    private Long authorId; // 作者 ID
 
-    private List<Long> likeUserIds = new ArrayList<>();
+    private Long circleId; // 圈子 ID
 
-    private Set<Tag> tags = new HashSet<>();
+    /* private List<Long> commentIds = new ArrayList<>(); // 评论 ID
+
+    private Set<Long> likeUserIds = new HashSet<>(); // 点赞用户 ID */
+
+    private Set<Long> tagIds = new HashSet<>(); // 标签 ID
 
     protected void onCreate() {
-        createdTime = LocalDateTime.now();
-        if (status == ArticleStatus.PUBLISHED && publishedTime == null) {
-            publishedTime = LocalDateTime.now();
+        createTime = LocalDateTime.now();
+        if (status == ArticleStatus.PUBLISHED.getId() && publishTime == null) {
+            publishTime = LocalDateTime.now();
         }
     }
 
     protected void onUpdate() {
-        updatedTime = LocalDateTime.now();
+        updateTime = LocalDateTime.now();
     }
 }

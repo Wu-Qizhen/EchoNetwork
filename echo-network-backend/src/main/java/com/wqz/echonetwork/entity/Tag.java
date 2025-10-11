@@ -8,12 +8,12 @@ import java.util.Set;
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.10
  */
-public class Tag {
+public class Tag { // 文章标签
 
-    private Long id;
+    private Long id; // 标签 ID
 
-    private String name;
+    private String name; // 标签名称
 
-    private Set<Long> articleIds = new HashSet<>();
+    /* private Set<Long> articleIds = new HashSet<>(); // 标签下的文章 ID */
 
 }
