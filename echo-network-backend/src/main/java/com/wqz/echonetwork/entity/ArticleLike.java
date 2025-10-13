@@ -17,7 +17,93 @@ public class ArticleLike { // 文章点赞
 
     private Long articleId; // 点赞文章 ID
 
+    public ArticleLike() {
+    }
+
+    public ArticleLike(Long id, LocalDateTime createTime, Long userId, Long articleId) {
+        this.id = id;
+        this.createTime = createTime;
+        this.userId = userId;
+        this.articleId = articleId;
+    }
+
     protected void onCreate() {
         createTime = LocalDateTime.now();
+    }
+
+    /**
+     * 获取
+     *
+     * @return id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * 设置
+     *
+     * @param id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * 获取
+     *
+     * @return createTime
+     */
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    /**
+     * 设置
+     *
+     * @param createTime
+     */
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+    /**
+     * 获取
+     *
+     * @return userId
+     */
+    public Long getUserId() {
+        return userId;
+    }
+
+    /**
+     * 设置
+     *
+     * @param userId
+     */
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    /**
+     * 获取
+     *
+     * @return articleId
+     */
+    public Long getArticleId() {
+        return articleId;
+    }
+
+    /**
+     * 设置
+     *
+     * @param articleId
+     */
+    public void setArticleId(Long articleId) {
+        this.articleId = articleId;
+    }
+
+    public String toString() {
+        return "ArticleLike{id = " + id + ", createTime = " + createTime + ", userId = " + userId + ", articleId = " + articleId + "}";
     }
 }

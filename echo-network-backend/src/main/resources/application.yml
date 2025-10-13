@@ -1,6 +1,37 @@
 app:
+  application: EchoNetwork
   database:
     url: jdbc:mysql://localhost:3306/echo_network
     username: test
     password: 123456
     driver: com.mysql.cj.jdbc.Driver
+  jwt:
+    secret: EchoNetworkDevelopedByCodeIntelliXFormedByWuQizhenOn202510
+    expiration: 86400000
+    issuer: EchoNetwork
+  mail:
+    host: smtp.163.com
+    username: code_intellix@163.com
+    password:
+  rabbitmq:
+    addresses: localhost
+    username: guest
+    password: guest
+    virtual-host: /
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    database: 0      # 使用的数据库索引，默认 0
+    timeout: 3000ms  # 连接超时时间
+    lettuce:
+      pool:
+        max-active: 8   # 连接池最大连接数
+        max-idle: 8     # 连接池中最大空闲连接数
+        min-idle: 0     # 连接池中最小空闲连接数
+        max-wait: 100ms # 获取连接的最大等待时间
+  web:
+    flow:
+      limit: 100
+      period: 3
+      block: 10

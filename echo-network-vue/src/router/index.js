@@ -4,42 +4,70 @@
  * Created by Wu Qizhen on 2025.10.9
  */
 import {createRouter, createWebHistory} from 'vue-router'
-import {isAuthorized} from "@/net/index.js";
+// import {isAuthorized} from "@/net/index.js";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
+    scrollBehavior(to, from, savedPosition) {
+        return {
+            top: 0,
+            behavior: 'smooth'
+        }
+    },
     routes: [
+        // 欢迎
         {
-            path: '/',
+            path: '/welcome',
             name: 'welcome',
-            component: () => import('@/views/WelcomeView.vue'),
+            component: () => import('@/views/WelcomeView.vue')
+        },
+
+        // 认证
+        {
+            path: '/auth',
+            redirect: '/auth/login',
+            name: 'auth',
+            component: () => import('@/views/AuthView.vue'),
             children: [
                 {
-                    path: '/',
-                    name: 'welcome-login',
-                    component: () => import('@/views/welcome/LoginPage.vue')
+                    path: 'login',
+                    name: 'auth-login',
+                    component: () => import('@/views/auth/LoginPage.vue')
                 }, {
-                    path: '/register',
-                    name: 'welcome-register',
-                    component: () => import('@/views/welcome/RegisterPage.vue')
+                    path: 'register',
+                    name: 'auth-register',
+                    component: () => import('@/views/auth/RegisterPage.vue')
                 },
                 {
-                    path: '/reset',
-                    name: 'welcome-reset',
-                    component: () => import('@/views/welcome/ResetPage.vue')
+                    path: 'reset',
+                    name: 'auth-reset',
+                    component: () => import('@/views/auth/ResetPage.vue')
                 }
             ]
         },
+
+        // 应用
         {
-            path: '/index',
-            name: 'index',
-            component: () => import('@/views/IndexView.vue')
+            path: '/',
+            name: 'app',
+            component: () => import('@/views/AppView.vue'),
+            children: [
+                {
+                    path: '/',
+                    name: 'home-page',
+                    component: () => import('@/views/app/ArticleList.vue')
+                }
+            ]
         },
+
+        // 协议
         {
             path: '/service-terms',
             name: 'service-terms',
             component: () => import('@/views/ServiceTermsView.vue')
         },
+
+        // 隐私
         {
             path: '/privacy-policy',
             name: 'privacy-policy',
@@ -48,7 +76,7 @@ const router = createRouter({
     ]
 })
 
-router.beforeEach((to, from, next) => {
+/*router.beforeEach((to, from, next) => {
     const authorized = isAuthorized();
     if (to.name.startsWith('welcome-') && authorized) {
         next('/index')
@@ -57,6 +85,6 @@ router.beforeEach((to, from, next) => {
     } else {
         next()
     }
-})
+})*/
 
 export default router

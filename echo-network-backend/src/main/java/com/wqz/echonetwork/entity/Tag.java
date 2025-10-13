@@ -14,6 +14,54 @@ public class Tag { // 文章标签
 
     private String name; // 标签名称
 
+    public Tag() {
+    }
+
+    public Tag(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    /**
+     * 获取
+     *
+     * @return id
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * 设置
+     *
+     * @param id
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * 获取
+     *
+     * @return name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * 设置
+     *
+     * @param name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String toString() {
+        return "Tag{id = " + id + ", name = " + name + "}";
+    }
+
     /* private Set<Long> articleIds = new HashSet<>(); // 标签下的文章 ID */
 
 }

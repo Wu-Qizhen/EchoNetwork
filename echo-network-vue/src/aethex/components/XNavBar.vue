@@ -67,11 +67,8 @@
 <template>
   <nav :class="{ 'scrolled': isScrolled }" :style="navStyle">
     <!-- Logo -->
-    <div class="nav-logo">
-      <a v-if="logoLink" :href="logoLink" :title="logoTitle">
-        <img :src="logoImage" :alt="logoAlt" class="nav-img">
-      </a>
-      <a v-else @click="handleLogoClick">
+    <div class="nav-logo protected-content">
+      <a @click="handleLogoClick" :title="logoTitle">
         <img :src="logoImage" :alt="logoAlt" class="nav-img">
       </a>
     </div>
@@ -79,10 +76,10 @@
     <!-- 选项卡 -->
     <div class="nav-links">
       <a
-        v-for="(item, index) in navItems"
-        :key="index"
-        :class="{ 'active': activeIndex === index, 'nav-item': true }"
-        @click="handleNavClick(index, $event)"
+          v-for="(item, index) in navItems"
+          :key="index"
+          :class="{ 'active': activeIndex === index, 'nav-item': true }"
+          @click="handleNavClick(index, $event)"
       >
         {{ item.text }}
       </a>
@@ -100,10 +97,6 @@ export default {
       type: String,
       default: './res/logo_code_intellix_with_text.png'
     },
-    logoLink: {
-      type: String,
-      default: '#'
-    },
     logoTitle: {
       type: String,
       default: '智码'
@@ -117,12 +110,12 @@ export default {
     navItems: {
       type: Array,
       default: () => [
-        { text: '探索', id: 'explore' },
-        { text: '开发套件', id: 'dev-kit' },
-        { text: '解决方案', id: 'solutions' },
-        { text: '服务支持', id: 'support' },
-        { text: '培训学习', id: 'training' },
-        { text: '关于我们', id: 'about' }
+        {text: '探索', id: 'explore'},
+        {text: '开发套件', id: 'dev-kit'},
+        {text: '解决方案', id: 'solutions'},
+        {text: '服务支持', id: 'support'},
+        {text: '培训学习', id: 'training'},
+        {text: '关于我们', id: 'about'}
       ]
     },
 
@@ -159,7 +152,7 @@ export default {
     initMarker() {
       this.$nextTick(() => {
         const activeItem = this.$el.querySelector('.nav-links .nav-item.active') ||
-          this.$el.querySelector('.nav-links .nav-item')
+            this.$el.querySelector('.nav-links .nav-item')
         if (activeItem) {
           this.markerStyle.left = activeItem.offsetLeft + 'px'
           this.markerStyle.width = activeItem.offsetWidth + 'px'

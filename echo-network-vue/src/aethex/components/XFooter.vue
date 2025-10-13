@@ -11,30 +11,32 @@
 -->
 <template>
   <footer
-    class="x-footer"
-    :style="{ transform: `translateY(${150 - footerVisible}%)` }"
+      class="x-footer"
+      :style="{ transform: `translateY(${150 - footerVisible}%)` }"
   >
-    <div class="footer-service spacer-bottom">
+    <div class="footer-service spacer-bottom protected-content">
       <div class="footer-service-function">
         <p class="zh main white">联系我们</p>
-        <p class="zh sub remark-highlight">联系邮箱：3162946784@qq.com</p>
+        <p class="zh sub remark-highlight">联系邮箱：code_intellix@163.com</p>
         <p class="zh sub remark-highlight">加入我们：hire@code-intellix.com</p>
       </div>
 
       <div class="footer-service-function">
-        <p class="zh main white">开发套件</p>
-        <a href="#">幻羲智构矩阵</a>
+        <p class="zh main white">内容服务</p>
+        <a href="#">博客</a>
+        <a href="#">圈子</a>
       </div>
 
       <div class="footer-service-function">
-        <p class="zh main white">解决方案</p>
-        <a href="#">穿戴设备</a>
+        <p class="zh main white">生态合作</p>
+        <a href="#">版权与素材</a>
+        <a href="#">推广与流量</a>
       </div>
 
       <div class="footer-service-function">
-        <p class="zh main white">服务支持</p>
-        <a href="#">技术支持</a>
-        <a href="#">文档</a>
+        <XSpacer height="26px"/>
+        <a href="#">广告与赞助</a>
+        <a href="#">学习与成长</a>
       </div>
 
       <div class="footer-service-function">
@@ -43,8 +45,10 @@
       </div>
     </div>
 
-    <div class="footer-studio spacer-top-s spacer-bottom">
-      <a href="#"><img src="../../../res/logo_code_intellix_text.svg" alt="Code IntelliX"></a>
+    <div class="footer-studio spacer-top-s spacer-bottom protected-content">
+      <a href="#"><img src="../../../res/logo_code_intellix_with_text.png" alt="Code IntelliX"></a>
+
+      <a href="#"><img src="../../../res/logo_echo_network_with_text.svg" alt="Echo Network"></a>
 
       <div class="footer-studio-workspace">
         <a href="#"><img src="../../../res/logo_intellic_lab.png" alt="IntelliC Lab">IntelliC Lab</a>
@@ -61,7 +65,7 @@
 
     <hr class="divider">
 
-    <div class="footer-contact spacer-top">
+    <div class="footer-contact spacer-top protected-content">
       <a href="#"><img src="../../../res/ic_qq.svg" alt="QQ"></a>
       <a href="#"><img src="../../../res/ic_wechat.svg" alt="微信"></a>
       <a href="#"><img src="../../../res/ic_microblog.svg" alt="微博"></a>
@@ -76,14 +80,13 @@
       <a href="#"><img src="../../../res/ic_bilibili.svg" alt="哔哩哔哩"></a>
     </div>
 
-    <div class="footer-links spacer-top">
-      <a class="remark-highlight" href="#">隐私安全</a>
-      <a class="remark-highlight" href="#">隐私声明</a>
-      <a class="remark-highlight" href="#">使用条款</a>
+    <div class="footer-links spacer-top protected-content">
+      <a class="remark-highlight" @click="router().push('/service-terms')">使用协议</a>
+      <a class="remark-highlight" @click="router().push('/privacy-policy')">隐私政策</a>
       <a class="remark-highlight" href="#">反馈</a>
     </div>
 
-    <div class="footer-bottom spacer-top">
+    <div class="footer-bottom spacer-top protected-content">
       <div class="footer-copyright">
         <p class="en remark-normal">Copyright © 2023-2025 Code IntelliX</p>
       </div>
@@ -100,8 +103,12 @@
 </template>
 
 <script>
+import XSpacer from "@/aethex/components/XSpacer.vue";
+import router from "@/router/index.js";
+
 export default {
   name: 'XFooter',
+  components: {XSpacer},
   data() {
     return {
       footerVisible: 0,
@@ -111,6 +118,9 @@ export default {
     }
   },
   methods: {
+    router() {
+      return router
+    },
     checkIfAtBottom() {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop
       const scrollHeight = document.documentElement.scrollHeight
@@ -151,8 +161,8 @@ export default {
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
-    window.addEventListener('wheel', this.handleWheel, { passive: false })
-    window.addEventListener('DOMMouseScroll', this.handleWheel, { passive: false })
+    window.addEventListener('wheel', this.handleWheel, {passive: false})
+    window.addEventListener('DOMMouseScroll', this.handleWheel, {passive: false})
 
     this.isAtBottom = this.checkIfAtBottom()
   },
@@ -205,6 +215,10 @@ export default {
   display: flex;
   align-items: baseline;
   gap: 20px;
+}
+
+.footer-links a:hover {
+  color: white;
 }
 
 .footer-contact {
@@ -268,9 +282,17 @@ export default {
   font-family: "MiSans Medium", sans-serif;
 }
 
+.footer-service-function a:hover {
+  color: white;
+}
+
 .divider {
   border: 0; /* 移除默认边框 */
   height: 1px; /* 设置高度 */
   background: rgba(255, 255, 255, 0.2); /* 渐变背景 */
+}
+
+.remark-highlight:hover {
+  color: white;
 }
 </style>

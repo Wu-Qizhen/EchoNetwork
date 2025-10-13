@@ -12,15 +12,15 @@
 <template>
   <nav :class="{ 'scrolled': isScrolled }" :style="navStyle">
     <!-- Logo -->
-    <div class="nav-logo">
+    <div class="nav-logo protected-content">
       <img :src="logoImage" :alt="logoAlt" class="nav-img">
     </div>
 
-    <div class="nav-title">
+    <div class="nav-title protected-content">
       <p :class="titleLang">{{ title }}</p>
     </div>
 
-    <div class="nav-subtitle">
+    <div class="nav-subtitle protected-content">
       <p :class="subtitleLang" style="color: var(--grey_highlight);">{{ subTitle }}</p>
     </div>
   </nav>
@@ -155,7 +155,7 @@ nav.scrolled {
 }
 
 .nav-img {
-  height: 50px;
+  height: 40px;
   width: auto;
 }
 
