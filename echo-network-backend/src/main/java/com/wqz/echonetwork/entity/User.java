@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
  * Created by Wu Qizhen on 2025.10.10
  */
 public class User { // 用户
+
     private Long id; // 用户 ID
 
     private String username; // 用户名

@@ -14,6 +14,7 @@ import java.util.Set;
  * Created by Wu Qizhen on 2025.10.10
  */
 public class Article { // 文章
+
     private Long id; // 文章 ID
 
     private String title; // 文章标题

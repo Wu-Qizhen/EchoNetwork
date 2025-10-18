@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
  * Created by Wu Qizhen on 2025.10.10
  */
 public class Follow { // 关注
+
     private Long id; // 关注 ID
 
     private LocalDateTime createTime; // 创建时间

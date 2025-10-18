@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
  * Created by Wu Qizhen on 2025.10.11
  */
 public class ArticleTag {
+
     private Long id;
     private Long articleId;
     private Long tagId;

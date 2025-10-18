@@ -51,7 +51,7 @@ public class YamlLoader {
             inputStream.close();
 
         } catch (Exception e) {
-            throw new RuntimeException("加载配置文件失败：" + configPath, e);
+            throw new RuntimeException("配置文件加载失败：" + configPath, e);
         }
     }
 
