@@ -12,12 +12,12 @@ import com.wqz.echonetwork.utils.PasswordEncoder;
  */
 public class UserServiceImpl implements UserService {
 
+    UserMapper userMapper = new UserMapper();
+
     @Override
     public User login(String username, String password) {
-        UserMapper userMapper = new UserMapper();
         User user = userMapper.findByUsername(username);
-        PasswordEncoder passwordEncoder = new PasswordEncoder();
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
+        if (user != null && PasswordEncoder.matches(password, user.getPassword())) {
             return user;
         } else return null;
     }

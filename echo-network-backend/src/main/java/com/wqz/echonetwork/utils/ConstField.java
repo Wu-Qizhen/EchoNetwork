@@ -8,12 +8,6 @@ package com.wqz.echonetwork.utils;
 public class ConstField {
     public static final String JWT_BLACK_LIST = "jwt:blacklist:";
 
-    public static final String EMAIL_VERIFY_LIMIT = "email:verify:limit:";
-    public static final String EMAIL_VERIFY_DATA = "email:verify:data:";
-
-    public static final int ORDER_CORS = -102;
-    public static final int ORDER_LIMIT = -101;
-
-    public static final String FLOW_LIMIT_COUNTER = "flow:counter:";
-    public static final String FLOW_LIMIT_BLACK_LIST = "flow:blacklist:";
+    public static final String CAPTCHA_LIMIT = "captcha:limit:";
+    public static final String CAPTCHA_DATA = "captcha:data:";
 }
