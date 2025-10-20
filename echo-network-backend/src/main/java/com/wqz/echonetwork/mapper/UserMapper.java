@@ -3,6 +3,8 @@ package com.wqz.echonetwork.mapper;
 import com.wqz.echonetwork.entity.User;
 import com.wqz.echonetwork.utils.SqlUtil;
 
+import java.time.LocalDateTime;
+
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
@@ -86,5 +88,9 @@ public class UserMapper {
 
     public int delete(Integer id) {
         return SqlUtil.update("DELETE FROM user WHERE id = ?", id);
+    }
+
+    public void updateLastLoginTime(Long id, LocalDateTime lastLoginTime) {
+        SqlUtil.update("UPDATE user SET last_login_time = ? WHERE id = ?", lastLoginTime, id);
     }
 }

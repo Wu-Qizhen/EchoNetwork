@@ -7,12 +7,12 @@ app:
     driver: com.mysql.cj.jdbc.Driver
   jwt:
     secret: EchoNetworkDevelopedByCodeIntelliXFormedByWuQizhenOn202510
-    expiration: 86400000
+    expiration: 7 # 天
     issuer: EchoNetwork
   mail:
     host: smtp.163.com
     username: code_intellix@163.com
-    password:  # TODO 删除
+    password: # TODO Git 删除
     port: 465
     ssl: true
   rabbitmq:

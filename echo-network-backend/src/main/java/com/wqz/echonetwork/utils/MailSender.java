@@ -11,7 +11,7 @@ import java.util.Properties;
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.19
  */
-public class MailSender {
+public class MailSender { // TODO 使用 RabbitMQ 优化
     private static final String SMTP_HOST;
     private static final String USERNAME;
     private static final String PASSWORD;
@@ -53,10 +53,10 @@ public class MailSender {
 
             // 发送邮件
             Transport.send(message);
-            System.out.println("邮件发送成功至：" + toEmail);
+            System.out.println("邮件发送成功至：" + toEmail); // TODO 删除
 
         } catch (Exception e) {
-            System.err.println("邮件发送失败：" + e.getMessage());
+            System.err.println("邮件发送失败：" + e.getMessage()); // TODO 删除
             throw new RuntimeException("邮件发送失败", e);
         }
     }
@@ -64,6 +64,7 @@ public class MailSender {
     public static void sendVerificationCode(String email, String code, String type) {
         String subject;
         String content;
+        // System.out.println("发送验证码：" + code);
 
         switch (type) {
             case "register":

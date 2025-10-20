@@ -1,25 +1,25 @@
-package com.wqz.echonetwork.entity;
+package com.wqz.echonetwork.entity
 
-import java.time.LocalDateTime;
+import java.time.LocalDateTime
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.11
  */
-public class Message { // 私信 TODO
+data class Message( // TODO 以后开发
+    var id: Long? = null, // 私信 ID
+    var senderId: Long? = null, // 发送者 ID
+    var receiverId: Long? = null, // 接收者 ID
+    var content: String = "", // 内容
+    var createTime: LocalDateTime? = null // 创建时间
+) {
 
-    private Long id; // 私信 ID
+    init {
+        onCreate()
+    }
 
-    private Long senderId; // 发送者 ID
-
-    private Long receiverId; // 接收者 ID
-
-    private String content; // 内容
-
-    private LocalDateTime createTime; // 创建时间
-
-    protected void onCreate() {
-        createTime = LocalDateTime.now();
+    fun onCreate() {
+        createTime = LocalDateTime.now()
     }
 }

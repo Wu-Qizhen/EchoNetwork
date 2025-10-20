@@ -3,6 +3,7 @@ package com.wqz.echonetwork.controller;
 import com.wqz.echonetwork.entity.vo.Result;
 import com.wqz.echonetwork.service.AuthService;
 import com.wqz.echonetwork.service.impl.AuthServiceImpl;
+import com.wqz.echonetwork.utils.WriterUtil;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,11 +33,7 @@ public class AuthController extends HttpServlet {
         String email = request.getParameter("email");
 
         if (type == null || email == null) {
-            Result<Object> result = Result.error("参数错误");
-
-            PrintWriter out = response.getWriter();
-            out.write(result.asJsonString());
-            out.flush();
+            WriterUtil.paramsError(response);
             return;
         }
 
@@ -47,5 +44,10 @@ public class AuthController extends HttpServlet {
         PrintWriter out = response.getWriter();
         out.write(result.asJsonString());
         out.flush();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        doGet(request, response);
     }
 }

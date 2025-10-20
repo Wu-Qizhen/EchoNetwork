@@ -9,7 +9,7 @@ import java.util.Random;
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.19
  */
-public class CaptchaUtil {
+public class CaptchaUtil { // TODO 锁 IP
 
     private static final Random random = new Random();
     // TODO 移到配置文件
