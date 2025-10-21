@@ -40,15 +40,15 @@ public class PasswordEncoder {
         String rawPassword = "MyPassword123";
 
         String encodedPassword = PasswordEncoder.encode(rawPassword);
-        System.out.println("加密后的密码：" + encodedPassword);
+        LogUtil.info("加密后的密码：" + encodedPassword);
 
         boolean isMatch = PasswordEncoder.matches(rawPassword, encodedPassword);
-        System.out.println("密码验证结果：" + isMatch);
+        LogUtil.info("密码验证结果：" + isMatch);
 
         boolean isWrongMatch = PasswordEncoder.matches("WrongPassword", encodedPassword);
-        System.out.println("错误密码验证结果：" + isWrongMatch);
+        LogUtil.info("错误密码验证结果：" + isWrongMatch);
 
         boolean needUpgrade = PasswordEncoder.upgradeEncoding(encodedPassword);
-        System.out.println("是否需要重新加密：" + needUpgrade);
+        LogUtil.info("是否需要重新加密：" + needUpgrade);
     } */
 }

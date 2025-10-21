@@ -12,7 +12,7 @@ import java.sql.SQLException;
 public class SqlUtil {
 
     private static void exceptionHandler(SQLException e) {
-        System.out.println(e.getMessage());
+        LogUtil.error("连接失败：" + e.getMessage());
     }
 
     public static <T> T queryObject(String sql, Class<T> clazz, Object... params) {

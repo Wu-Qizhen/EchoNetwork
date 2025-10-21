@@ -21,5 +21,17 @@
       </option>
       <option name="myCustomValuesEnabled" value="true" />
     </inspection_tool>
+    <inspection_tool class="IncorrectHttpHeaderInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="customHeaders">
+        <set>
+          <option value="X-Debug" />
+          <option value="Access-Control-Expose-Headers" />
+          <option value="X-CORS-Status" />
+          <option value="X-Requested-Path" />
+          <option value="X-CORS-Filter" />
+          <option value="X-Request-Path" />
+        </set>
+      </option>
+    </inspection_tool>
   </profile>
 </component>

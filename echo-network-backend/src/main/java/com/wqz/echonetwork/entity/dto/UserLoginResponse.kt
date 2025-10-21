@@ -1,6 +1,7 @@
 package com.wqz.echonetwork.entity.dto
 
 import com.wqz.echonetwork.entity.vo.UserVO
+import java.util.Date
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -9,5 +10,6 @@ import com.wqz.echonetwork.entity.vo.UserVO
  */
 data class UserLoginResponse(
     var token: String,
-    var user: UserVO
+    var user: UserVO,
+    var expire: Date
 )

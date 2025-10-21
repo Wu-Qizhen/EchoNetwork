@@ -2,6 +2,7 @@ package com.wqz.echonetwork.service;
 
 import com.wqz.echonetwork.entity.User;
 import com.wqz.echonetwork.entity.dto.UserLoginResponse;
+import com.wqz.echonetwork.entity.dto.UserProfileResponse;
 import com.wqz.echonetwork.entity.dto.UserRegisterRequest;
 
 /**
@@ -14,4 +15,6 @@ public interface UserService {
     UserLoginResponse login(String username, String password);
 
     String register(UserRegisterRequest userRegisterRequest);
+
+    UserProfileResponse getProfile(Long userId);
 }

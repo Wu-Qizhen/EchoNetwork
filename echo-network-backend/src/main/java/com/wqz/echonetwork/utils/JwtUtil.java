@@ -80,4 +80,54 @@ public class JwtUtil {
                 .getBody();
         return claims.get("role", Integer.class);
     }
+
+    public static Date getExpirationDateFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.getExpiration();
+    }
+
+    public static Claims getClaimsFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public static void addToBlacklist(String token) {
+        try {
+            Claims claims = JwtUtil.getClaimsFromToken(token);
+            Date expiration = claims.getExpiration();
+            long ttl = expiration.getTime() - System.currentTimeMillis();
+
+            if (ttl > 0) {
+                RedisUtil.set(ConstField.JWT_BLACK_LIST + token,
+                        (int) ttl / 1000,
+                        "logout "
+                );
+            }
+        } catch (Exception e) {
+            System.err.println("将 Token 加入黑名单失败：" + e.getMessage());
+        }
+    }
+
+    public static boolean isTokenBlacklisted(String token) {
+        return RedisUtil.exists(ConstField.JWT_BLACK_LIST + token);
+    }
+
+    public static boolean isTokenValid(String token) {
+        try {
+            // 先检查黑名单
+            if (isTokenBlacklisted(token)) {
+                return false;
+            }
+            return validateToken(token);
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

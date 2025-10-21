@@ -92,7 +92,7 @@ public class RedisUtil {
         try (Jedis jedis = getJedis()) {
             jedis.setex(key, (long) seconds, value);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LogUtil.error("添加失败：" + e.getMessage());
         }
     }
 
@@ -106,7 +106,7 @@ public class RedisUtil {
         try (Jedis jedis = getJedis()) {
             return jedis.get(key);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LogUtil.error("获取失败：" + e.getMessage());
             return null;
         }
     }
@@ -121,7 +121,7 @@ public class RedisUtil {
         try (Jedis jedis = getJedis()) {
             jedis.del(key);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LogUtil.error("删除失败：" + e.getMessage());
         }
     }
 
@@ -135,18 +135,18 @@ public class RedisUtil {
         try (Jedis jedis = getJedis()) {
             return jedis.exists(key);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            LogUtil.error("校验失败：" + e.getMessage());
             return false;
         }
     }
 
-    public static void printPoolStats() {
+    /* public static void printPoolStats() {
         if (jedisPool != null) {
-            System.out.println("Active: " + jedisPool.getNumActive());
-            System.out.println("Idle: " + jedisPool.getNumIdle());
-            System.out.println("Waiters: " + jedisPool.getNumWaiters());
+            LogUtil.info("Active：" + jedisPool.getNumActive());
+            LogUtil.info("Idle：" + jedisPool.getNumIdle());
+            LogUtil.info("Waiters：" + jedisPool.getNumWaiters());
         }
-    }
+    } */
 
     public static void close() {
         if (jedisPool != null && !jedisPool.isClosed()) {

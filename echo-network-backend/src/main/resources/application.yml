@@ -12,7 +12,7 @@ app:
   mail:
     host: smtp.163.com
     username: code_intellix@163.com
-    password: # TODO Git 删除
+    password: VJQBU5kJfccQLsXr # TODO Git 删除
     port: 465
     ssl: true
   rabbitmq:

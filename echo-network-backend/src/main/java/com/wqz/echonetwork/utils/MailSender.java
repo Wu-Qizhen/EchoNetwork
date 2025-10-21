@@ -53,10 +53,10 @@ public class MailSender { // TODO 使用 RabbitMQ 优化
 
             // 发送邮件
             Transport.send(message);
-            System.out.println("邮件发送成功至：" + toEmail); // TODO 删除
+            // LogUtil.log("邮件发送成功至 " + toEmail);
 
         } catch (Exception e) {
-            System.err.println("邮件发送失败：" + e.getMessage()); // TODO 删除
+            LogUtil.error("邮件发送失败：" + e.getMessage());
             throw new RuntimeException("邮件发送失败", e);
         }
     }
@@ -64,7 +64,7 @@ public class MailSender { // TODO 使用 RabbitMQ 优化
     public static void sendVerificationCode(String email, String code, String type) {
         String subject;
         String content;
-        // System.out.println("发送验证码：" + code);
+        // LogUtil.info("已发送验证码：" + code);
 
         switch (type) {
             case "register":

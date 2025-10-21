@@ -29,4 +29,15 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url))
         },
     },
+    server: {
+        port: 8081,
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+                secure: false,
+                // rewrite: (path) => path.replace(/^\/api/, '/echo-network/api'),  // 正确重写路径
+            }
+        },
+    }
 })

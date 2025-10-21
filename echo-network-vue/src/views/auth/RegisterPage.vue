@@ -98,7 +98,7 @@ function togglePassword() {
 function askCode() {
   if (isEmailValid) {
     coldTime.value = 60
-    get(`/api/auth/ask-code?email=${form.email}&type=register`, () => {
+    get(`/api/auth/ask-code?type=register&email=${form.email}`, () => {
       ElMessage.success(`验证码已发送至邮箱 ${form.email}，请注意查收`)
       timer = setInterval(() => {
         if (coldTime.value > 0) {
@@ -127,7 +127,13 @@ function register() {
   }
   formRef.value.validate((valid) => {
     if (valid) {
-      post('/api/auth/register', {...form}, () => {
+      const requestData = {
+        username: form.username,
+        email: form.email,
+        password: form.password,
+        captcha: form.code
+      }
+      post('/api/users/register', requestData, () => {
         ElMessage.success('注册成功，欢迎加入回声网络')
         router.push('/auth')
       })
@@ -151,9 +157,11 @@ function register() {
                     class="register-input"
                     placeholder="用户名">
             <template #prefix>
-              <el-icon style="padding: 0 5px">
+              <XSpacer type="horizontal" width="5px"/>
+              <el-icon>
                 <User/>
               </el-icon>
+              <XSpacer type="horizontal" width="5px"/>
             </template>
           </el-input>
         </el-form-item>
@@ -166,12 +174,14 @@ function register() {
                     placeholder="密码"
                     ref="passwordInput">
             <template #prefix>
-              <el-icon style="padding: 0 5px">
+              <XSpacer type="horizontal" width="5px"/>
+              <el-icon>
                 <Lock/>
               </el-icon>
+              <XSpacer type="horizontal" width="5px"/>
             </template>
             <template #suffix>
-              <el-icon @click="togglePassword" style="cursor: pointer; padding: 0 5px">
+              <el-icon @click="togglePassword" style="cursor: pointer; margin: 0 5px">
                 <View v-if="!showPassword"/>
                 <Hide v-else/>
               </el-icon>
@@ -186,9 +196,11 @@ function register() {
                     class="register-input spacer-top-ss"
                     placeholder="重复密码">
             <template #prefix>
-              <el-icon style="padding: 0 5px">
+              <XSpacer type="horizontal" width="5px"/>
+              <el-icon>
                 <Check/>
               </el-icon>
+              <XSpacer type="horizontal" width="5px"/>
             </template>
           </el-input>
         </el-form-item>
@@ -200,9 +212,11 @@ function register() {
                     class="register-input spacer-top-ss"
                     placeholder="邮箱">
             <template #prefix>
-              <el-icon style="padding: 0 5px">
+              <XSpacer type="horizontal" width="5px"/>
+              <el-icon>
                 <Message/>
               </el-icon>
+              <XSpacer type="horizontal" width="5px"/>
             </template>
           </el-input>
         </el-form-item>
@@ -216,13 +230,16 @@ function register() {
                         type="text"
                         placeholder="验证码">
                 <template #prefix>
-                  <el-icon style="padding: 0 5px">
+                  <XSpacer type="horizontal" width="5px"/>
+                  <el-icon>
                     <EditPen/>
                   </el-icon>
+                  <XSpacer type="horizontal" width="5px"/>
                 </template>
               </el-input>
             </el-col>
             <el-col :span="6">
+              <!-- TODO 布尔值问题 -->
               <el-button style="height: 40px" type="primary" @click="askCode" :disabled="!isEmailValid||coldTime">
                 {{ coldTime > 0 ? `${coldTime} 秒后再试` : "获取验证码" }}
               </el-button>
@@ -242,7 +259,8 @@ function register() {
 
       <x-divider label="已有账号" width="350px"/>
 
-      <el-button class="register-button spacer-bottom-l" type="primary" @click="router.push('/auth')" plain>登录</el-button>
+      <el-button class="register-button spacer-bottom-l" type="primary" @click="router.push('/auth')" plain>登录
+      </el-button>
     </div>
   </div>
 </template>

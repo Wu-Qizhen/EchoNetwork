@@ -18,24 +18,12 @@ const defaultError = (err) => {
     ElMessage.error("发生一些错误，请联系客服")
 }
 
-function takeAccessToken() {
-    const str = localStorage.getItem(authItemName) || sessionStorage.getItem(authItemName)
-    if (!str) return null
-    const authObj = JSON.parse(str);
-    if (authObj.expire < Date.now()) {
-        deleteAccessToken()
-        ElMessage.warning("登录已过期，请重新登录")
-        return null
-    }
-    return authObj.token
-}
-
 function deleteAccessToken() {
     localStorage.removeItem(authItemName)
     sessionStorage.removeItem(authItemName)
 }
 
-function storeAccessToken(token, remember, expire) {
+/*function storeAccessToken(token, remember, expire) {
     const authObj = {
         token: token,
         expire: expire
@@ -46,11 +34,37 @@ function storeAccessToken(token, remember, expire) {
     } else {
         sessionStorage.setItem(authItemName, str)
     }
+}*/
+
+function storeAccessToken(token, remember, expire, user) {
+    const authObj = {
+        token: token,
+        expire: expire,
+        user: user
+    }
+    const str = JSON.stringify(authObj);
+    if (remember) {
+        localStorage.setItem(authItemName, str)
+    } else {
+        sessionStorage.setItem(authItemName, str)
+    }
+}
+
+function takeAccessToken() {
+    const str = localStorage.getItem(authItemName) || sessionStorage.getItem(authItemName)
+    if (!str) return null
+    const authObj = JSON.parse(str);
+    if (authObj.expire < Date.now()) {
+        deleteAccessToken()
+        ElMessage.warning("登录已过期，请重新登录")
+        return null
+    }
+    return authObj
 }
 
 function accessHeader() {
     const take = takeAccessToken()
-    return take ? {Authorization: `Bearer ${take}`} : {}
+    return take ? {Authorization: `Bearer ${take.token}`} : {}
 }
 
 function get(url, success, failure = defaultFailure) {
@@ -86,30 +100,86 @@ function internalGet(url, header, success, failure, /*error = defaultError*/) {
     })
 }
 
-function login(username, password, remember, success, failure = defaultFailure) {
+/*function login(username, password, remember, success, failure = defaultFailure) {
     internalPost(
-        "/api/auth/login",
+        "/api/users/login",
         {username, password},
         {
-            'Content-Type': 'application/x-www-form-urlencoded' // 将表单字段转换为 key=value&key2=value2 的字符串形式进行传输
+            'Content-Type': 'application/json' // 将表单字段转换为 key=value&key2=value2 的字符串形式进行传输
+            // 'Content-Type': 'application/x-www-form-urlencoded' // 将表单字段转换为 key=value&key2=value2 的字符串形式进行传输
         },
         (data) => {
-            storeAccessToken(data.token, remember, data.expire)
+            const loginData = data.data;
+            const expireTimestamp = new Date(loginData.expire).getTime();
+            storeAccessToken(loginData.token, remember, expireTimestamp)
+            // storeAccessToken(data.token, remember, data.expire)
             ElMessage.success(`登录成功，欢迎 ${data.username}`)
+            success(data)
+        }, failure)
+}*/
+
+function login(username, password, remember, success, failure = defaultFailure) {
+    internalPost(
+        "/api/users/login",
+        {username, password},
+        {
+            'Content-Type': 'application/json'
+        },
+        (data) => {
+            const expireTimestamp = new Date(data.expire).getTime();
+            storeAccessToken(data.token, remember, expireTimestamp, data.user)
+            // storeAccessToken(data.token, remember, data.expire, data.user)
+            ElMessage.success(`登录成功，欢迎 ${data.user.nickname || data.user.username}`)
             success(data)
         }, failure)
 }
 
-function logout(success, failure = defaultFailure) {
-    get("/api/auth/logout", () => {
+/*function logout(success, failure = defaultFailure) {
+    get("/api/users/logout", () => {
         deleteAccessToken()
         ElMessage.success("登出成功")
         success()
     }, failure)
+}*/
+
+function logout(success) {
+    // 先调用后端登出接口
+    internalGet("/api/users/logout", accessHeader(),
+        () => {
+            // 无论后端是否成功，都清理前端状态
+            deleteAccessToken()
+            ElMessage.success("登出成功")
+            if (success) success()
+        },
+        (message, code, url) => {
+            // 即使后端登出失败，也清理前端状态
+            console.warn(`请求地址：${url}，状态码：${code}，错误信息：${message || '未知错误'}`)
+            deleteAccessToken()
+            ElMessage.success("已退出登录")
+            if (success) success()
+        }
+    )
 }
 
 function isAuthorized() {
     return takeAccessToken() !== null
 }
 
-export {login, logout, isAuthorized, get, post}
+/*function getUserInfo() {
+    const str = localStorage.getItem(authItemName) || sessionStorage.getItem(authItemName)
+    if (!str) return null
+    const authObj = JSON.parse(str);
+    if (authObj.expire < Date.now()) {
+        deleteAccessToken()
+        ElMessage.error("登录已过期，请重新登录")
+        return null
+    }
+    return authObj.user
+}*/
+
+function getUserInfo() {
+    const authObj = takeAccessToken()
+    return authObj ? authObj.user : null
+}
+
+export {login, logout, isAuthorized, get, post, getUserInfo}

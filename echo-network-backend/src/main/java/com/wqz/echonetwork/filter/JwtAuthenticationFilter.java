@@ -20,8 +20,13 @@ import java.util.List;
 public class JwtAuthenticationFilter implements Filter {
 
     private static final List<String> EXCLUDED_PATHS = Arrays.asList(
+            // "/welcome",
+            // "/service-terms",
+            // "/privacy-policy",
             "/api/users/login",
             "/api/users/register",
+            "/api/users/reset",
+            "/api/users/logout",
             "/api/auth/ask-code"
     );
 
@@ -41,7 +46,7 @@ public class JwtAuthenticationFilter implements Filter {
 
         String token = getTokenFromRequest(httpRequest);
 
-        if (token == null || !JwtUtil.validateToken(token)) {
+        if (token == null || !JwtUtil.isTokenValid(token)) {
             WriterUtil.unauthorized(httpResponse);
             return;
         }

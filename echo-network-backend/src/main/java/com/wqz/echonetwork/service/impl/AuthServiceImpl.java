@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
         MailSender.sendVerificationCode(email, captcha, type);
 
         // RedisUtil.printPoolStats();
-        System.out.println("验证码：" + captcha); // TODO 删除
+        // LogUtil.info("验证码：" + captcha);
         return null;
     }
 }

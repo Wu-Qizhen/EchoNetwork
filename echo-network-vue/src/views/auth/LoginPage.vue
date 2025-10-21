@@ -68,7 +68,7 @@ function userLogin() {
   formRef.value.validate((valid) => {
         if (valid) {
           login(form.username, form.password, form.remember, () => {
-            router.push("/index")
+            router.push("/")
           })
         } else {
           ElMessage.warning("请检查输入")
@@ -95,9 +95,11 @@ function userLogin() {
                     class="login-input"
                     placeholder="用户名 / 邮箱 / Echo ID">
             <template #prefix>
-              <el-icon style="padding: 0 5px">
+              <XSpacer type="horizontal" width="5px"/>
+              <el-icon>
                 <User/>
               </el-icon>
+              <XSpacer type="horizontal" width="5px"/>
             </template>
           </el-input>
         </el-form-item>
@@ -110,12 +112,14 @@ function userLogin() {
                     placeholder="密码"
                     ref="passwordInput">
             <template #prefix>
-              <el-icon style="padding: 0 5px">
+              <XSpacer type="horizontal" width="5px"/>
+              <el-icon>
                 <Lock/>
               </el-icon>
+              <XSpacer type="horizontal" width="5px"/>
             </template>
             <template #suffix>
-              <el-icon @click="togglePassword" style="cursor: pointer; padding: 0 5px">
+              <el-icon @click="togglePassword" style="cursor: pointer; margin: 0 5px">
                 <View v-if="!showPassword"/>
                 <Hide v-else/>
               </el-icon>

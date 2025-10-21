@@ -2,6 +2,7 @@ package com.wqz.echonetwork.service.impl;
 
 import com.wqz.echonetwork.entity.User;
 import com.wqz.echonetwork.entity.dto.UserLoginResponse;
+import com.wqz.echonetwork.entity.dto.UserProfileResponse;
 import com.wqz.echonetwork.entity.dto.UserRegisterRequest;
 import com.wqz.echonetwork.entity.enums.UserStatus;
 import com.wqz.echonetwork.entity.vo.UserVO;
@@ -56,7 +57,7 @@ public class UserServiceImpl implements UserService {
                 Objects.requireNonNull(user.getLastLoginTime())
         );
 
-        return new UserLoginResponse(token, userVO);
+        return new UserLoginResponse(token, userVO, JwtUtil.getExpirationDateFromToken(token));
     }
 
     @Override
@@ -96,5 +97,10 @@ public class UserServiceImpl implements UserService {
             RedisUtil.del(key);
             return null;
         }
+    }
+
+    @Override
+    public UserProfileResponse getProfile(Long userId) {
+        return null;
     }
 }

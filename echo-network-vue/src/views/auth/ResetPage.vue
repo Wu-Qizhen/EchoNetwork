@@ -9,6 +9,7 @@ import {Check, EditPen, Hide, Lock, Message, View} from "@element-plus/icons-vue
 import router from "@/router/index.js";
 import {get, post} from "@/net";
 import {ElMessage} from "element-plus";
+import XSpacer from "@/aethex/components/XSpacer.vue";
 
 const active = ref(0)
 const form = reactive({
@@ -85,7 +86,7 @@ function togglePassword() {
 function askCode() {
   if (isEmailValid) {
     coldTime.value = 60
-    get(`/api/auth/ask-code?email=${form.email}&type=reset`, () => {
+    get(`/api/auth/ask-code?type=reset&email=${form.email}`, () => {
       ElMessage.success(`验证码已发送至邮箱 ${form.email}，请注意查收`)
       timer = setInterval(() => {
         if (coldTime.value > 0) {
@@ -154,9 +155,11 @@ function doReset() {
                       class="reset-input"
                       placeholder="邮箱">
               <template #prefix>
-                <el-icon style="padding: 0 5px">
+                <XSpacer type="horizontal" width="5px"/>
+                <el-icon>
                   <Message/>
                 </el-icon>
+                <XSpacer type="horizontal" width="5px"/>
               </template>
             </el-input>
           </el-form-item>
@@ -170,9 +173,11 @@ function doReset() {
                           type="text"
                           placeholder="验证码">
                   <template #prefix>
-                    <el-icon style="padding: 0 5px">
+                    <XSpacer type="horizontal" width="5px"/>
+                    <el-icon>
                       <EditPen/>
                     </el-icon>
+                    <XSpacer type="horizontal" width="5px"/>
                   </template>
                 </el-input>
               </el-col>
@@ -210,12 +215,14 @@ function doReset() {
                       placeholder="密码"
                       ref="passwordInput">
               <template #prefix>
-                <el-icon style="padding: 0 5px">
+                <XSpacer type="horizontal" width="5px"/>
+                <el-icon>
                   <Lock/>
                 </el-icon>
+                <XSpacer type="horizontal" width="5px"/>
               </template>
               <template #suffix>
-                <el-icon @click="togglePassword" style="cursor: pointer; padding: 0 5px">
+                <el-icon @click="togglePassword" style="cursor: pointer; margin: 0 5px">
                   <View v-if="!showPassword"/>
                   <Hide v-else/>
                 </el-icon>
@@ -230,9 +237,11 @@ function doReset() {
                       class="reset-input spacer-top-s"
                       placeholder="重复密码">
               <template #prefix>
-                <el-icon style="padding: 0 5px">
+                <XSpacer type="horizontal" width="5px"/>
+                <el-icon>
                   <Check/>
                 </el-icon>
+                <XSpacer type="horizontal" width="5px"/>
               </template>
             </el-input>
           </el-form-item>

@@ -12,7 +12,7 @@ import java.util.List;
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.18
  */
-public class DatabaseUtil {
+public class DatabaseUtil { // TODO 资源释放问题（使用 Kotlin 解决）
 
     private String driver;
     private String url;
@@ -93,10 +93,10 @@ public class DatabaseUtil {
             beginTransaction();
             operation.execute();
             commitTransaction();
-            // System.out.println("事务提交成功！");
+            // LogUtil.log("事务提交成功！");
         } catch (SQLException e) {
             rollbackTransaction();
-            // System.out.println("事务回滚：" + e.getMessage());
+            // LogUtil.error("事务回滚：" + e.getMessage());
             throw e;
         }
     }

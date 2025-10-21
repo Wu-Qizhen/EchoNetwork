@@ -4,7 +4,7 @@
  * Created by Wu Qizhen on 2025.10.9
  */
 import {createRouter, createWebHistory} from 'vue-router'
-// import {isAuthorized} from "@/net/index.js";
+import {isAuthorized} from "@/net/index.js";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -76,15 +76,29 @@ const router = createRouter({
     ]
 })
 
-/*router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
     const authorized = isAuthorized();
-    if (to.name.startsWith('welcome-') && authorized) {
-        next('/index')
-    } else if (to.fullPath.startsWith('/index') && !authorized) {
-        next('/')
-    } else {
-        next()
+
+    // TODO 黑名单
+    /*const whiteList = [
+        'auth',
+        'auth',
+        'welcome',
+        'service-terms',
+        'privacy-policy'
+    ];*/
+
+    if (to.name && to.name.startsWith('auth') && authorized) {
+        next('/');
+        return;
     }
-})*/
+
+    /*if (!authorized && !whiteList.includes(to.name)) {
+        next('/auth/login');
+        return;
+    }*/
+
+    next();
+});
 
 export default router
