@@ -1,4 +1,4 @@
-package com.wqz.echonetwork.entity
+package com.wqz.echonetwork.entity.po
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）

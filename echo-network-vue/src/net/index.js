@@ -13,10 +13,10 @@ const defaultFailure = (message, code, url) => {
     ElMessage.warning(message || '未知错误')
 }
 
-const defaultError = (err) => {
+/*const defaultError = (err) => {
     console.error(err)
     ElMessage.error("发生一些错误，请联系客服")
-}
+}*/
 
 function deleteAccessToken() {
     localStorage.removeItem(authItemName)
@@ -75,7 +75,7 @@ function post(url, data, success, failure = defaultFailure) {
     internalPost(url, data, accessHeader(), success, failure)
 }
 
-function internalPost(url, data, header, success, failure, error = defaultError) {
+function internalPost(url, data, header, success, failure) {
     axios.post(url, data, {headers: header})
         .then(({data}) => { // 等价于 then((response) => { const data = response.data; ... })
             if (data.code === 200) {
@@ -83,7 +83,10 @@ function internalPost(url, data, header, success, failure, error = defaultError)
             } else {
                 failure(data.message, data.code, url)
             }
-        }).catch(err => error(err))
+        }).catch(err => {
+        const errorMessage = err.response?.data?.message || err.message || "请求失败";
+        failure(errorMessage, err.response?.status, url)
+    })
 }
 
 function internalGet(url, header, success, failure, /*error = defaultError*/) {

@@ -1,9 +1,6 @@
 package com.wqz.echonetwork.service;
 
-import com.wqz.echonetwork.entity.User;
-import com.wqz.echonetwork.entity.dto.UserLoginResponse;
-import com.wqz.echonetwork.entity.dto.UserProfileResponse;
-import com.wqz.echonetwork.entity.dto.UserRegisterRequest;
+import com.wqz.echonetwork.entity.dto.*;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -15,6 +12,10 @@ public interface UserService {
     UserLoginResponse login(String username, String password);
 
     String register(UserRegisterRequest userRegisterRequest);
+
+    String resetVerify(ResetVerifyRequest resetVerifyRequest);
+
+    String resetPassword(ResetPasswordRequest resetPasswordRequest);
 
     UserProfileResponse getProfile(Long userId);
 }

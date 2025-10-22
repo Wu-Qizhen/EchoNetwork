@@ -151,7 +151,7 @@ body {
   width: 500px;
   height: 100%;
   box-shadow: 0 5px 50px black;
-  background: rgba(30, 35, 47, 0.8);
+  background: rgba(30, 35, 47, 0.6);
   backdrop-filter: blur(15px);
   display: flex;
   justify-content: center;

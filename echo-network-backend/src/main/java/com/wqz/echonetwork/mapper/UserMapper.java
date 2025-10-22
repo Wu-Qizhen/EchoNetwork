@@ -1,6 +1,6 @@
 package com.wqz.echonetwork.mapper;
 
-import com.wqz.echonetwork.entity.User;
+import com.wqz.echonetwork.entity.po.User;
 import com.wqz.echonetwork.utils.SqlUtil;
 
 import java.time.LocalDateTime;
@@ -92,5 +92,9 @@ public class UserMapper {
 
     public void updateLastLoginTime(Long id, LocalDateTime lastLoginTime) {
         SqlUtil.update("UPDATE user SET last_login_time = ? WHERE id = ?", lastLoginTime, id);
+    }
+
+    public int updatePasswordByEmail(String email, String password) {
+        return SqlUtil.update("UPDATE user SET password = ? WHERE email = ?", password, email);
     }
 }

@@ -6,12 +6,11 @@
 <script setup>
 import {getUserInfo, isAuthorized, logout} from "@/net/index.js";
 import router from "@/router/index.js";
-import {ref, computed, onMounted} from "vue";
+import {computed, onMounted, ref} from "vue";
 import XMultiFunBar from "@/aethex/components/XMultiFunBar.vue";
 import XBackgroundSpace from "@/aethex/components/XBackgroundSpace.vue";
 import BlogArticleList from "@/views/app/ArticleList.vue";
 import RankingList from "@/views/app/RankingList.vue";
-import {ElMessage} from "element-plus";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
@@ -28,17 +27,6 @@ const navButtons = computed(() => {
   if (isLoggedIn.value) {
     // 已登录状态
     return [
-      {
-        type: 'image',
-        imageUrl: userInfo.value?.avatarUrl || './res/ic_avatar_default.svg',
-        alt: '用户头像',
-        title: userInfo.value?.nickname || userInfo.value?.username || '用户菜单',
-        dropdownItems: [
-          {text: '个人资料', id: 'profile'},
-          {text: '账户设置', id: 'settings'},
-          {text: '退出登录', id: 'logout'}
-        ]
-      },
       /*{
         type: 'icon',
         svgUrl: './res/ic_message.svg',
@@ -49,7 +37,26 @@ const navButtons = computed(() => {
           {text: '已发送', id: 'sent'},
           {text: '草稿箱', id: 'drafts'}
         ]
-      }*/
+      },*/
+      {
+        type: 'text',
+        content: '发布',
+        title: '发布文章',
+        dropdownItems: [
+          {text: '写文章', id: 'write'}
+        ]
+      },
+      {
+        type: 'image',
+        imageUrl: userInfo.value?.avatarUrl || './res/ic_avatar_default.svg',
+        alt: '用户头像',
+        title: userInfo.value?.nickname || userInfo.value?.username || '用户菜单',
+        dropdownItems: [
+          {text: '个人资料', id: 'profile'},
+          {text: '账户设置', id: 'settings'},
+          {text: '退出登录', id: 'logout'}
+        ]
+      }
     ]
   } else {
     // 未登录状态
@@ -57,7 +64,7 @@ const navButtons = computed(() => {
       {
         type: 'text',
         content: '登录',
-        title: '点击登录',
+        title: '登录账号',
         dropdownItems: [
           {text: '用户登录', id: 'user-login'},
           {text: '注册账号', id: 'register'}
@@ -100,8 +107,8 @@ const handleButtonClick = (data) => {
 
   if (button.type === 'text' && button.content === '登录') {
     router.push('/auth/login')
-  } else if (button.type === 'image' && button.title === '消息中心') {
-    ElMessage.warning('当前功能还在加速施工中')
+  } else if (button.type === 'text' && button.title === '发布文章') {
+    router.push('/editor')
   }
 
   // TODO 添加其他处理逻辑
@@ -120,6 +127,9 @@ const handleDropdownItemClick = (data) => {
       break
     case 'logout':
       userLogout()
+      break
+    case 'write':
+      router.push('/editor')
       break
     default:
       console.log('点击了菜单项：', dropdownItems.id)
@@ -161,6 +171,7 @@ function userLogout() {
 
   <XBackgroundSpace>
     <div class="root">
+      <!--<div class="content">-->
       <div class="article-list">
         <BlogArticleList/>
       </div>
@@ -168,18 +179,29 @@ function userLogout() {
       <div class="ranking-list">
         <RankingList/>
       </div>
+      <!--</div>-->
     </div>
   </XBackgroundSpace>
 </template>
 
 <style scoped>
 .root {
-  width: 100vw;
-  padding: 105px 100px 80px 80px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 105px 80px 100px 80px;
   display: flex;
   justify-content: center;
   align-items: start;
 }
+
+/* .content {
+  margin-left: 80px;
+  margin-right: 80px;
+  margin-bottom: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+} */
 
 .article-list {
   width: 60%;

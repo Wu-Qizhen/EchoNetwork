@@ -450,7 +450,7 @@ nav {
   justify-content: flex-start;
   align-items: center;
   padding: 10px 20px;
-  background: rgba(30, 35, 47, 0.8);
+  background: rgba(30, 35, 47, 0.6);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -673,7 +673,7 @@ nav.scrolled {
   position: absolute;
   top: 100%;
   right: 0;
-  background: rgba(30, 35, 47, 0.8);
+  background: rgba(30, 35, 47, 0.6);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);

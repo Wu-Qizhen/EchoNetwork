@@ -1,8 +1,6 @@
 package com.wqz.echonetwork.controller;
 
-import com.wqz.echonetwork.entity.dto.UserLoginRequest;
-import com.wqz.echonetwork.entity.dto.UserLoginResponse;
-import com.wqz.echonetwork.entity.dto.UserRegisterRequest;
+import com.wqz.echonetwork.entity.dto.*;
 import com.wqz.echonetwork.entity.vo.Result;
 import com.wqz.echonetwork.service.impl.UserServiceImpl;
 import com.wqz.echonetwork.utils.JsonUtil;
@@ -14,14 +12,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.18
  */
-@WebServlet({"/api/users/login", "/api/users/register", "/api/users/logout", "/api/users/reset"})
+@WebServlet({
+        "/api/users/login",
+        "/api/users/register",
+        "/api/users/logout",
+        "/api/users/reset-verify",
+        "/api/users/reset-password",
+})
 public class UserController extends HttpServlet {
 
     private final UserServiceImpl userService = new UserServiceImpl();
@@ -41,8 +44,12 @@ public class UserController extends HttpServlet {
             case "/api/users/register":
                 handleRegister(request, response);
                 break;
-            /* default:
-                response.sendError(404); */
+            case "/api/users/reset-verify":
+                handleResetVerify(request, response);
+                break;
+            case "/api/users/reset-password":
+                handleResetPassword(request, response);
+                break;
         }
     }
 
@@ -55,8 +62,23 @@ public class UserController extends HttpServlet {
                 handleLogout(request, response);
                 break;
             case "/api/users/profile":
+                // TODO 获取用户信息
                 break;
         }
+    }
+
+    private void handleResetPassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ResetPasswordRequest resetPasswordRequest = JsonUtil.parseJson(request, ResetPasswordRequest.class);
+        String message = userService.resetPassword(resetPasswordRequest);
+        Result<Object> result = message == null ? Result.success() : Result.error(message);
+        WriterUtil.writeJson(response, result);
+    }
+
+    private void handleResetVerify(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ResetVerifyRequest resetVerifyRequest = JsonUtil.parseJson(request, ResetVerifyRequest.class);
+        String message = userService.resetVerify(resetVerifyRequest);
+        Result<Object> result = message == null ? Result.success() : Result.error(message);
+        WriterUtil.writeJson(response, result);
     }
 
     private void handleLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -125,8 +147,6 @@ public class UserController extends HttpServlet {
 
         Result<Object> result = message == null ? Result.success("注册成功") : Result.error(message);
 
-        PrintWriter out = response.getWriter();
-        out.write(result.asJsonString());
-        out.flush();
+        WriterUtil.writeJson(response, result);
     }
 }

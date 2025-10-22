@@ -1,4 +1,4 @@
-package com.wqz.echonetwork.entity
+package com.wqz.echonetwork.entity.po
 
 import java.time.LocalDateTime
 

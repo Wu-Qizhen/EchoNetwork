@@ -21,7 +21,7 @@
     </div>
 
     <div class="nav-subtitle protected-content">
-      <p :class="subtitleLang" style="color: var(--grey_highlight);">{{ subTitle }}</p>
+      <p :class="subtitleLang" style="color: var(--dark-content-m);">{{ subTitle }}</p>
     </div>
   </nav>
 </template>
@@ -127,7 +127,7 @@ nav {
   justify-content: flex-start;
   align-items: center;
   padding: 0 0 0 20px;
-  background: rgba(30, 35, 47, 0.8);
+  background: rgba(30, 35, 47, 0.6);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);

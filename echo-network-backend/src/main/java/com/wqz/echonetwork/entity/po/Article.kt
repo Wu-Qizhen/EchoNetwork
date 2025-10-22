@@ -1,4 +1,4 @@
-package com.wqz.echonetwork.entity
+package com.wqz.echonetwork.entity.po
 
 import com.wqz.echonetwork.entity.enums.ArticleStatus
 import java.time.LocalDateTime

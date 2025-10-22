@@ -235,7 +235,7 @@ nav {
   justify-content: flex-end;
   align-items: center;
   padding: 10px 20px;
-  background: rgba(30, 35, 47, 0.8);
+  background: rgba(30, 35, 47, 0.6);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);

@@ -184,7 +184,7 @@ export default {
   margin: 0;
   display: flex;
   flex-direction: column;
-  background: rgba(30, 35, 47, 0.8);
+  background: rgba(30, 35, 47, 0.6);
   padding: 20px 0;
   border-radius: 20px;
   box-shadow: 0 5px 50px black;

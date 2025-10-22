@@ -41,9 +41,7 @@ public class AuthController extends HttpServlet {
 
         Result<Object> result = message == null ? Result.success("验证码已发送，请查收") : Result.error(message);
 
-        PrintWriter out = response.getWriter();
-        out.write(result.asJsonString());
-        out.flush();
+        WriterUtil.writeJson(response, result);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.wqz.echonetwork.utils;
 
-import com.wqz.echonetwork.entity.User;
+import com.wqz.echonetwork.entity.po.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

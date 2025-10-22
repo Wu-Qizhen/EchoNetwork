@@ -1,10 +1,8 @@
 package com.wqz.echonetwork.service.impl;
 
-import com.wqz.echonetwork.entity.User;
-import com.wqz.echonetwork.entity.dto.UserLoginResponse;
-import com.wqz.echonetwork.entity.dto.UserProfileResponse;
-import com.wqz.echonetwork.entity.dto.UserRegisterRequest;
+import com.wqz.echonetwork.entity.dto.*;
 import com.wqz.echonetwork.entity.enums.UserStatus;
+import com.wqz.echonetwork.entity.po.User;
 import com.wqz.echonetwork.entity.vo.UserVO;
 import com.wqz.echonetwork.mapper.UserMapper;
 import com.wqz.echonetwork.service.UserService;
@@ -97,6 +95,41 @@ public class UserServiceImpl implements UserService {
             RedisUtil.del(key);
             return null;
         }
+    }
+
+    @Override
+    public String resetVerify(ResetVerifyRequest resetVerifyRequest) {
+        String email = resetVerifyRequest.getEmail();
+        String rightCaptcha = RedisUtil.get(ConstField.CAPTCHA_DATA + "reset:" + email);
+
+        if (rightCaptcha == null || rightCaptcha.isEmpty()) {
+            return "请先获取验证码";
+        }
+
+        if (!rightCaptcha.equals(resetVerifyRequest.getCaptcha())) {
+            return "验证码错误";
+        }
+
+        return null;
+    }
+
+    @Override
+    public String resetPassword(ResetPasswordRequest resetPasswordRequest) {
+        String email = resetPasswordRequest.getEmail();
+        String verify = this.resetVerify(new ResetVerifyRequest(email, resetPasswordRequest.getCaptcha()));
+        if (verify != null) {
+            return verify;
+        }
+        String password = PasswordEncoder.encode(resetPasswordRequest.getPassword());
+        int updated = userMapper.updatePasswordByEmail(email, password);
+
+        if (updated == 0) {
+            return "重置密码失败，请联系客服";
+        } else {
+            RedisUtil.del(ConstField.CAPTCHA_DATA + "reset:" + email);
+        }
+
+        return null;
     }
 
     @Override

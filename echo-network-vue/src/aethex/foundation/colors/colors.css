@@ -11,8 +11,17 @@ Created by Wu Qizhen on 2025.10.9
     --theme-color-fade: rgba(var(--theme-color-rgb), 0.4); /* 用于阴影等更暗场景 */
 
     /* 其它自定义颜色 */
-    --grey_normal: #78797a;
-    --grey_highlight: #a5a5a7;
+    --dark-bg-s: #1e1f22;
+    --dark-bg-m: #2d2d2d;
+    --dark-bg-l: #3a3a3a;
+
+    --dark-content-s: #78797a;
+    --dark-content-m: #a8abb2;
+    --dark-content-l: #fff;
+
+    --dark-line-s: #444;
+    --dark-line-m: #555; /* 统一标准色 */
+    --dark-line-l: #666;
 }
 
 h1, h2, h3, h4, h5, h6, p, li {
@@ -20,11 +29,11 @@ h1, h2, h3, h4, h5, h6, p, li {
 }
 
 .remark-normal {
-    color: var(--grey_normal);
+    color: var(--dark-content-s);
     text-decoration: none;
 }
 
 .remark-highlight {
-    color: var(--grey_highlight);
+    color: var(--dark-content-m);
     text-decoration: none;
 }

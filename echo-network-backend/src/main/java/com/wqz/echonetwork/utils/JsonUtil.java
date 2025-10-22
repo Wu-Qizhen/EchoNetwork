@@ -21,6 +21,8 @@ public class JsonUtil {
             while ((line = reader.readLine()) != null) {
                 jsonBuilder.append(line);
             }
+        } catch (IOException e) {
+            throw new IOException(e);
         }
 
         return JSON.parseObject(jsonBuilder.toString(), clazz);

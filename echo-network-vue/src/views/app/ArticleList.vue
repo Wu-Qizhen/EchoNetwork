@@ -336,7 +336,7 @@ onUnmounted(() => {
 
 /* 深色模式样式 */
 .dark-mode {
-  background-color: rgba(30, 35, 47, 0.8);
+  background-color: rgba(30, 35, 47, 0.6);
   color: #e0e0e0;
   min-height: 60vh;
 }
@@ -478,7 +478,7 @@ onUnmounted(() => {
 }
 
 .article-summary {
-  color: #b0b0b0;
+  color: #a8abb2;
   line-height: 1.6;
   margin: 0;
   font-size: 14px;
@@ -500,7 +500,7 @@ onUnmounted(() => {
 .tag-item {
   background-color: #3a3a3a;
   border-color: #555;
-  color: #b0b0b0;
+  color: #a8abb2;
 }
 
 .article-stats {
@@ -536,7 +536,7 @@ onUnmounted(() => {
 :deep(.el-tag) {
   --el-tag-bg-color: #3a3a3a;
   --el-tag-border-color: #555;
-  --el-tag-text-color: #b0b0b0;
+  --el-tag-text-color: #a8abb2;
 }
 
 :deep(.el-card) {

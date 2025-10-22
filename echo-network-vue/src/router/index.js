@@ -60,6 +60,20 @@ const router = createRouter({
             ]
         },
 
+        // 用户
+        {
+            path: '/user',
+            name: 'user',
+            component: () => import('@/views/UserDisplayView.vue')
+        },
+
+        // 编辑
+        {
+            path: '/editor',
+            name: 'editor',
+            component: () => import('@/views/EditView.vue'),
+        },
+
         // 协议
         {
             path: '/service-terms',
@@ -79,24 +93,26 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const authorized = isAuthorized();
 
-    // TODO 黑名单
     /*const whiteList = [
-        'auth',
         'auth',
         'welcome',
         'service-terms',
         'privacy-policy'
     ];*/
 
+    const blackList = [
+        'editor',
+    ];
+
     if (to.name && to.name.startsWith('auth') && authorized) {
         next('/');
         return;
     }
 
-    /*if (!authorized && !whiteList.includes(to.name)) {
+    if (!authorized && blackList.includes(to.name)) {
         next('/auth/login');
         return;
-    }*/
+    }
 
     next();
 });

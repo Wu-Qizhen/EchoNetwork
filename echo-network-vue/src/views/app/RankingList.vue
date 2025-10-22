@@ -152,7 +152,7 @@ onMounted(() => {
 }
 
 .ranking-card {
-  background-color: rgba(30, 35, 47, 0.8);
+  background-color: rgba(30, 35, 47, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   backdrop-filter: blur(10px);
@@ -190,7 +190,7 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   padding: 40px 20px;
-  color: #b0b0b0;
+  color: #a8abb2;
 }
 
 .loading-icon {
@@ -278,7 +278,7 @@ onMounted(() => {
 /* 其他排名的数字样式 */
 .ranking-item:not(.top-1):not(.top-2):not(.top-3) .rank-number {
   background-color: #444;
-  color: #b0b0b0;
+  color: #a8abb2;
 }
 
 .crown-icon {
@@ -369,7 +369,7 @@ onMounted(() => {
 :deep(.el-tag) {
   --el-tag-bg-color: #3a3a3a;
   --el-tag-border-color: #555;
-  --el-tag-text-color: #b0b0b0;
+  --el-tag-text-color: #a8abb2;
 }
 
 :deep(.el-tag.el-tag--danger) {
@@ -379,6 +379,6 @@ onMounted(() => {
 }
 
 :deep(.el-empty__description p) {
-  color: #b0b0b0;
+  color: #a8abb2;
 }
 </style>

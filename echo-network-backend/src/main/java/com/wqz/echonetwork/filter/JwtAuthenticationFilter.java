@@ -25,7 +25,8 @@ public class JwtAuthenticationFilter implements Filter {
             // "/privacy-policy",
             "/api/users/login",
             "/api/users/register",
-            "/api/users/reset",
+            "/api/users/reset-verify",
+            "/api/users/reset-password",
             "/api/users/logout",
             "/api/auth/ask-code"
     );

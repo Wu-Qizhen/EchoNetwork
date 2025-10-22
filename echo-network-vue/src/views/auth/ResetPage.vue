@@ -111,9 +111,10 @@ const isEmailValid = computed(() => {
 function confirmReset() {
   formRef.value.validate((valid) => {
         if (valid) {
-          post('/api/auth/reset-confirm', {
+          post('/api/users/reset-verify',
+              {
                 email: form.email,
-                code: form.code
+                captcha: form.code
               },
               () => active.value++)
         }
@@ -124,8 +125,12 @@ function confirmReset() {
 function doReset() {
   formRef.value.validate((valid) => {
     if (valid) {
-      post('/api/auth/reset-password',
-          {...form},
+      post('/api/users/reset-password',
+          {
+            email: form.email,
+            captcha: form.code,
+            password: form.password
+          },
           () => {
             ElMessage.success('密码重置成功，请重新登录')
             router.push('/auth')

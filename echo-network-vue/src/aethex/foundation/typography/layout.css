@@ -11,7 +11,7 @@ Created by Wu Qizhen on 2025.10.9
 
 body {
     margin: 0;
-    width: 100vw;
+    width: 100%; /* 修复内容不居中问题 */
     height: 100vh;
     background: black;
     overflow-x: hidden;

@@ -1,6 +1,6 @@
 package com.wqz.echonetwork.service.impl;
 
-import com.wqz.echonetwork.entity.User;
+import com.wqz.echonetwork.entity.po.User;
 import com.wqz.echonetwork.mapper.UserMapper;
 import com.wqz.echonetwork.service.AuthService;
 import com.wqz.echonetwork.utils.CaptchaUtil;

@@ -1,4 +1,4 @@
-package com.wqz.echonetwork.entity
+package com.wqz.echonetwork.entity.po
 
 import java.time.LocalDateTime
 
@@ -7,11 +7,11 @@ import java.time.LocalDateTime
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.11
  */
-data class ArticleTag(
-    var id: Long? = null,
-    var articleId: Long? = null,
-    var tagId: Long? = null,
-    var createTime: LocalDateTime? = null
+data class ArticleStar(
+    var id: Long? = null, // 收藏 ID
+    var userId: Long? = null, // 收藏用户 ID
+    var articleId: Long? = null, // 收藏文章 ID
+    var createTime: LocalDateTime? = null // 创建时间
 ) {
 
     init {
