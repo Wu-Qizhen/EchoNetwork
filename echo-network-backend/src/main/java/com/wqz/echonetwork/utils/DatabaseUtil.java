@@ -101,6 +101,48 @@ public class DatabaseUtil { // TODO 资源释放问题（使用 Kotlin 解决）
         }
     }
 
+    public Long insert(String sql, Object... params) throws SQLException {
+        Connection conn = getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            setParameters(ps, params);
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("插入失败，没有行被影响");
+            }
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getLong(1);
+                } else {
+                    throw new SQLException("插入失败，无法获取自增ID");
+                }
+            }
+        }
+    }
+
+    public List<Long> insertBatch(String sql, List<Object[]> paramList) throws SQLException {
+        Connection conn = getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            List<Long> generatedIds = new ArrayList<>();
+
+            for (Object[] params : paramList) {
+                setParameters(ps, params);
+                ps.addBatch();
+            }
+
+            int[] affectedRows = ps.executeBatch();
+
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                while (generatedKeys.next()) {
+                    generatedIds.add(generatedKeys.getLong(1));
+                }
+            }
+
+            return generatedIds;
+        }
+    }
+
     public int update(String sql, Object... params) throws SQLException {
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -120,7 +162,7 @@ public class DatabaseUtil { // TODO 资源释放问题（使用 Kotlin 解决）
         }
     }
 
-    public <T> List<T> query(String sql, Class<T> clazz, Object... params) throws SQLException {
+    public <T> List<T> queryList(String sql, Class<T> clazz, Object... params) throws SQLException {
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             setParameters(ps, params);
@@ -131,9 +173,22 @@ public class DatabaseUtil { // TODO 资源释放问题（使用 Kotlin 解决）
     }
 
     public <T> T queryObject(String sql, Class<T> clazz, Object... params) throws SQLException {
-        List<T> list = query(sql, clazz, params);
+        List<T> list = queryList(sql, clazz, params);
         return list.isEmpty() ? null : list.get(0);
     }
+
+    /* public <T> T queryScalar(String sql, Class<T> clazz, Object... params) throws SQLException {
+        Connection conn = getConnection();
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            setParameters(ps, params);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getObject(1, clazz);
+                }
+                return null;
+            }
+        }
+    } */
 
     public <T> T queryScalar(String sql, Class<T> clazz, Object... params) throws SQLException {
         Connection conn = getConnection();
@@ -141,7 +196,39 @@ public class DatabaseUtil { // TODO 资源释放问题（使用 Kotlin 解决）
             setParameters(ps, params);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getObject(1, clazz);
+                    // 直接获取结果，不进行对象映射
+                    Object value = rs.getObject(1);
+
+                    // 处理基本类型和包装类的转换
+                    if (value == null) {
+                        return null;
+                    }
+
+                    // 如果类型匹配，直接返回
+                    if (clazz.isInstance(value)) {
+                        return clazz.cast(value);
+                    }
+
+                    // 处理数字类型的转换
+                    if (value instanceof Number) {
+                        Number number = (Number) value;
+                        if (clazz == Integer.class || clazz == int.class) {
+                            return clazz.cast(number.intValue());
+                        } else if (clazz == Long.class || clazz == long.class) {
+                            return clazz.cast(number.longValue());
+                        } else if (clazz == Double.class || clazz == double.class) {
+                            return clazz.cast(number.doubleValue());
+                        } else if (clazz == Float.class || clazz == float.class) {
+                            return clazz.cast(number.floatValue());
+                        } else if (clazz == Short.class || clazz == short.class) {
+                            return clazz.cast(number.shortValue());
+                        } else if (clazz == Byte.class || clazz == byte.class) {
+                            return clazz.cast(number.byteValue());
+                        }
+                    }
+
+                    // 其他类型尝试转换
+                    return clazz.cast(value);
                 }
                 return null;
             }
@@ -174,6 +261,7 @@ public class DatabaseUtil { // TODO 资源释放问题（使用 Kotlin 解决）
                 resultList.add(obj);
             }
         } catch (Exception e) {
+            LogUtil.error("对象映射失败：" + e.getMessage());
             throw new RuntimeException("对象映射失败：", e);
         }
 

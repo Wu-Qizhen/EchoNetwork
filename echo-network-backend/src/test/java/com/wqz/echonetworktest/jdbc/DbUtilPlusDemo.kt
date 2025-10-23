@@ -5,7 +5,7 @@ import com.wqz.echonetworktest.utils.DatabaseUtilPlus
 import com.wqz.echonetworktest.utils.queryFirst
 import com.wqz.echonetworktest.utils.withTransaction
 
-class DbUtilPlusExample {
+class DbUtilPlusDemo {
 
     fun example() {
         val dbUtil = DatabaseUtilPlus.create()

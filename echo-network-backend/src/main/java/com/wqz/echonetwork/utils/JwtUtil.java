@@ -1,12 +1,16 @@
 package com.wqz.echonetwork.utils;
 
 import com.wqz.echonetwork.entity.po.User;
+import com.wqz.echonetwork.entity.vo.Result;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import javax.crypto.SecretKey;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
@@ -129,5 +133,16 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static Long getCurrentUserId(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
+
+        String token = authHeader.substring(7);
+        return JwtUtil.getUserIdFromToken(token);
     }
 }

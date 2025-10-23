@@ -17,5 +17,7 @@ public interface UserService {
 
     String resetPassword(ResetPasswordRequest resetPasswordRequest);
 
-    UserProfileResponse getProfile(Long userId);
+    UserProfileResponse getProfile(Long userId, Long currentUserId);
+
+    String updateProfile(UserProfileRequest userProfileRequest, Long userId);
 }

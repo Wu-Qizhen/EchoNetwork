@@ -4,6 +4,7 @@ import com.wqz.echonetwork.entity.po.User;
 import com.wqz.echonetwork.utils.SqlUtil;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -21,7 +22,7 @@ public class UserMapper {
         );
     }
 
-    public User findById(Integer id) {
+    public User findById(Long id) {
         return SqlUtil.queryObject(
                 "SELECT * FROM user WHERE id = ?",
                 User.class,
@@ -42,6 +43,15 @@ public class UserMapper {
                 "SELECT * FROM user WHERE email = ?",
                 User.class,
                 email
+        );
+    }
+
+    public List<User> search(String keyword) {
+        return SqlUtil.queryList(
+                "SELECT * FROM user WHERE username LIKE ? OR email LIKE ?",
+                User.class,
+                "%" + keyword + "%",
+                "%" + keyword + "%"
         );
     }
 
@@ -86,8 +96,12 @@ public class UserMapper {
         );
     }
 
-    public int delete(Integer id) {
+    public int delete(Long id) {
         return SqlUtil.update("DELETE FROM user WHERE id = ?", id);
+    }
+
+    public int updateProfile(Long id, String nickname, String bio, String avatarUrl) {
+        return SqlUtil.update("UPDATE user SET nickname = ?, bio = ?, avatar_url = ? WHERE id = ?", nickname, bio, avatarUrl, id);
     }
 
     public void updateLastLoginTime(Long id, LocalDateTime lastLoginTime) {
@@ -97,4 +111,10 @@ public class UserMapper {
     public int updatePasswordByEmail(String email, String password) {
         return SqlUtil.update("UPDATE user SET password = ? WHERE email = ?", password, email);
     }
+
+    /* public static void main(String[] args) {
+        UserMapper userMapper = new UserMapper();
+        List<User> search = userMapper.search("1");
+        System.out.println(search);
+    } */
 }

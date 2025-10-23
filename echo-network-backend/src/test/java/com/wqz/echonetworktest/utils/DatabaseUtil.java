@@ -1,5 +1,6 @@
 package com.wqz.echonetworktest.utils;
 
+import com.wqz.echonetwork.utils.LogUtil;
 import com.wqz.echonetwork.utils.expr.TransactionalOperation;
 import com.wqz.echonetwork.utils.YamlLoader;
 
@@ -175,6 +176,7 @@ public class DatabaseUtil {
                 resultList.add(obj);
             }
         } catch (Exception e) {
+            LogUtil.error("对象映射失败：" + e.getMessage());
             throw new RuntimeException("对象映射失败：", e);
         }
 

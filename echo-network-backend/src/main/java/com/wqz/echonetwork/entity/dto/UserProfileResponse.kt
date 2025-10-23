@@ -1,5 +1,7 @@
 package com.wqz.echonetwork.entity.dto
 
+import java.time.LocalDateTime
+
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
@@ -9,12 +11,12 @@ data class UserProfileResponse(
     val id: Long,
     val username: String,
     val email: String,
-    val phone: String? = null,
+    // val phone: String? = null,
     val nickname: String,
     val bio: String? = null,
     val avatarUrl: String? = null,
-    val createTime: String,
-    val lastLoginTime: String,
+    val createTime: LocalDateTime,
+    val lastLoginTime: LocalDateTime,
     val status: Int,
     val role: Int,
     val followerCount: Int,

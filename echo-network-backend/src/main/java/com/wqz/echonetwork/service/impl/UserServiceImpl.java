@@ -4,6 +4,8 @@ import com.wqz.echonetwork.entity.dto.*;
 import com.wqz.echonetwork.entity.enums.UserStatus;
 import com.wqz.echonetwork.entity.po.User;
 import com.wqz.echonetwork.entity.vo.UserVO;
+import com.wqz.echonetwork.mapper.ArticleMapper;
+import com.wqz.echonetwork.mapper.FollowMapper;
 import com.wqz.echonetwork.mapper.UserMapper;
 import com.wqz.echonetwork.service.UserService;
 import com.wqz.echonetwork.utils.ConstField;
@@ -22,6 +24,10 @@ import java.util.Objects;
 public class UserServiceImpl implements UserService {
 
     UserMapper userMapper = new UserMapper();
+
+    FollowMapper followMapper = new FollowMapper();
+
+    ArticleMapper articleMapper = new ArticleMapper();
 
     @Override
     public UserLoginResponse login(String username, String password) {
@@ -133,7 +139,48 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserProfileResponse getProfile(Long userId) {
+    public UserProfileResponse getProfile(Long userId, Long currentUserId) {
+        // LogUtil.info("getProfile");
+        User user = userMapper.findById(userId);
+
+        if (user == null || user.getId() == null || user.getStatus() != UserStatus.NORMAL.getId()) {
+            return null;
+        }
+
+        int countFollowing = followMapper.countFollowing(userId);
+        // LogUtil.info(String.valueOf(countFollowing));
+        int countArticles = articleMapper.countArticlesByUserId(userId);
+        // LogUtil.info(String.valueOf(countArticles));
+        boolean existsed = followMapper.existsByUserIds(currentUserId, userId);
+        // LogUtil.info("existsed");
+
+        return new UserProfileResponse(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getNickname(),
+                user.getBio(),
+                user.getAvatarUrl(),
+                Objects.requireNonNull(user.getCreateTime()),
+                Objects.requireNonNull(user.getLastLoginTime()),
+                user.getStatus(),
+                user.getRole(),
+                user.getFollowerCount(),
+                countFollowing,
+                countArticles,
+                existsed
+        );
+    }
+
+    @Override
+    public String updateProfile(UserProfileRequest userProfileRequest, Long userId) {
+        User user = userMapper.findById(userId);
+
+        if (user == null || user.getId() == null) {
+            return "用户不存在";
+        }
+
+        userMapper.updateProfile(userId, userProfileRequest.getNickname(), userProfileRequest.getBio(), userProfileRequest.getAvatarUrl());
         return null;
     }
 }
