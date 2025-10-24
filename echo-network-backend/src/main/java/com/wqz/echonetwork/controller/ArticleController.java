@@ -1,13 +1,11 @@
 package com.wqz.echonetwork.controller;
 
 import com.wqz.echonetwork.entity.dto.ArticleUpdateRequest;
-import com.wqz.echonetwork.entity.po.Article;
+import com.wqz.echonetwork.entity.vo.ArticleVO;
 import com.wqz.echonetwork.entity.vo.Result;
 import com.wqz.echonetwork.service.ArticleService;
 import com.wqz.echonetwork.service.impl.ArticleServiceImpl;
-import com.wqz.echonetwork.utils.JsonUtil;
-import com.wqz.echonetwork.utils.JwtUtil;
-import com.wqz.echonetwork.utils.WriterUtil;
+import com.wqz.echonetwork.utils.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,13 +19,15 @@ import java.io.IOException;
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.18
  */
-@WebServlet("/api/articles/*")
+@WebServlet({
+        "/api/articles/*"
+})
 public class ArticleController extends HttpServlet {
 
     ArticleService articleService = new ArticleServiceImpl();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String path = request.getPathInfo();
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
@@ -41,7 +41,7 @@ public class ArticleController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
@@ -50,16 +50,25 @@ public class ArticleController extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
 
+        /* String path = request.getPathInfo();
+        if (path != null && path.matches("^/\\d+$")) {
+            handleUpdateArticle(request, response);
+        } else if (path != null && path.matches("^/delete/\\d+$")) {
+            handleDeleteArticle(request, response);
+        } else {
+            WriterUtil.paramsError(response);
+        } */
         handleUpdateArticle(request, response);
     }
 
     @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        LogUtil.info("HandleDeleteArticle");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
@@ -68,21 +77,25 @@ public class ArticleController extends HttpServlet {
     }
 
     private void handleGetArticleList(HttpServletRequest request, HttpServletResponse response) {
-        // TODO
-        /* int page = Integer.parseInt(request.getParameter("page") != null ? request.getParameter("page") : "1");
-        // ... 其他参数解析
-        // 调用服务层获取列表
-        ArticleListDTO list = articleService.getArticleList(page, 20, ...);
-        // 返回JSON响应
-        sendJsonResponse(response, 200, "成功", list); */
+
     }
 
-    private void handleGetArticleDetail(HttpServletRequest request, HttpServletResponse response) {
-        // TODO
-        /* String idStr = request.getPathInfo().substring(1); // 获取 /api/articles/456 中的 456
-        Long articleId = Long.parseLong(idStr);
-        ArticleDetailDTO detail = articleService.getArticleDetail(articleId);
-        sendJsonResponse(response, 200, "成功", detail); */
+    private void handleGetArticleDetail(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // String idStr = request.getPathInfo().substring(1);
+        // Long articleId = Long.parseLong(idStr);
+        Long articleId = PathUtil.getIdFromPath(request);
+        if (articleId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+        ArticleVO article = articleService.getArticle(articleId);
+        if (article == null) {
+            Result<Object> result = Result.error("文章不存在");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+        Result<ArticleVO> result = Result.success("文章获取成功", article);
+        WriterUtil.writeJson(response, result);
     }
 
     private void handleCreateArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -95,7 +108,7 @@ public class ArticleController extends HttpServlet {
 
         ArticleUpdateRequest articleUpdateRequest = JsonUtil.parseJson(request, ArticleUpdateRequest.class);
 
-        Article article = articleService.create(articleUpdateRequest, currentUserId);
+        ArticleVO article = articleService.create(articleUpdateRequest, currentUserId);
 
         if (article == null) {
             Result<Object> result = Result.error("文章创建失败");
@@ -103,24 +116,67 @@ public class ArticleController extends HttpServlet {
             return;
         }
 
-        Result<Article> result = Result.success("文章创建成功", article);
+        Result<ArticleVO> result = Result.success("文章创建成功", article);
         WriterUtil.writeJson(response, result);
     }
 
-    private void handleUpdateArticle(HttpServletRequest request, HttpServletResponse response) {
-        // TODO
-        /* String idStr = request.getPathInfo().substring(1);
-        Long articleId = Long.parseLong(idStr);
-        ArticleUpdateDTO dto = parseJsonRequest(request, ArticleUpdateDTO.class);
-        ArticleDTO updated = articleService.updateArticle(articleId, dto);
-        sendJsonResponse(response, 200, "文章更新成功", updated); */
+    private void handleUpdateArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long articleId = PathUtil.getIdFromPath(request);
+        // LogUtil.info("ArticleId: " + articleId);
+        if (articleId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+        if (currentUserId == null) {
+            Result<Object> result = Result.error("未提供有效的授权信息");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        // LogUtil.info("HandleUpdateArticle");
+        ArticleUpdateRequest articleUpdateRequest = JsonUtil.parseJson(request, ArticleUpdateRequest.class);
+        // LogUtil.info("ArticleUpdateRequest: " + articleUpdateRequest);
+        ArticleVO update = articleService.update(articleUpdateRequest, currentUserId, articleId);
+        // LogUtil.info("Update: " + update);
+
+        if (update == null) {
+            Result<Object> result = Result.error("文章更新失败");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        Result<ArticleVO> result = Result.success("文章更新成功", update);
+        WriterUtil.writeJson(response, result);
     }
 
-    private void handleDeleteArticle(HttpServletRequest request, HttpServletResponse response) {
-        // TODO
-        /* String idStr = request.getPathInfo().substring(1);
-        Long articleId = Long.parseLong(idStr);
-        articleService.deleteArticle(articleId);
-        sendJsonResponse(response, 200, "文章删除成功", null); */
+    private void handleDeleteArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long articleId = PathUtil.getIdFromPath(request);
+        // LogUtil.info("ArticleId: " + articleId);
+
+        if (articleId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+        if (currentUserId == null) {
+            Result<Object> result = Result.error("未提供有效的授权信息");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        String message = articleService.delete(articleId, currentUserId);
+
+        if (message != null) {
+            Result<Object> result = Result.error(message);
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        Result<Object> result = Result.success("文章删除成功");
+        WriterUtil.writeJson(response, result);
     }
 }

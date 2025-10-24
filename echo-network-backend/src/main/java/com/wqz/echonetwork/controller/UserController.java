@@ -2,6 +2,7 @@ package com.wqz.echonetwork.controller;
 
 import com.wqz.echonetwork.entity.dto.*;
 import com.wqz.echonetwork.entity.vo.Result;
+import com.wqz.echonetwork.service.UserService;
 import com.wqz.echonetwork.service.impl.UserServiceImpl;
 import com.wqz.echonetwork.utils.JsonUtil;
 import com.wqz.echonetwork.utils.JwtUtil;
@@ -29,7 +30,7 @@ import java.io.IOException;
 })
 public class UserController extends HttpServlet {
 
-    private final UserServiceImpl userService = new UserServiceImpl();
+    private final UserService userService = new UserServiceImpl();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

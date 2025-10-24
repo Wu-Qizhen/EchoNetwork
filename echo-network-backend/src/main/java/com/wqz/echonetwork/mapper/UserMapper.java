@@ -97,7 +97,10 @@ public class UserMapper {
     }
 
     public int delete(Long id) {
-        return SqlUtil.update("DELETE FROM user WHERE id = ?", id);
+        return SqlUtil.update(
+                "UPDATE user SET status = 2 WHERE id = ?",
+                id
+        );
     }
 
     public int updateProfile(Long id, String nickname, String bio, String avatarUrl) {

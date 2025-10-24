@@ -1,18 +1,21 @@
 package com.wqz.echonetwork.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wqz.echonetwork.utils.expr.TransactionalOperation;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.18
  */
-public class DatabaseUtil { // TODO 资源释放问题（使用 Kotlin 解决）
+public class DatabaseUtil { // TODO 资源释放（使用 Kotlin 解决）
 
     private String driver;
     private String url;
@@ -20,6 +23,7 @@ public class DatabaseUtil { // TODO 资源释放问题（使用 Kotlin 解决）
     private String password;
     private Connection connection;
     private boolean enableTransaction = false;
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     public DatabaseUtil() {
         loadDefaultConfig();
@@ -268,7 +272,7 @@ public class DatabaseUtil { // TODO 资源释放问题（使用 Kotlin 解决）
         return resultList;
     }
 
-    private <T> void setFieldValue(T obj, String fieldName, Object value) {
+    /* private <T> void setFieldValue(T obj, String fieldName, Object value) {
         try {
             Field field = obj.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
@@ -289,6 +293,90 @@ public class DatabaseUtil { // TODO 资源释放问题（使用 Kotlin 解决）
             }
         } catch (IllegalAccessException e) {
             // 忽略
+        }
+    } */
+
+    private <T> void setFieldValue(T obj, String fieldName, Object value) {
+        try {
+            Field field = obj.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+
+            // 如果字段值是字符串类型，且目标字段是 Collection 类型，尝试 JSON 反序列化
+            if (value instanceof String && Collection.class.isAssignableFrom(field.getType())) {
+                try {
+                    value = deserializeJsonToCollection((String) value, field);
+                } catch (JsonProcessingException e) {
+                    LogUtil.warn("JSON反序列化失败，字段：" + fieldName + "，值：" + value + "，错误：" + e.getMessage());
+                    // 如果反序列化失败，保持原值
+                }
+            }
+
+            field.set(obj, value);
+        } catch (NoSuchFieldException e1) {
+            // 忽略大小写和下划线
+            try {
+                Field[] fields = obj.getClass().getDeclaredFields();
+                for (Field field : fields) {
+                    if (field.getName().equalsIgnoreCase(fieldName.replace("_", ""))) {
+                        field.setAccessible(true);
+
+                        // 如果字段值是字符串类型，且目标字段是 Collection 类型，尝试 JSON 反序列化
+                        if (value instanceof String && Collection.class.isAssignableFrom(field.getType())) {
+                            try {
+                                value = deserializeJsonToCollection((String) value, field);
+                            } catch (JsonProcessingException e) {
+                                LogUtil.warn("JSON反序列化失败，字段：" + fieldName + "，值：" + value + "，错误：" + e.getMessage());
+                                // 如果反序列化失败，保持原值
+                            }
+                        }
+
+                        field.set(obj, value);
+                        break;
+                    }
+                }
+            } catch (IllegalAccessException e2) {
+                // 忽略
+            }
+        } catch (IllegalAccessException e) {
+            // 忽略
+        }
+    }
+
+    private Object deserializeJsonToCollection(String json, Field field) throws JsonProcessingException {
+        if (json == null || json.trim().isEmpty()) {
+            return createEmptyCollection(field.getType());
+        }
+
+        Type genericType = field.getGenericType();
+
+        if (genericType instanceof ParameterizedType) {
+            ParameterizedType paramType = (ParameterizedType) genericType;
+            Type[] typeArguments = paramType.getActualTypeArguments();
+
+            if (typeArguments.length > 0) {
+                Class<?> elementType = (Class<?>) typeArguments[0];
+
+                if (Set.class.isAssignableFrom(field.getType())) {
+                    return objectMapper.readValue(json,
+                            objectMapper.getTypeFactory().constructCollectionType(Set.class, elementType));
+                } else if (List.class.isAssignableFrom(field.getType())) {
+                    return objectMapper.readValue(json,
+                            objectMapper.getTypeFactory().constructCollectionType(List.class, elementType));
+                }
+            }
+        }
+
+        // 默认情况：没有泛型信息时，反序列化为 List<Object>
+        return objectMapper.readValue(json, List.class);
+    }
+
+    private Collection<?> createEmptyCollection(Class<?> collectionType) {
+        if (Set.class.isAssignableFrom(collectionType)) {
+            return new HashSet<>();
+        } else if (List.class.isAssignableFrom(collectionType)) {
+            return new ArrayList<>();
+        } else {
+            return new ArrayList<>();
         }
     }
 

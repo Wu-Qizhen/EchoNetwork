@@ -58,7 +58,6 @@ public class ArticleMapper {
                         "like_count = ?, " +
                         "star_count = ?, " +
                         "comment_count = ?, " +
-                        "author_id = ?, " +
                         "circle_id = ?, " +
                         "tag_ids = ? WHERE id = ?",
                 article.getTitle(),
@@ -70,14 +69,13 @@ public class ArticleMapper {
                 article.getLikeCount(),
                 article.getStarCount(),
                 article.getCommentCount(),
-                article.getAuthorId(),
                 article.getCircleId(),
                 JsonUtil.toJsonString(article.getTagIds()),
                 article.getId()
         );
     }
 
-    public Article findById(Integer id) {
+    public Article findById(Long id) {
         return SqlUtil.queryObject(
                 "SELECT * FROM article WHERE id = ?",
                 Article.class,
@@ -85,7 +83,15 @@ public class ArticleMapper {
         );
     }
 
-    public List<Article> findByAuthorId(Integer authorId) {
+    public Article findByIdPublished(Long id) {
+        return SqlUtil.queryObject(
+                "SELECT * FROM article WHERE id = ? AND status = 1",
+                Article.class,
+                id
+        );
+    }
+
+    public List<Article> findByAuthorId(Long authorId) {
         return SqlUtil.queryList(
                 "SELECT * FROM article WHERE author_id = ?",
                 Article.class,
@@ -93,17 +99,35 @@ public class ArticleMapper {
         );
     }
 
-    public List<Article> findByCircleId(Integer circleId) {
+    public List<Article> findByAuthorIdPublished(Long authorId) {
         return SqlUtil.queryList(
-                "SELECT * FROM article WHERE circle_id = ?",
+                "SELECT * FROM article WHERE author_id = ? AND status = 1",
+                Article.class,
+                authorId
+        );
+    }
+
+    public List<Article> findByAuthorIdPublishedWithPagination(Long authorId, int offset, int limit) {
+        return SqlUtil.queryList(
+                "SELECT * FROM article WHERE author_id = ? AND status = 1 LIMIT ? OFFSET ?",
+                Article.class,
+                authorId,
+                limit,
+                offset
+        );
+    }
+
+    public List<Article> findByCircleId(Long circleId) {
+        return SqlUtil.queryList(
+                "SELECT * FROM article WHERE circle_id = ? AND status = 1",
                 Article.class,
                 circleId
         );
     }
 
-    public List<Article> findByTagId(Integer tagId) {
+    public List<Article> findByTagId(Long tagId) {
         return SqlUtil.queryList(
-                "SELECT * FROM article WHERE tag_ids LIKE ?",
+                "SELECT * FROM article WHERE tag_ids LIKE ? AND status = 1",
                 Article.class,
                 "%" + tagId + "%"
         );
@@ -111,7 +135,7 @@ public class ArticleMapper {
 
     public List<Article> search(String keyword) {
         return SqlUtil.queryList(
-                "SELECT * FROM article WHERE title LIKE ? OR content LIKE ?",
+                "SELECT * FROM article WHERE (title LIKE ? OR content LIKE ?) AND status = 1",
                 Article.class,
                 "%" + keyword + "%",
                 "%" + keyword + "%"
@@ -120,7 +144,7 @@ public class ArticleMapper {
 
     public List<Article> searchWithPagination(String keyword, int offset, int limit) {
         return SqlUtil.queryList(
-                "SELECT * FROM article WHERE title LIKE ? OR content LIKE ? LIMIT ? OFFSET ?",
+                "SELECT * FROM article WHERE (title LIKE ? OR content LIKE ?) AND status = 1 LIMIT ? OFFSET ?",
                 Article.class,
                 "%" + keyword + "%",
                 "%" + keyword + "%",
@@ -131,13 +155,15 @@ public class ArticleMapper {
 
     public List<Article> findRecommend() {
         return SqlUtil.queryList(
-                "SELECT * FROM article ORDER BY RAND() LIMIT 10",
+                "SELECT * FROM article WHERE status = 1 ORDER BY RAND() LIMIT 5",
                 Article.class
         );
     }
 
-    public int delete(Integer id) {
-        return SqlUtil.update("DELETE FROM article WHERE id = ?", id);
+    public int delete(Long id) {
+        return SqlUtil.update(
+                "UPDATE article SET status = 2 WHERE id = ?"
+                , id);
     }
 
     public void updateUpdateTime(Long id, LocalDateTime lastLoginTime) {

@@ -11,7 +11,7 @@ import java.util.Properties;
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.19
  */
-public class MailSender { // TODO 使用 RabbitMQ 优化
+public class MailSender { // TODO RabbitMQ 优化
     private static final String SMTP_HOST;
     private static final String USERNAME;
     private static final String PASSWORD;

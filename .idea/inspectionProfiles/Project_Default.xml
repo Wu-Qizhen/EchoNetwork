@@ -2,7 +2,7 @@
   <profile version="1.0">
     <option name="myName" value="Project Default" />
     <inspection_tool class="CommentedOutCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
-      <option name="minLines" value="16" />
+      <option name="minLines" value="131" />
     </inspection_tool>
     <inspection_tool class="CssUnknownProperty" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myCustomPropertiesEnabled" value="true" />
@@ -14,6 +14,11 @@
           </list>
         </value>
       </option>
+    </inspection_tool>
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="63" name="Java" />
+      </Languages>
     </inspection_tool>
     <inspection_tool class="Eslint" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="HtmlUnknownTag" enabled="true" level="WARNING" enabled_by_default="true">

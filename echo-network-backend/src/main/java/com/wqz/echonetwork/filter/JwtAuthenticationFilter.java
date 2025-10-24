@@ -38,7 +38,14 @@ public class JwtAuthenticationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        String method = httpRequest.getMethod();
         String path = httpRequest.getRequestURI().substring(httpRequest.getContextPath().length());
+
+        // 允许 OPTIONS 预检请求通过
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if (isExcludedPath(path)) {
             chain.doFilter(request, response);

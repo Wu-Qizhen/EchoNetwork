@@ -1,6 +1,6 @@
 package com.wqz.echonetwork.entity.dto
 
-import java.time.LocalDateTime
+import com.wqz.echonetwork.entity.vo.UserVO
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -8,19 +8,6 @@ import java.time.LocalDateTime
  * Created by Wu Qizhen on 2025.10.20
  */
 data class UserProfileResponse(
-    val id: Long,
-    val username: String,
-    val email: String,
-    // val phone: String? = null,
-    val nickname: String,
-    val bio: String? = null,
-    val avatarUrl: String? = null,
-    val createTime: LocalDateTime,
-    val lastLoginTime: LocalDateTime,
-    val status: Int,
-    val role: Int,
-    val followerCount: Int,
-    val followingCount: Int,
-    val articleCount: Int,
+    val user: UserVO,
     val isFollowing: Boolean
 )

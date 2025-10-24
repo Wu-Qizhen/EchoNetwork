@@ -48,18 +48,9 @@ public class UserServiceImpl implements UserService {
         userMapper.updateLastLoginTime(user.getId(), user.getLastLoginTime());
 
         String token = JwtUtil.generateToken(user);
+        UserProfileResponse profile = this.getProfile(user.getId(), user.getId());
 
-        UserVO userVO = new UserVO(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getNickname(),
-                user.getBio(),
-                user.getAvatarUrl(),
-                user.getRole(),
-                user.getFollowerCount(),
-                Objects.requireNonNull(user.getLastLoginTime())
-        );
+        UserVO userVO = profile.getUser();
 
         return new UserLoginResponse(token, userVO, JwtUtil.getExpirationDateFromToken(token));
     }
@@ -155,19 +146,21 @@ public class UserServiceImpl implements UserService {
         // LogUtil.info("existsed");
 
         return new UserProfileResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getNickname(),
-                user.getBio(),
-                user.getAvatarUrl(),
-                Objects.requireNonNull(user.getCreateTime()),
-                Objects.requireNonNull(user.getLastLoginTime()),
-                user.getStatus(),
-                user.getRole(),
-                user.getFollowerCount(),
-                countFollowing,
-                countArticles,
+                new UserVO(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getEmail(),
+                        user.getNickname(),
+                        user.getBio(),
+                        user.getAvatarUrl(),
+                        user.getFollowerCount(),
+                        countFollowing,
+                        countArticles,
+                        Objects.requireNonNull(user.getCreateTime()),
+                        Objects.requireNonNull(user.getLastLoginTime()),
+                        user.getRole(),
+                        user.getStatus()
+                ),
                 existsed
         );
     }

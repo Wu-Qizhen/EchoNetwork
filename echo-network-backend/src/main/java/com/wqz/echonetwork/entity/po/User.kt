@@ -13,10 +13,10 @@ data class User(
     var id: Long? = null, // 用户 ID
     var username: String = "", // 用户名
     var email: String = "", // 邮箱
-    var phone: String? = null, // 手机号 TODO 以后开发
+    var phone: String? = null, // 手机号 TODO
     var password: String = "", // 密码
     var nickname: String = "", // 昵称
-    var bio: String? = null, // 个人简介或签名
+    var bio: String = "", // 个人简介或签名
     var avatarUrl: String? = null, // 头像
     var createTime: LocalDateTime? = null, // 创建时间
     var lastLoginTime: LocalDateTime? = null, // 最后登录时间

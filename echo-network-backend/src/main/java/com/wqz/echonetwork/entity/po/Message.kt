@@ -7,7 +7,7 @@ import java.time.LocalDateTime
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.11
  */
-data class Message( // TODO 以后开发
+data class Message( // 私信 TODO
     var id: Long? = null, // 私信 ID
     var senderId: Long? = null, // 发送者 ID
     var receiverId: Long? = null, // 接收者 ID

@@ -2,9 +2,9 @@ package com.wqz.echonetwork.utils;
 
 import org.yaml.snakeyaml.Yaml;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
@@ -33,13 +33,17 @@ public class YamlLoader {
 
             // 2. 如果类路径找不到，尝试作为文件系统路径加载
             if (inputStream == null) {
-                if (Files.exists(Paths.get(configPath))) {
-                    inputStream = new FileInputStream(configPath);
+                Path confPath = Paths.get(configPath);
+                if (Files.exists(confPath)) {
+                    // inputStream = new FileInputStream(configPath);
+                    inputStream = Files.newInputStream(confPath);
                 } else {
                     // 3. 尝试在当前工作目录下查找
                     String workingDirPath = System.getProperty("user.dir") + "/" + configPath;
-                    if (Files.exists(Paths.get(workingDirPath))) {
-                        inputStream = new FileInputStream(workingDirPath);
+                    Path workPath = Paths.get(workingDirPath);
+                    if (Files.exists(workPath)) {
+                        // inputStream = new FileInputStream(workingDirPath);
+                        inputStream = Files.newInputStream(workPath);
                     } else {
                         throw new RuntimeException("配置文件未找到：" + configPath);
                     }
@@ -55,9 +59,6 @@ public class YamlLoader {
         }
     }
 
-    /**
-     * 获取字符串配置值
-     */
     /**
      * 获取字符串配置值
      */

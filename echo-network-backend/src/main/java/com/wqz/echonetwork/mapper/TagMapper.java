@@ -3,7 +3,9 @@ package com.wqz.echonetwork.mapper;
 import com.wqz.echonetwork.entity.po.Tag;
 import com.wqz.echonetwork.utils.SqlUtil;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -47,6 +49,22 @@ public class TagMapper {
                 "INSERT INTO tag (name) VALUES (?)",
                 tag.getName()
         );
+    }
+
+    public Set<Long> insertBatch(List<String> tags) {
+        Set<Long> tagIds = new HashSet<>();
+        if (tags != null && !tags.isEmpty()) {
+            for (String tag : tags) {
+                Tag byName = this.findByName(tag);
+                if (byName != null && byName.getId() != null) {
+                    tagIds.add(byName.getId());
+                } else {
+                    long insert = this.insert(new Tag(null, tag));
+                    tagIds.add(insert);
+                }
+            }
+        }
+        return tagIds;
     }
 
     public int update(Tag tag) {

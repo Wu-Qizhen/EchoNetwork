@@ -2,6 +2,7 @@ package com.wqz.echonetwork.service;
 
 import com.wqz.echonetwork.entity.dto.ArticleUpdateRequest;
 import com.wqz.echonetwork.entity.po.Article;
+import com.wqz.echonetwork.entity.vo.ArticleVO;
 
 import java.util.List;
 
@@ -12,13 +13,13 @@ import java.util.List;
  */
 public interface ArticleService {
 
-    Article create(ArticleUpdateRequest articleUpdateRequest, Long authorId);
+    ArticleVO create(ArticleUpdateRequest articleUpdateRequest, Long authorId);
 
-    Article update(ArticleUpdateRequest articleUpdateRequest);
+    ArticleVO update(ArticleUpdateRequest articleUpdateRequest, Long authorId, Long articleId);
 
-    String delete(Long articleId);
+    String delete(Long articleId, Long authorId);
 
-    Article getArticle(Long articleId);
+    ArticleVO getArticle(Long articleId);
 
     List<Article> getRecommend(Integer limit);
 
