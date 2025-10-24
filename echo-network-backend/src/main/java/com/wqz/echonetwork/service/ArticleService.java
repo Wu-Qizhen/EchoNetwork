@@ -1,8 +1,10 @@
 package com.wqz.echonetwork.service;
 
+import com.wqz.echonetwork.entity.dto.ArticleInteractionResponse;
+import com.wqz.echonetwork.entity.dto.ArticleQueryRequest;
 import com.wqz.echonetwork.entity.dto.ArticleUpdateRequest;
-import com.wqz.echonetwork.entity.po.Article;
 import com.wqz.echonetwork.entity.vo.ArticleVO;
+import com.wqz.echonetwork.entity.vo.PageResult;
 
 import java.util.List;
 
@@ -21,11 +23,27 @@ public interface ArticleService {
 
     ArticleVO getArticle(Long articleId);
 
-    List<Article> getRecommend(Integer limit);
+    List<ArticleVO> getRecommend(Integer limit);
 
-    List<Article> getArticlesByUserId(Long userId);
+    PageResult<ArticleVO> getArticlesByConditions(ArticleQueryRequest queryRequest);
 
-    List<Article> getArticlesByCircleId(Long circleId);
+    List<ArticleVO> getArticlesByUserId(Long userId);
 
-    List<Article> getArticlesByTagId(Long tagId);
+    List<ArticleVO> getArticlesByCircleId(Long circleId);
+
+    List<ArticleVO> getArticlesByTagId(Long tagId);
+
+    ArticleInteractionResponse likeArticle(Long articleId, Long userId);
+
+    ArticleInteractionResponse unlikeArticle(Long articleId, Long userId);
+
+    ArticleInteractionResponse starArticle(Long articleId, Long userId);
+
+    ArticleInteractionResponse unstarArticle(Long articleId, Long userId);
+
+    ArticleInteractionResponse getArticleInteractionStatus(Long articleId, Long userId);
+
+    List<ArticleVO> getLikedArticles(Long userId);
+
+    List<ArticleVO> getStarredArticles(Long userId);
 }

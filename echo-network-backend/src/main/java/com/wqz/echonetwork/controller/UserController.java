@@ -173,7 +173,7 @@ public class UserController extends HttpServlet {
 
     private void handleLogout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authHeader = request.getHeader("Authorization");
-        // LogUtil.info(“Header：” + authHeader);
+        // LogUtil.info(“Header: ” + authHeader);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             // LogUtil.error("未提供有效的 Token");

@@ -1,18 +1,23 @@
 package com.wqz.echonetwork.controller;
 
+import com.wqz.echonetwork.entity.dto.ArticleInteractionResponse;
+import com.wqz.echonetwork.entity.dto.ArticleQueryRequest;
 import com.wqz.echonetwork.entity.dto.ArticleUpdateRequest;
 import com.wqz.echonetwork.entity.vo.ArticleVO;
+import com.wqz.echonetwork.entity.vo.PageResult;
 import com.wqz.echonetwork.entity.vo.Result;
 import com.wqz.echonetwork.service.ArticleService;
 import com.wqz.echonetwork.service.impl.ArticleServiceImpl;
 import com.wqz.echonetwork.utils.*;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -26,7 +31,7 @@ public class ArticleController extends HttpServlet {
 
     ArticleService articleService = new ArticleServiceImpl();
 
-    @Override
+    /* @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String path = request.getPathInfo();
         request.setCharacterEncoding("UTF-8");
@@ -38,15 +43,44 @@ public class ArticleController extends HttpServlet {
         } else {
             handleGetArticleDetail(request, response);
         }
-    }
+    } */
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String path = request.getPathInfo();
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
 
-        handleCreateArticle(request, response);
+        if (path == null || path.equals("/")) {
+            handleGetArticleList(request, response);
+        } else if (path.matches("/\\d+")) {
+            handleGetArticleDetail(request, response);
+        } else if (path.equals("/liked")) {
+            handleGetLikedArticles(request, response);
+        } else if (path.equals("/starred")) {
+            handleGetStarredArticles(request, response);
+        } else {
+            WriterUtil.paramsError(response);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String path = request.getPathInfo();
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+
+        if (path == null || path.equals("/")) {
+            handleCreateArticle(request, response);
+        } else if (path.matches("/\\d+/like")) {
+            handleLikeArticle(request, response);
+        } else if (path.matches("/\\d+/star")) {
+            handleStarArticle(request, response);
+        } else {
+            WriterUtil.paramsError(response);
+        }
     }
 
     @Override
@@ -66,18 +100,114 @@ public class ArticleController extends HttpServlet {
         handleUpdateArticle(request, response);
     }
 
-    @Override
+    /* @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        LogUtil.info("HandleDeleteArticle");
+        // LogUtil.info("HandleDeleteArticle");
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
 
         handleDeleteArticle(request, response);
+    } */
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String path = request.getPathInfo();
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+
+        if (path.matches("/\\d+/like")) {
+            handleUnlikeArticle(request, response);
+        } else if (path.matches("/\\d+/star")) {
+            handleUnstarArticle(request, response);
+        } else if (path.matches("/\\d+")) {
+            handleDeleteArticle(request, response);
+        } else {
+            WriterUtil.paramsError(response);
+        }
     }
 
-    private void handleGetArticleList(HttpServletRequest request, HttpServletResponse response) {
+    private void handleGetArticleList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            // LogUtil.info("HandleGetArticleList");
 
+            // 解析查询参数
+            ArticleQueryRequest queryRequest = parseQueryParameters(request);
+            // LogUtil.info("QueryParameters: " + queryRequest);
+
+            // 判断是否是推荐请求
+            String recommend = request.getParameter("recommend");
+            // LogUtil.info("Recommend: " + recommend);
+            if ("true".equalsIgnoreCase(recommend)) {
+                handleGetRecommendArticles(request, response);
+                return;
+            }
+
+            // 多条件查询
+            PageResult<ArticleVO> pageResult = articleService.getArticlesByConditions(queryRequest);
+            // LogUtil.info("ArticleList: " + pageResult);
+
+            // 构建响应
+            Map<String, Object> data = new HashMap<>();
+            data.put("list", pageResult.getList());
+            data.put("total", pageResult.getTotal());
+            data.put("page", pageResult.getPage());
+            data.put("size", pageResult.getSize());
+            data.put("totalPages", pageResult.getTotalPages());
+
+            Result<Map<String, Object>> result = Result.success("成功", data);
+            WriterUtil.writeJson(response, result);
+
+        } catch (Exception e) {
+            LogUtil.error("获取文章列表失败：" + e.getMessage());
+            Result<Object> result = Result.error("获取文章列表失败");
+            WriterUtil.writeJson(response, result);
+        }
+    }
+
+    private void handleGetRecommendArticles(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String limitStr = request.getParameter("limit");
+        int limit = limitStr != null ? Integer.parseInt(limitStr) : 10;
+
+        // 尝试根据用户 ID 进行个性化推荐
+        // Long currentUserId = JwtUtil.getCurrentUserId(request);
+        List<ArticleVO> recommendArticles;
+
+        /* if (currentUserId != null) {
+            // TODO 个性化推荐（实现 findRecommendByUserInterest）
+            recommendArticles = articleService.getRecommendByUserInterest(currentUserId, limit);
+        } else { */
+        // 通用推荐
+        recommendArticles = articleService.getRecommend(limit);
+        /* } */
+
+        Result<List<ArticleVO>> result = Result.success("推荐文章获取成功", recommendArticles);
+        WriterUtil.writeJson(response, result);
+    }
+
+    private ArticleQueryRequest parseQueryParameters(HttpServletRequest request) {
+        ArticleQueryRequest queryRequest = new ArticleQueryRequest();
+
+        String pageStr = request.getParameter("page");
+        String sizeStr = request.getParameter("size");
+        String authorIdStr = request.getParameter("authorId");
+        String circleIdStr = request.getParameter("circleId");
+        String tagIdStr = request.getParameter("tagId");
+        String statusStr = request.getParameter("status");
+
+        if (pageStr != null) queryRequest.setPage(Integer.parseInt(pageStr));
+        if (sizeStr != null) queryRequest.setSize(Integer.parseInt(sizeStr));
+        if (authorIdStr != null) queryRequest.setAuthorId(Long.parseLong(authorIdStr));
+        if (circleIdStr != null) queryRequest.setCircleId(Long.parseLong(circleIdStr));
+        if (tagIdStr != null) queryRequest.setTagId(Long.parseLong(tagIdStr));
+        if (statusStr != null) queryRequest.setStatus(Integer.parseInt(statusStr));
+
+        queryRequest.setKeyword(request.getParameter("keyword"));
+        queryRequest.setSortBy(request.getParameter("sortBy"));
+        queryRequest.setSortOrder(request.getParameter("sortOrder"));
+
+        return queryRequest;
     }
 
     private void handleGetArticleDetail(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -177,6 +307,133 @@ public class ArticleController extends HttpServlet {
         }
 
         Result<Object> result = Result.success("文章删除成功");
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 点赞文章
+     */
+    private void handleLikeArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // LogUtil.info("HandleLikeArticle");
+        Long articleId = PathUtil.getIdFromPath(request);
+        // LogUtil.info("ArticleId: " + articleId);
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+        // LogUtil.info("CurrentUserId: " + currentUserId);
+
+        if (articleId == null || currentUserId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        ArticleInteractionResponse interaction = articleService.likeArticle(articleId, currentUserId);
+        if (interaction == null) {
+            Result<Object> result = Result.error("点赞失败");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        Result<ArticleInteractionResponse> result = Result.success("点赞成功", interaction);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 取消点赞
+     */
+    private void handleUnlikeArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long articleId = PathUtil.getIdFromPath(request);
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+        if (articleId == null || currentUserId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        ArticleInteractionResponse interaction = articleService.unlikeArticle(articleId, currentUserId);
+        if (interaction == null) {
+            Result<Object> result = Result.error("取消点赞失败");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        Result<ArticleInteractionResponse> result = Result.success("取消点赞成功", interaction);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 收藏文章
+     */
+    private void handleStarArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long articleId = PathUtil.getIdFromPath(request);
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+        if (articleId == null || currentUserId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        ArticleInteractionResponse interaction = articleService.starArticle(articleId, currentUserId);
+        if (interaction == null) {
+            Result<Object> result = Result.error("收藏失败");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        Result<ArticleInteractionResponse> result = Result.success("收藏成功", interaction);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 取消收藏
+     */
+    private void handleUnstarArticle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long articleId = PathUtil.getIdFromPath(request);
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+        if (articleId == null || currentUserId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        ArticleInteractionResponse interaction = articleService.unstarArticle(articleId, currentUserId);
+        if (interaction == null) {
+            Result<Object> result = Result.error("取消收藏失败");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        Result<ArticleInteractionResponse> result = Result.success("取消收藏成功", interaction);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 获取用户点赞的文章列表
+     */
+    private void handleGetLikedArticles(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+        if (currentUserId == null) {
+            Result<Object> result = Result.error("未提供有效的授权信息");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        List<ArticleVO> likedArticles = articleService.getLikedArticles(currentUserId);
+        Result<List<ArticleVO>> result = Result.success("获取点赞文章成功", likedArticles);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 获取用户收藏的文章列表
+     */
+    private void handleGetStarredArticles(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+        if (currentUserId == null) {
+            Result<Object> result = Result.error("未提供有效的授权信息");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        List<ArticleVO> starredArticles = articleService.getStarredArticles(currentUserId);
+        Result<List<ArticleVO>> result = Result.success("获取收藏文章成功", starredArticles);
         WriterUtil.writeJson(response, result);
     }
 }

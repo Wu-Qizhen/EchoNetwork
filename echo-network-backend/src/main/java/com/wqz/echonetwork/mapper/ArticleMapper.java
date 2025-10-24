@@ -7,7 +7,7 @@ import com.wqz.echonetwork.utils.JsonUtil;
 import com.wqz.echonetwork.utils.SqlUtil;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -127,10 +127,15 @@ public class ArticleMapper {
 
     public List<Article> findByTagId(Long tagId) {
         return SqlUtil.queryList(
+                "SELECT * FROM article WHERE JSON_CONTAINS(tag_ids, ?) AND status = 1",
+                Article.class,
+                tagId.toString()  // 要转为字符串
+        );
+        /* return SqlUtil.queryList(
                 "SELECT * FROM article WHERE tag_ids LIKE ? AND status = 1",
                 Article.class,
                 "%" + tagId + "%"
-        );
+        ); */
     }
 
     public List<Article> search(String keyword) {
@@ -153,13 +158,6 @@ public class ArticleMapper {
         );
     }
 
-    public List<Article> findRecommend() {
-        return SqlUtil.queryList(
-                "SELECT * FROM article WHERE status = 1 ORDER BY RAND() LIMIT 5",
-                Article.class
-        );
-    }
-
     public int delete(Long id) {
         return SqlUtil.update(
                 "UPDATE article SET status = 2 WHERE id = ?"
@@ -178,7 +176,213 @@ public class ArticleMapper {
         );
     }
 
-    // ArticleTag 关联表操作
+    /**
+     * 根据条件查询文章
+     */
+    public List<Article> findByConditions(Map<String, Object> conditions, int offset, int limit) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT DISTINCT a.* FROM article a " +
+                        "LEFT JOIN article_tag at ON a.id = at.article_id " +
+                        "WHERE 1=1"
+        );
+
+        List<Object> params = new ArrayList<>();
+
+        // 构建 WHERE 条件
+        buildWhereClause(conditions, sql, params);
+
+        // 构建排序
+        buildOrderClause(conditions, sql);
+
+        // 添加分页
+        sql.append(" LIMIT ? OFFSET ?");
+        params.add(limit);
+        params.add(offset);
+
+        return SqlUtil.queryList(sql.toString(), Article.class, params.toArray());
+    }
+
+    /**
+     * 统计符合条件的文章数量
+     */
+    public int countByConditions(Map<String, Object> conditions) {
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(DISTINCT a.id) FROM article a " +
+                        "LEFT JOIN article_tag at ON a.id = at.article_id " +
+                        "WHERE 1=1"
+        );
+
+        List<Object> params = new ArrayList<>();
+        buildWhereClause(conditions, sql, params);
+
+        Integer count = SqlUtil.queryScalar(sql.toString(), Integer.class, params.toArray());
+        return count != null ? count : 0;
+    }
+
+    /* public int countByConditions(Map<String, Object> conditions) {
+        StringBuilder sql = new StringBuilder("SELECT COUNT(*) FROM article a WHERE 1=1");
+
+        List<Object> params = new ArrayList<>();
+
+        // 使用相同的条件构建逻辑
+        buildWhereClause(conditions, sql, params);
+
+        Integer count = SqlUtil.queryScalar(sql.toString(), Integer.class, params.toArray());
+        return count != null ? count : 0;
+    } */
+
+    /**
+     * 构建 WHERE 子句
+     */
+    private void buildWhereClause(Map<String, Object> conditions, StringBuilder sql, List<Object> params) {
+        if (conditions.containsKey("authorId")) {
+            sql.append(" AND a.author_id = ?");
+            params.add(conditions.get("authorId"));
+        }
+
+        if (conditions.containsKey("circleId")) {
+            sql.append(" AND a.circle_id = ?");
+            params.add(conditions.get("circleId"));
+        }
+
+        if (conditions.containsKey("tagId")) {
+            // sql.append(" AND at.tag_id = ?");
+            // params.add(conditions.get("tagId"));
+            // 使用 JSON_CONTAINS 或 JSON_SEARCH 来查询 JSON 数组
+            sql.append(" AND JSON_CONTAINS(a.tag_ids, ?)");
+            params.add(conditions.get("tagId").toString()); // tagId 需要转为字符串
+        }
+
+        if (conditions.containsKey("status")) {
+            sql.append(" AND a.status = ?");
+            params.add(conditions.get("status"));
+        }
+
+        if (conditions.containsKey("keyword")) {
+            sql.append(" AND (a.title LIKE ? OR a.content LIKE ?)");
+            params.add(conditions.get("keyword"));
+            params.add(conditions.get("keyword"));
+        }
+    }
+
+    /**
+     * 构建排序子句
+     */
+    private void buildOrderClause(Map<String, Object> conditions, StringBuilder sql) {
+        String sortBy = (String) conditions.getOrDefault("sortBy", "publish_time");
+        String sortOrder = (String) conditions.getOrDefault("sortOrder", "DESC");
+
+        // 驼峰转下划线
+        sortBy = camelToUnderscore(sortBy);
+
+        // 防止 SQL 注入
+        Set<String> allowedSortFields = Set.of("create_time", "publish_time", "update_time", "view_count", "like_count", "star_count", "comment_count");
+        if (!allowedSortFields.contains(sortBy)) {
+            sortBy = "publish_time";
+        }
+
+        sql.append(" ORDER BY a.").append(sortBy).append(" ").append(sortOrder);
+    }
+
+    /**
+     * 驼峰命名转下划线命名
+     */
+    private String camelToUnderscore(String camelCase) {
+        if (camelCase == null || camelCase.isEmpty()) {
+            return camelCase;
+        }
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < camelCase.length(); i++) {
+            char c = camelCase.charAt(i);
+            if (Character.isUpperCase(c)) {
+                if (i > 0) {
+                    result.append("_");
+                }
+                result.append(Character.toLowerCase(c));
+            } else {
+                result.append(c);
+            }
+        }
+        return result.toString();
+    }
+
+    /* private void buildOrderClause(Map<String, Object> conditions, StringBuilder sql) {
+        String sortBy = (String) conditions.getOrDefault("sortBy", "publish_time");
+        String sortOrder = (String) conditions.getOrDefault("sortOrder", "DESC");
+
+        // 防止 SQL 注入
+        Set<String> allowedSortFields = Set.of("create_time", "publish_time", "update_time", "view_count", "like_count", "star_count", "comment_count");
+        if (!allowedSortFields.contains(sortBy)) {
+            sortBy = "publish_time";
+        }
+
+        sql.append(" ORDER BY a.").append(sortBy).append(" ").append(sortOrder);
+    } */
+
+    /* public List<Article> findRecommend() {
+        return SqlUtil.queryList(
+                "SELECT * FROM article WHERE status = 1 ORDER BY RAND() LIMIT 5",
+                Article.class
+        );
+    } */
+
+    /**
+     * 改进的推荐算法：基于热度 + 时效性
+     */
+    public List<Article> findRecommend(int limit) {
+        return SqlUtil.queryList(
+                "SELECT a.* FROM article a " +
+                        "WHERE a.status = 1 " +
+                        "AND a.publish_time >= DATE_SUB(NOW(), INTERVAL 30 DAY) " + // 最近 30 天的文章
+                        "ORDER BY " +
+                        "(a.view_count * 0.3 + a.like_count * 0.4 + a.star_count * 0.2 + a.comment_count * 0.1) * " + // 热度权重
+                        "EXP(-0.1 * DATEDIFF(NOW(), a.publish_time)) DESC " + // 时间衰减
+                        "LIMIT ?",
+                Article.class,
+                limit
+        );
+    }
+
+    /**
+     * 根据用户兴趣推荐（需要用户行为数据）
+     */
+    public List<Article> findRecommendByUserInterest(Long userId, int limit) {
+        return SqlUtil.queryList(
+                "SELECT a.* FROM article a " +
+                        "WHERE a.status = 1 AND a.author_id != ? " +
+                        "AND EXISTS (" +
+                        "   SELECT 1 FROM article user_articles " +
+                        "   WHERE user_articles.author_id = ? " +
+                        "   AND JSON_OVERLAPS(user_articles.tag_ids, a.tag_ids)" +
+                        ") " +
+                        "ORDER BY a.view_count DESC " +
+                        "LIMIT ?",
+                Article.class,
+                userId, userId, limit
+        );
+    }
+
+    /* public List<Article> findRecommendByUserInterest(Long userId, int limit) {
+        return SqlUtil.queryList(
+                "SELECT a.* FROM article a " +
+                        "LEFT JOIN (" +
+                        "   SELECT at.tag_id, COUNT(*) as tag_count " +
+                        "   FROM article_tag at " +
+                        "   INNER JOIN article a2 ON at.article_id = a2.id " +
+                        "   WHERE a2.author_id = ? OR a2.id IN (" +
+                        "       SELECT article_id FROM user_like WHERE user_id = ?" + // TODO
+                        "   ) " +
+                        "   GROUP BY at.tag_id" +
+                        ") user_tags ON a.tag_ids LIKE CONCAT('%', user_tags.tag_id, '%') " +
+                        "WHERE a.status = 1 AND a.author_id != ? " +
+                        "ORDER BY user_tags.tag_count DESC, a.view_count DESC " +
+                        "LIMIT ?",
+                Article.class,
+                userId, userId, userId, limit
+        );
+    } */
+
+    /* 关联表操作 */
     public int insertArticleTag(ArticleTag articleTag) {
         return SqlUtil.update(
                 "INSERT INTO article_tag (article_id, tag_id, create_time) VALUES (?, ?, ?)",
@@ -252,7 +456,6 @@ public class ArticleMapper {
         );
     }
 
-    // 批量操作
     public int batchInsertArticleTags(List<ArticleTag> articleTags) {
         StringBuilder sql = new StringBuilder("INSERT INTO article_tag (article_id, tag_id, create_time) VALUES ");
         Object[] params = new Object[articleTags.size() * 3];
@@ -271,7 +474,6 @@ public class ArticleMapper {
         return SqlUtil.update(sql.toString(), params);
     }
 
-    // 统计方法
     public int countArticlesByTagId(Long tagId) {
         Integer count = SqlUtil.queryScalar(
                 "SELECT COUNT(*) FROM article_tag WHERE tag_id = ?",
@@ -291,6 +493,64 @@ public class ArticleMapper {
                         "LIMIT ?",
                 Tag.class,
                 limit
+        );
+    }
+
+    /**
+     * 更新点赞计数
+     */
+    public int updateLikeCount(Long articleId, int delta) {
+        String sql = delta > 0 ?
+                "UPDATE article SET like_count = like_count + 1 WHERE id = ?" :
+                "UPDATE article SET like_count = GREATEST(0, like_count - 1) WHERE id = ?";
+
+        return SqlUtil.update(sql, articleId);
+    }
+
+    /**
+     * 更新收藏计数
+     */
+    public int updateStarCount(Long articleId, int delta) {
+        String sql = delta > 0 ?
+                "UPDATE article SET star_count = star_count + 1 WHERE id = ?" :
+                "UPDATE article SET star_count = GREATEST(0, star_count - 1) WHERE id = ?";
+
+        return SqlUtil.update(sql, articleId);
+    }
+
+    /**
+     * 批量根据 ID 查询文章
+     */
+    public List<Article> findByIds(List<Long> articleIds) {
+        if (articleIds == null || articleIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        String placeholders = String.join(",", Collections.nCopies(articleIds.size(), "?"));
+        String sql = "SELECT * FROM article WHERE id IN (" + placeholders + ") AND status = 1";
+
+        return SqlUtil.queryList(sql, Article.class, articleIds.toArray());
+    }
+
+    /**
+     * 获取用户点赞的文章 ID 列表
+     */
+    public List<Long> findLikedArticleIds(Long userId) {
+        return SqlUtil.queryList(
+                "SELECT article_id FROM article_like WHERE user_id = ? ORDER BY create_time DESC",
+                Long.class,
+                userId
+        );
+    }
+
+    /**
+     * 获取用户收藏的文章 ID 列表
+     */
+    public List<Long> findStarredArticleIds(Long userId) {
+        return SqlUtil.queryList(
+                "SELECT article_id FROM article_star WHERE user_id = ? ORDER BY create_time DESC",
+                Long.class,
+                userId
         );
     }
 }

@@ -11,15 +11,15 @@ data class UserVO(
     var id: Long,
     var username: String,
     var email: String,
-    // val phone: String? = null,
+    // var phone: String? = null,
     var nickname: String,
     var bio: String?,
     var avatarUrl: String?,
     var followerCount: Int,
-    val followingCount: Int,
-    val articleCount: Int,
-    val createTime: LocalDateTime,
+    var followingCount: Int,
+    var articleCount: Int,
+    var createTime: LocalDateTime,
     var lasLoginTime: LocalDateTime,
     var role: Int,
-    val status: Int
+    var status: Int
 )

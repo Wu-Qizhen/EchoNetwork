@@ -209,7 +209,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmTarget>1.8</jvmTarget>
+                    <jvmTarget>17</jvmTarget>
                 </configuration>
             </plugin>
 
@@ -241,6 +241,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <!-- 高版本 -->
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>

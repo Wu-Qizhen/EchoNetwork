@@ -7,7 +7,7 @@ package com.wqz.echonetwork.entity.dto
  */
 data class UserProfileRequest(
     // val email: String,
-    val nickname: String,
-    val bio: String? = null,
-    val avatarUrl: String? = null,
+    var nickname: String,
+    var bio: String? = null,
+    var avatarUrl: String? = null,
 )

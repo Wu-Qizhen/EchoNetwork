@@ -142,9 +142,9 @@ public class RedisUtil {
 
     /* public static void printPoolStats() {
         if (jedisPool != null) {
-            LogUtil.info("Active：" + jedisPool.getNumActive());
-            LogUtil.info("Idle：" + jedisPool.getNumIdle());
-            LogUtil.info("Waiters：" + jedisPool.getNumWaiters());
+            LogUtil.info("Active: " + jedisPool.getNumActive());
+            LogUtil.info("Idle: " + jedisPool.getNumIdle());
+            LogUtil.info("Waiters: " + jedisPool.getNumWaiters());
         }
     } */
 

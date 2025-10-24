@@ -9,10 +9,35 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class PathUtil {
 
-    public static Long getIdFromPath(HttpServletRequest request) {
+    /* public static Long getIdFromPath(HttpServletRequest request) {
         String pathInfo = request.getPathInfo();
         if (pathInfo != null && pathInfo.matches("^/\\d+$")) {
             return Long.parseLong(pathInfo.substring(1));
+        }
+        return null;
+    } */
+
+    /* public static Long getIdFromPath(HttpServletRequest request) {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo != null) {
+            Pattern pattern = java.util.regex.Pattern.compile("/(\\d+)/");
+            Matcher matcher = pattern.matcher(pathInfo);
+            if (matcher.find()) {
+                return Long.parseLong(matcher.group(1));
+            }
+        }
+        return null;
+    } */
+
+    public static Long getIdFromPath(HttpServletRequest request) {
+        String pathInfo = request.getPathInfo();
+        if (pathInfo != null) {
+            String[] parts = pathInfo.split("/");
+            for (String part : parts) {
+                if (part.matches("\\d+")) {
+                    return Long.parseLong(part);
+                }
+            }
         }
         return null;
     }
