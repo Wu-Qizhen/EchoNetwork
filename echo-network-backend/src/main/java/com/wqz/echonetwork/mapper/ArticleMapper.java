@@ -168,7 +168,7 @@ public class ArticleMapper {
         SqlUtil.update("UPDATE article SET update_time = ? WHERE id = ?", lastLoginTime, id);
     }
 
-    public int countArticlesByUserId(Long userId) {
+    public int countByUserId(Long userId) {
         return SqlUtil.queryScalar(
                 "SELECT COUNT(*) FROM article WHERE author_id = ?",
                 Integer.class,
@@ -346,7 +346,7 @@ public class ArticleMapper {
     /**
      * 根据用户兴趣推荐（需要用户行为数据）
      */
-    public List<Article> findRecommendByUserInterest(Long userId, int limit) {
+    public List<Article> findRecommendByUserInterest(Long userId, int limit) { // TODO
         return SqlUtil.queryList(
                 "SELECT a.* FROM article a " +
                         "WHERE a.status = 1 AND a.author_id != ? " +
@@ -370,7 +370,7 @@ public class ArticleMapper {
                         "   FROM article_tag at " +
                         "   INNER JOIN article a2 ON at.article_id = a2.id " +
                         "   WHERE a2.author_id = ? OR a2.id IN (" +
-                        "       SELECT article_id FROM user_like WHERE user_id = ?" + // TODO
+                        "       SELECT article_id FROM user_like WHERE user_id = ?" +
                         "   ) " +
                         "   GROUP BY at.tag_id" +
                         ") user_tags ON a.tag_ids LIKE CONCAT('%', user_tags.tag_id, '%') " +
@@ -474,7 +474,7 @@ public class ArticleMapper {
         return SqlUtil.update(sql.toString(), params);
     }
 
-    public int countArticlesByTagId(Long tagId) {
+    public int countByTagId(Long tagId) {
         Integer count = SqlUtil.queryScalar(
                 "SELECT COUNT(*) FROM article_tag WHERE tag_id = ?",
                 Integer.class,
@@ -563,5 +563,28 @@ public class ArticleMapper {
                 "UPDATE article SET comment_count = GREATEST(0, comment_count - 1) WHERE id = ?";
 
         return SqlUtil.update(sql, articleId);
+    }
+
+    /**
+     * 统计圈子文章数量
+     */
+    public int countByCircleId(Long circleId) {
+        Integer count = SqlUtil.queryScalar(
+                "SELECT COUNT(*) FROM article WHERE circle_id = ? AND status = 1",
+                Integer.class,
+                circleId
+        );
+        return count != null ? count : 0;
+    }
+
+    /**
+     * 根据圈子 ID 查询文章
+     */
+    public List<Article> findByCircleIdWithPagination(Long circleId, int offset, int limit) {
+        return SqlUtil.queryList(
+                "SELECT * FROM article WHERE circle_id = ? AND status = 1 ORDER BY publish_time DESC LIMIT ? OFFSET ?",
+                Article.class,
+                circleId, limit, offset
+        );
     }
 }

@@ -144,6 +144,13 @@ public class ArticleController extends HttpServlet {
         try {
             // LogUtil.info("HandleGetArticleList");
 
+            // 检查是否是获取圈子文章的请求
+            String circleIdStr = request.getParameter("circleId");
+            if (circleIdStr != null) {
+                handleGetCircleArticles(request, response);
+                return;
+            }
+
             // 解析查询参数
             ArticleQueryRequest queryRequest = parseQueryParameters(request);
             // LogUtil.info("QueryParameters: " + queryRequest);
@@ -476,6 +483,40 @@ public class ArticleController extends HttpServlet {
 
         PageResult<CommentVO> pageResult = commentService.getCommentsByArticleId(articleId, page, size, currentUserId);
 
+        Map<String, Object> data = new HashMap<>();
+        data.put("list", pageResult.getList());
+        data.put("total", pageResult.getTotal());
+        data.put("page", pageResult.getPage());
+        data.put("size", pageResult.getSize());
+        data.put("totalPages", pageResult.getTotalPages());
+
+        Result<Map<String, Object>> result = Result.success("成功", data);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 获取圈子文章列表
+     */
+    private void handleGetCircleArticles(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long circleId = Long.parseLong(request.getParameter("circleId"));
+        int page = 1;
+        int size = 20;
+
+        String pageStr = request.getParameter("page");
+        String sizeStr = request.getParameter("size");
+
+        if (pageStr != null) page = Integer.parseInt(pageStr);
+        if (sizeStr != null) size = Integer.parseInt(sizeStr);
+
+        ArticleQueryRequest queryRequest = new ArticleQueryRequest();
+        queryRequest.setPage(page);
+        queryRequest.setSize(size);
+        queryRequest.setCircleId(circleId);
+        queryRequest.setStatus(1);
+
+        PageResult<ArticleVO> pageResult = articleService.getArticlesByConditions(queryRequest);
+
+        // 构建响应
         Map<String, Object> data = new HashMap<>();
         data.put("list", pageResult.getList());
         data.put("total", pageResult.getTotal());

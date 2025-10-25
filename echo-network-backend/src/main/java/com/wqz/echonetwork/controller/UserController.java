@@ -2,18 +2,17 @@ package com.wqz.echonetwork.controller;
 
 import com.wqz.echonetwork.entity.dto.*;
 import com.wqz.echonetwork.entity.vo.Result;
+import com.wqz.echonetwork.entity.vo.UserVO;
 import com.wqz.echonetwork.service.UserService;
 import com.wqz.echonetwork.service.impl.UserServiceImpl;
-import com.wqz.echonetwork.utils.JsonUtil;
-import com.wqz.echonetwork.utils.JwtUtil;
-import com.wqz.echonetwork.utils.LogUtil;
-import com.wqz.echonetwork.utils.WriterUtil;
+import com.wqz.echonetwork.utils.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -36,9 +35,16 @@ public class UserController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         String path = request.getServletPath();
+        String pathInfo = request.getPathInfo();
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
+
+        // 处理关注路由
+        if (pathInfo != null && pathInfo.matches("/\\d+/follow")) {
+            handleFollowUser(request, response);
+            return;
+        }
 
         switch (path) {
             case "/api/users/login":
@@ -59,9 +65,19 @@ public class UserController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String path = request.getServletPath();
+        String pathInfo = request.getPathInfo();
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json;charset=UTF-8");
+
+        // 处理获取关注者、正在关注列表路由
+        if (pathInfo != null && pathInfo.matches("/\\d+/followers")) {
+            handleGetFollowers(request, response);
+            return;
+        } else if (pathInfo != null && pathInfo.matches("/\\d+/following")) {
+            handleGetFollowing(request, response);
+            return;
+        }
 
         if (path.equals("/api/users/logout")) {
             handleLogout(request, response);
@@ -77,6 +93,24 @@ public class UserController extends HttpServlet {
         response.setContentType("application/json;charset=UTF-8");
 
         processUserResourceRequest(request, response, "PUT");
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String pathInfo = request.getPathInfo();
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+
+        // 处理取消关注路由
+        if (pathInfo != null && pathInfo.matches("/\\d+/follow")) {
+            handleUnfollowUser(request, response);
+            // return;
+        }
+
+        /* if (request.getServletPath().equals("/api/users/logout")) {
+            handleLogout(request, response);
+        } */
     }
 
     private void processUserResourceRequest(HttpServletRequest request, HttpServletResponse response, String method) throws IOException {
@@ -237,6 +271,86 @@ public class UserController extends HttpServlet {
 
         Result<Object> result = message == null ? Result.success("注册成功") : Result.error(message);
 
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 关注用户
+     */
+    private void handleFollowUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long targetUserId = PathUtil.getIdFromPath(request);
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+        if (targetUserId == null || currentUserId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        FollowInteractionResponse interaction = userService.followUser(targetUserId, currentUserId);
+        if (interaction == null) {
+            Result<Object> result = Result.error("关注失败");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        Result<FollowInteractionResponse> result = Result.success("关注成功", interaction);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 取消关注用户
+     */
+    private void handleUnfollowUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long targetUserId = PathUtil.getIdFromPath(request);
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+        if (targetUserId == null || currentUserId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        FollowInteractionResponse interaction = userService.unfollowUser(targetUserId, currentUserId);
+        if (interaction == null) {
+            Result<Object> result = Result.error("取消关注失败");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        Result<FollowInteractionResponse> result = Result.success("取消关注成功", interaction);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 获取用户的粉丝列表
+     */
+    private void handleGetFollowers(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long userId = PathUtil.getIdFromPath(request);
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+        if (userId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        List<UserVO> followers = userService.getFollowers(userId, currentUserId);
+        Result<List<UserVO>> result = Result.success("获取粉丝列表成功", followers);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 获取用户关注的列表
+     */
+    private void handleGetFollowing(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long userId = PathUtil.getIdFromPath(request);
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+        if (userId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        List<UserVO> following = userService.getFollowing(userId, currentUserId);
+        Result<List<UserVO>> result = Result.success("获取关注列表成功", following);
         WriterUtil.writeJson(response, result);
     }
 }

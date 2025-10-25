@@ -115,6 +115,17 @@ public class UserMapper {
         return SqlUtil.update("UPDATE user SET password = ? WHERE email = ?", password, email);
     }
 
+    /**
+     * 更新粉丝数
+     */
+    public int updateFollowerCount(Long userId, int delta) {
+        String sql = delta > 0 ?
+                "UPDATE user SET follower_count = follower_count + 1 WHERE id = ?" :
+                "UPDATE user SET follower_count = GREATEST(0, follower_count - 1) WHERE id = ?";
+
+        return SqlUtil.update(sql, userId);
+    }
+
     /* public static void main(String[] args) {
         UserMapper userMapper = new UserMapper();
         List<User> search = userMapper.search("1");

@@ -12,11 +12,36 @@ import java.util.List;
  */
 public class CircleMapper {
 
-    public Circle findById(Long id) {
+    public long insert(Circle circle) {
+        return SqlUtil.insert(
+                "INSERT INTO circle (name, description, creator_id, create_time) VALUES (?, ?, ?, ?)",
+                circle.getName(),
+                circle.getDescription(),
+                circle.getCreatorId(),
+                circle.getCreateTime()
+        );
+    }
+
+    public Circle findById(Long circleId) {
         return SqlUtil.queryObject(
                 "SELECT * FROM circle WHERE id = ?",
                 Circle.class,
-                id
+                circleId
+        );
+    }
+
+    public List<Circle> findAll() {
+        return SqlUtil.queryList(
+                "SELECT * FROM circle ORDER BY create_time DESC",
+                Circle.class
+        );
+    }
+
+    public List<Circle> findAll(int offset, int limit) {
+        return SqlUtil.queryList(
+                "SELECT * FROM circle ORDER BY create_time DESC LIMIT ? OFFSET ?",
+                Circle.class,
+                limit, offset
         );
     }
 
@@ -26,6 +51,51 @@ public class CircleMapper {
                 Circle.class,
                 name
         );
+    }
+
+    public List<Circle> findByName(String keyword, int offset, int limit) {
+        return SqlUtil.queryList(
+                "SELECT * FROM circle WHERE name LIKE ? OR description LIKE ? ORDER BY create_time DESC LIMIT ? OFFSET ?",
+                Circle.class,
+                "%" + keyword + "%", "%" + keyword + "%", limit, offset
+        );
+    }
+
+    public int countAll() {
+        Integer count = SqlUtil.queryScalar(
+                "SELECT COUNT(*) FROM circle",
+                Integer.class
+        );
+        return count != null ? count : 0;
+    }
+
+    public int countByName(String keyword) {
+        Integer count = SqlUtil.queryScalar(
+                "SELECT COUNT(*) FROM circle WHERE name LIKE ? OR description LIKE ?",
+                Integer.class,
+                "%" + keyword + "%", "%" + keyword + "%"
+        );
+        return count != null ? count : 0;
+    }
+
+    public int updateMemberCount(Long circleId, int delta) {
+        String sql = delta > 0 ?
+                "UPDATE circle SET member_count = member_count + 1 WHERE id = ?" :
+                "UPDATE circle SET member_count = GREATEST(0, member_count - 1) WHERE id = ?";
+
+        return SqlUtil.update(sql, circleId);
+    }
+
+    public int updateArticleCount(Long circleId, int delta) {
+        String sql = delta > 0 ?
+                "UPDATE circle SET article_count = article_count + 1 WHERE id = ?" :
+                "UPDATE circle SET article_count = GREATEST(0, article_count - 1) WHERE id = ?";
+
+        return SqlUtil.update(sql, circleId);
+    }
+
+    public int delete(Long circleId) {
+        return SqlUtil.update("DELETE FROM circle WHERE id = ?", circleId);
     }
 
     public List<Circle> findByCreatorId(Long creatorId) {
@@ -45,28 +115,11 @@ public class CircleMapper {
         );
     }
 
-    public List<Circle> findAll() {
-        return SqlUtil.queryList(
-                "SELECT * FROM circle ORDER BY create_time DESC",
-                Circle.class
-        );
-    }
-
     public List<Circle> findLatest(int limit) {
         return SqlUtil.queryList(
                 "SELECT * FROM circle ORDER BY create_time DESC LIMIT ?",
                 Circle.class,
                 limit
-        );
-    }
-
-    public int insert(Circle circle) {
-        return SqlUtil.update(
-                "INSERT INTO circle (name, description, creator_id, create_time) VALUES (?, ?, ?, ?)",
-                circle.getName(),
-                circle.getDescription(),
-                circle.getCreatorId(),
-                circle.getCreateTime()
         );
     }
 
@@ -80,14 +133,6 @@ public class CircleMapper {
         );
     }
 
-    public int delete(Long id) {
-        return SqlUtil.update("DELETE FROM circle WHERE id = ?", id);
-    }
-
-    public int deleteByCreatorId(Long creatorId) {
-        return SqlUtil.update("DELETE FROM circle WHERE creator_id = ?", creatorId);
-    }
-
     public boolean existsByName(String name) {
         Integer count = SqlUtil.queryScalar(
                 "SELECT COUNT(*) FROM circle WHERE name = ?",
@@ -95,15 +140,6 @@ public class CircleMapper {
                 name
         );
         return count != null && count > 0;
-    }
-
-    public int countByCreatorId(Long creatorId) {
-        Integer count = SqlUtil.queryScalar(
-                "SELECT COUNT(*) FROM circle WHERE creator_id = ?",
-                Integer.class,
-                creatorId
-        );
-        return count != null ? count : 0;
     }
 
     public List<Circle> findByCreatorIdWithPagination(Long creatorId, int offset, int limit) {

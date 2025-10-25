@@ -91,11 +91,11 @@ public class CommentServiceImpl implements CommentService {
         }
 
         // 删除评论点赞记录
-        commentLikeMapper.deleteByCommentId(commentId);
+        int likeDeleted = commentLikeMapper.deleteByCommentId(commentId);
 
         // 删除评论
         int deleted = commentMapper.delete(commentId);
-        if (deleted > 0) {
+        if (likeDeleted > 0 && deleted > 0) {
             // 更新文章的评论计数
             articleMapper.updateCommentCount(comment.getArticleId(), -1);
             return true;
@@ -125,9 +125,11 @@ public class CommentServiceImpl implements CommentService {
         long likeId = commentLikeMapper.insert(commentLike);
         if (likeId > 0) {
             // 更新评论的点赞计数
-            commentMapper.updateLikeCount(commentId, 1);
-
-            return getCommentInteractionStatus(commentId, userId);
+            int result = commentMapper.updateLikeCount(commentId, 1);
+            if (result > 0) {
+                return getCommentInteractionStatus(commentId, userId);
+            }
+            return null;
         }
 
         return null;
@@ -145,9 +147,11 @@ public class CommentServiceImpl implements CommentService {
         int deleted = commentLikeMapper.delete(userId, commentId);
         if (deleted > 0) {
             // 更新评论的点赞计数
-            commentMapper.updateLikeCount(commentId, -1);
-
-            return getCommentInteractionStatus(commentId, userId);
+            int result = commentMapper.updateLikeCount(commentId, -1);
+            if (result > 0) {
+                return getCommentInteractionStatus(commentId, userId);
+            }
+            return null;
         }
 
         return null;

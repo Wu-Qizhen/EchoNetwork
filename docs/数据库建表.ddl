@@ -151,13 +151,22 @@ CREATE TABLE `article_star` (
 -- 圈子成员表
 CREATE TABLE `circle_member` (
                                  `id` BIGINT PRIMARY KEY AUTO_INCREMENT,
-                                 `circle_id` BIGINT NOT NULL COMMENT '圈子ID',
-                                 `user_id` BIGINT NOT NULL COMMENT '用户ID',
+                                 `circle_id` BIGINT NOT NULL COMMENT '圈子 ID',
+                                 `user_id` BIGINT NOT NULL COMMENT '用户 ID',
                                  `join_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '加入时间',
-                                 `role` TINYINT NOT NULL DEFAULT 0 COMMENT '成员角色 0普通成员 1管理员',
+                                 `role` TINYINT NOT NULL DEFAULT 0 COMMENT '成员角色 0 普通成员 1 管理员',
                                  UNIQUE KEY `uk_circle_user` (`circle_id`, `user_id`),
                                  INDEX `idx_circle_id` (`circle_id`),
                                  INDEX `idx_user_id` (`user_id`),
+                                 KEY `idx_join_time` (join_time),
                                  FOREIGN KEY (`circle_id`) REFERENCES `circle`(`id`),
                                  FOREIGN KEY (`user_id`) REFERENCES `user`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='圈子成员表';
+
+-- 添加 member_count 字段
+ALTER TABLE `circle`
+    ADD COLUMN `member_count` INT DEFAULT 0 COMMENT '成员数量';
+
+-- 添加 article_count 字段
+ALTER TABLE `circle`
+    ADD COLUMN `article_count` INT DEFAULT 0 COMMENT '文章数量';

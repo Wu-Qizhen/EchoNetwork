@@ -12,7 +12,7 @@ data class CircleMember(
     var circleId: Long? = null, // 圈子 ID
     var userId: Long? = null, // 成员用户 ID
     var joinTime: LocalDateTime? = null, // 加入时间
-    var role: Int? = null // 成员角色
+    var role: Int? = null // 成员角色 0 普通成员 2 创建者
 ) {
 
     init {

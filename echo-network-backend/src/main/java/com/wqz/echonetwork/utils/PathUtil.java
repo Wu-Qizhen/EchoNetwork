@@ -29,16 +29,37 @@ public class PathUtil {
         return null;
     } */
 
-    public static Long getIdFromPath(HttpServletRequest request) {
-        String pathInfo = request.getPathInfo();
-        if (pathInfo != null) {
-            String[] parts = pathInfo.split("/");
-            for (String part : parts) {
-                if (part.matches("\\d+")) {
-                    return Long.parseLong(part);
+    /* public static Long getIdFromPath(HttpServletRequest request) {
+            String pathInfo = request.getPathInfo();
+            if (pathInfo != null) {
+                String[] parts = pathInfo.split("/");
+                for (String part : parts) {
+                    if (part.matches("\\d+")) {
+                        return Long.parseLong(part);
+                    }
                 }
             }
+            return null;
+    } */
+
+    public static Long getIdFromPath(HttpServletRequest request) {
+        String path = request.getPathInfo();
+        if (path == null) {
+            return null;
         }
+
+        // 匹配 /123 或 /123/follow 等格式
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("^/(\\d+)(/.*)?$");
+        java.util.regex.Matcher matcher = pattern.matcher(path);
+
+        if (matcher.matches()) {
+            try {
+                return Long.parseLong(matcher.group(1));
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+
         return null;
     }
 }

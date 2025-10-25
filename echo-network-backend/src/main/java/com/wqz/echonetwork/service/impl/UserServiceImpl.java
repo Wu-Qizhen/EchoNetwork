@@ -2,6 +2,7 @@ package com.wqz.echonetwork.service.impl;
 
 import com.wqz.echonetwork.entity.dto.*;
 import com.wqz.echonetwork.entity.enums.UserStatus;
+import com.wqz.echonetwork.entity.po.Follow;
 import com.wqz.echonetwork.entity.po.User;
 import com.wqz.echonetwork.entity.vo.UserVO;
 import com.wqz.echonetwork.mapper.ArticleMapper;
@@ -14,7 +15,8 @@ import com.wqz.echonetwork.utils.PasswordEncoder;
 import com.wqz.echonetwork.utils.RedisUtil;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -140,7 +142,7 @@ public class UserServiceImpl implements UserService {
 
         int countFollowing = followMapper.countFollowing(userId);
         // LogUtil.info(String.valueOf(countFollowing));
-        int countArticles = articleMapper.countArticlesByUserId(userId);
+        int countArticles = articleMapper.countByUserId(userId);
         // LogUtil.info(String.valueOf(countArticles));
         boolean existsed = followMapper.existsByUserIds(currentUserId, userId);
         // LogUtil.info("existsed");
@@ -173,7 +175,131 @@ public class UserServiceImpl implements UserService {
             return "用户不存在";
         }
 
-        userMapper.updateProfile(userId, userProfileRequest.getNickname(), userProfileRequest.getBio(), userProfileRequest.getAvatarUrl());
+        int result = userMapper.updateProfile(userId, userProfileRequest.getNickname(), userProfileRequest.getBio(), userProfileRequest.getAvatarUrl());
+        if (result > 0) {
+            return null;
+        }
+
+        return "更新失败";
+    }
+
+    @Override
+    public FollowInteractionResponse followUser(Long targetUserId, Long currentUserId) {
+        // 不能关注自己
+        if (targetUserId.equals(currentUserId)) {
+            return null;
+        }
+
+        // 检查目标用户是否存在
+        User targetUser = userMapper.findById(targetUserId);
+        if (targetUser == null || targetUser.getStatus() != UserStatus.NORMAL.getId()) {
+            return null;
+        }
+
+        // 检查是否已经关注
+        boolean alreadyFollowing = followMapper.existsByUserIds(currentUserId, targetUserId);
+        if (alreadyFollowing) {
+            return getFollowInteractionStatus(targetUserId, currentUserId);
+        }
+
+        // 创建关注记录
+        Follow follow = new Follow();
+        follow.setFollowerUserId(currentUserId);
+        follow.setFollowingUserId(targetUserId);
+
+        long followId = followMapper.insert(follow);
+        if (followId > 0) {
+            // 更新目标用户的粉丝数
+            int result = userMapper.updateFollowerCount(targetUserId, 1);
+            if (result > 0) {
+                return getFollowInteractionStatus(targetUserId, currentUserId);
+            }
+            return null;
+        }
+
         return null;
+    }
+
+    @Override
+    public FollowInteractionResponse unfollowUser(Long targetUserId, Long currentUserId) {
+        // 检查是否已经关注
+        boolean alreadyFollowing = followMapper.existsByUserIds(currentUserId, targetUserId);
+        if (!alreadyFollowing) {
+            return getFollowInteractionStatus(targetUserId, currentUserId);
+        }
+
+        // 删除关注记录
+        int deleted = followMapper.delete(currentUserId, targetUserId);
+        if (deleted > 0) {
+            // 更新目标用户的粉丝数
+            int result = userMapper.updateFollowerCount(targetUserId, -1);
+            if (result > 0) {
+                return getFollowInteractionStatus(targetUserId, currentUserId);
+            }
+            return null;
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<UserVO> getFollowers(Long userId, Long currentUserId) {
+        List<Follow> follows = followMapper.findFollowers(userId);
+        List<Long> followerIds = follows.stream()
+                .map(Follow::getFollowerUserId)
+                .collect(Collectors.toList());
+
+        if (followerIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return convertToUserVOList(followerIds, currentUserId);
+    }
+
+    @Override
+    public List<UserVO> getFollowing(Long userId, Long currentUserId) {
+        List<Follow> follows = followMapper.findFollowing(userId);
+        List<Long> followingIds = follows.stream()
+                .map(Follow::getFollowingUserId)
+                .collect(Collectors.toList());
+
+        if (followingIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return convertToUserVOList(followingIds, currentUserId);
+    }
+
+    // 辅助方法：获取关注互动状态
+    private FollowInteractionResponse getFollowInteractionStatus(Long targetUserId, Long currentUserId) {
+        User targetUser = userMapper.findById(targetUserId);
+        if (targetUser == null) {
+            return null;
+        }
+
+        boolean isFollowing = followMapper.existsByUserIds(currentUserId, targetUserId);
+
+        return new FollowInteractionResponse(
+                targetUserId,
+                isFollowing,
+                targetUser.getFollowerCount()
+        );
+    }
+
+    // 辅助方法：批量转换用户 ID 列表为 UserVO 列表
+    private List<UserVO> convertToUserVOList(List<Long> userIds, Long currentUserId) {
+        if (userIds == null || userIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<UserVO> userVOs = new ArrayList<>();
+        for (Long userId : userIds) {
+            UserProfileResponse profile = getProfile(userId, currentUserId);
+            if (profile != null) {
+                userVOs.add(profile.getUser());
+            }
+        }
+
+        return userVOs;
     }
 }
