@@ -553,4 +553,15 @@ public class ArticleMapper {
                 userId
         );
     }
+
+    /**
+     * 更新评论计数
+     */
+    public int updateCommentCount(Long articleId, int delta) {
+        String sql = delta > 0 ?
+                "UPDATE article SET comment_count = comment_count + 1 WHERE id = ?" :
+                "UPDATE article SET comment_count = GREATEST(0, comment_count - 1) WHERE id = ?";
+
+        return SqlUtil.update(sql, articleId);
+    }
 }

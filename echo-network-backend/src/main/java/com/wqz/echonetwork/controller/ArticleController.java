@@ -4,10 +4,13 @@ import com.wqz.echonetwork.entity.dto.ArticleInteractionResponse;
 import com.wqz.echonetwork.entity.dto.ArticleQueryRequest;
 import com.wqz.echonetwork.entity.dto.ArticleUpdateRequest;
 import com.wqz.echonetwork.entity.vo.ArticleVO;
+import com.wqz.echonetwork.entity.vo.CommentVO;
 import com.wqz.echonetwork.entity.vo.PageResult;
 import com.wqz.echonetwork.entity.vo.Result;
 import com.wqz.echonetwork.service.ArticleService;
+import com.wqz.echonetwork.service.CommentService;
 import com.wqz.echonetwork.service.impl.ArticleServiceImpl;
+import com.wqz.echonetwork.service.impl.CommentServiceImpl;
 import com.wqz.echonetwork.utils.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,6 +33,7 @@ import java.util.Map;
 public class ArticleController extends HttpServlet {
 
     ArticleService articleService = new ArticleServiceImpl();
+    CommentService commentService = new CommentServiceImpl();
 
     /* @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -40,8 +44,14 @@ public class ArticleController extends HttpServlet {
 
         if (path == null || path.equals("/")) {
             handleGetArticleList(request, response);
-        } else {
+        } else if (path.matches("/\\d+")) {
             handleGetArticleDetail(request, response);
+        } else if (path.equals("/liked")) {
+            handleGetLikedArticles(request, response);
+        } else if (path.equals("/starred")) {
+            handleGetStarredArticles(request, response);
+        } else {
+            WriterUtil.paramsError(response);
         }
     } */
 
@@ -56,6 +66,8 @@ public class ArticleController extends HttpServlet {
             handleGetArticleList(request, response);
         } else if (path.matches("/\\d+")) {
             handleGetArticleDetail(request, response);
+        } else if (path.matches("/\\d+/comments")) {
+            handleGetArticleComments(request, response);
         } else if (path.equals("/liked")) {
             handleGetLikedArticles(request, response);
         } else if (path.equals("/starred")) {
@@ -434,6 +446,44 @@ public class ArticleController extends HttpServlet {
 
         List<ArticleVO> starredArticles = articleService.getStarredArticles(currentUserId);
         Result<List<ArticleVO>> result = Result.success("获取收藏文章成功", starredArticles);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 获取文章评论列表（转发到 CommentController）
+     */
+    private void handleGetArticleComments(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long articleId = PathUtil.getIdFromPath(request);
+        if (articleId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        int page = 1;
+        int size = 20;
+
+        String pageStr = request.getParameter("page");
+        String sizeStr = request.getParameter("size");
+
+        if (pageStr != null) {
+            page = Integer.parseInt(pageStr);
+        }
+        if (sizeStr != null) {
+            size = Integer.parseInt(sizeStr);
+        }
+
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+        PageResult<CommentVO> pageResult = commentService.getCommentsByArticleId(articleId, page, size, currentUserId);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("list", pageResult.getList());
+        data.put("total", pageResult.getTotal());
+        data.put("page", pageResult.getPage());
+        data.put("size", pageResult.getSize());
+        data.put("totalPages", pageResult.getTotalPages());
+
+        Result<Map<String, Object>> result = Result.success("成功", data);
         WriterUtil.writeJson(response, result);
     }
 }
