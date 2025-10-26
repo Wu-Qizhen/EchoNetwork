@@ -31,7 +31,7 @@
 }
 
 .w-e-text-container {
-    background-color: var(--w-e-textarea-bg-color);
+    background-color: transparent; /* 内容区背景色 var(--w-e-textarea-bg-color) */
     color: var(--w-e-textarea-color);
     height: 100%;
     position: relative
@@ -97,7 +97,9 @@
 }
 
 .w-e-bar {
-    background-color: transparent /* var(--w-e-toolbar-bg-color) */;
+    background-color: var(--w-e-toolbar-bg-color); /* 工具栏背景色 */
+    border-radius: 10px;
+    border: 1px solid var(--dark-line-m);
     color: var(--w-e-toolbar-color);
     font-size: 14px;
     padding: 0 5px
@@ -119,7 +121,7 @@
 
 .w-e-hover-bar {
     border: 1px solid var(--w-e-toolbar-border-color);
-    border-radius: 3px;
+    border-radius: 5px;
     box-shadow: 0 2px 5px #0000001f;
     position: absolute
 }
@@ -151,7 +153,8 @@
 }
 
 .w-e-bar-item button {
-    background: transparent;
+    text-transform: uppercase;
+    background: transparent; /* 功能选项背景色 */
     border: none;
     border-radius: 5px;
     color: var(--w-e-toolbar-color);
@@ -196,6 +199,7 @@
 }
 
 .w-e-menu-tooltip-v5:before {
+    text-transform: uppercase;
     background-color: var(--w-e-toolbar-active-color);
     border-radius: 5px;
     color: var(--w-e-toolbar-color);
@@ -213,6 +217,7 @@
 }
 
 .w-e-menu-tooltip-v5:after {
+    text-transform: uppercase;
     border: 5px solid transparent;
     border-bottom: 5px solid var(--w-e-toolbar-active-color);
     content: "";
@@ -224,16 +229,19 @@
 }
 
 .w-e-menu-tooltip-v5:hover:after, .w-e-menu-tooltip-v5:hover:before {
+    text-transform: uppercase;
     opacity: 1;
     visibility: visible
 }
 
 .w-e-menu-tooltip-v5.tooltip-right:before {
+    text-transform: uppercase;
     left: 100%;
     top: 10px
 }
 
 .w-e-menu-tooltip-v5.tooltip-right:after {
+    text-transform: uppercase;
     border-bottom-color: transparent;
     border-left-color: transparent;
     border-right-color: var(--w-e-toolbar-active-color);
@@ -246,7 +254,7 @@
 .w-e-bar-item-group .w-e-bar-item-menus-container {
     background-color: var(--w-e-toolbar-bg-color);
     border: 1px solid var(--w-e-toolbar-border-color);
-    border-radius: 3px;
+    border-radius: 5px;
     box-shadow: 0 2px 10px #0000001f;
     display: none;
     left: 0;
@@ -261,14 +269,15 @@
 }
 
 .w-e-select-list {
+    text-transform: capitalize;
     background-color: var(--w-e-toolbar-bg-color);
     border: 1px solid var(--w-e-toolbar-border-color);
-    border-radius: 3px;
+    border-radius: 5px;
     box-shadow: 0 2px 10px #0000001f;
     left: 0;
     margin-top: 40px;
-    max-height: 350px;
-    min-width: 100px;
+    max-height: 250px; /* 修复溢出问题 */
+    min-width: 150px;
     overflow-y: auto;
     position: absolute;
     top: 0;
@@ -314,7 +323,7 @@
 .w-e-drop-panel {
     background-color: var(--w-e-toolbar-bg-color);
     border: 1px solid var(--w-e-toolbar-border-color);
-    border-radius: 3px;
+    border-radius: 5px;
     box-shadow: 0 2px 10px #0000001f;
     margin-top: 40px;
     min-width: 200px;
@@ -334,7 +343,7 @@
 .w-e-modal {
     background-color: var(--w-e-toolbar-bg-color);
     border: 1px solid var(--w-e-toolbar-border-color);
-    border-radius: 3px;
+    border-radius: 5px;
     box-shadow: 0 2px 10px #0000001f;
     color: var(--w-e-toolbar-color);
     font-size: 14px;
@@ -378,7 +387,7 @@
 .w-e-modal button {
     background-color: var(--w-e-modal-button-bg-color);
     border: none /* 1px solid var(--w-e-modal-button-border-color) */;
-    border-radius: 4px;
+    border-radius: 5px;
     color: #fff /* var(--w-e-toolbar-color) */;
     cursor: pointer;
     font-weight: 400;
@@ -397,7 +406,7 @@
     font-feature-settings: "tnum";
     background-color: var(--w-e-toolbar-bg-color);
     border: 1px solid var(--w-e-modal-button-border-color);
-    border-radius: 4px;
+    border-radius: 5px;
     color: var(--w-e-toolbar-color);
     font-variant: tabular-nums;
     padding: 4.5px 11px;
@@ -441,7 +450,7 @@ body .w-e-modal, body .w-e-modal * {
 
 .w-e-text-container [data-slate-editor] code {
     background-color: var(--w-e-textarea-slight-bg-color);
-    border-radius: 3px;
+    border-radius: 5px;
     font-family: monospace;
     padding: 3px
 }
@@ -454,7 +463,7 @@ body .w-e-modal, body .w-e-modal * {
 
 .w-e-panel-content-color li {
     border: 1px solid var(--w-e-toolbar-bg-color);
-    border-radius: 3px 3px;
+    border-radius: 5px 5px;
     cursor: pointer;
     display: inline-block;
     padding: 2px
@@ -466,7 +475,7 @@ body .w-e-modal, body .w-e-modal * {
 
 .w-e-panel-content-color li .color-block {
     border: 1px solid var(--w-e-toolbar-border-color);
-    border-radius: 3px 3px;
+    border-radius: 5px 5px;
     height: 17px;
     width: 17px
 }
@@ -505,7 +514,7 @@ body .w-e-modal, body .w-e-modal * {
 }
 
 .w-e-panel-content-emotion li {
-    border-radius: 3px 3px;
+    border-radius: 5px 5px;
     cursor: pointer;
     display: inline-block;
     padding: 0 5px
@@ -516,7 +525,7 @@ body .w-e-modal, body .w-e-modal * {
 }
 
 .w-e-textarea-divider {
-    border-radius: 3px;
+    border-radius: 5px;
     margin: 20px auto;
     padding: 20px
 }
@@ -531,7 +540,7 @@ body .w-e-modal, body .w-e-modal * {
 .w-e-text-container [data-slate-editor] pre > code {
     background-color: var(--w-e-textarea-slight-bg-color);
     border: 1px solid var(--w-e-textarea-slight-border-color);
-    border-radius: 4px 4px;
+    border-radius: 5px 5px;
     display: block;
     font-size: 14px;
     padding: 10px;

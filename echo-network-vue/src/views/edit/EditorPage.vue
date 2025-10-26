@@ -55,7 +55,7 @@ export default {
 
 <script setup lang="ts">
 import './editor.css' // 引入 css
-import {onBeforeUnmount, onMounted, ref, shallowRef} from 'vue'
+import {onBeforeUnmount, onMounted, ref, shallowRef, watch} from 'vue'
 import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
 import XSpacer from "@/aethex/components/XSpacer.vue"
 import {IToolbarConfig} from '@wangeditor/editor'
@@ -64,7 +64,7 @@ import {IToolbarConfig} from '@wangeditor/editor'
 const editorRef = shallowRef()
 
 // 内容 HTML
-const valueHtml = ref('<p>hello</p>')
+const valueHtml = ref('')
 
 // 模拟 Ajax 异步获取内容
 onMounted(() => {
@@ -73,7 +73,7 @@ onMounted(() => {
   }, 1500)
 })
 
-// TODO Tool Tip
+// TODO 代码块文字重叠
 // 工具栏配置
 const toolbarConfig: Partial<IToolbarConfig> = {
   excludeKeys: [
@@ -98,12 +98,22 @@ onBeforeUnmount(() => {
 const handleCreated = (editor) => {
   editorRef.value = editor // 记录 editor 实例，重要！
 }
+
+const props = defineProps({
+  modelValue: String
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+// 监听内容变化
+watch(valueHtml, (newValue) => {
+  emit('update:modelValue', newValue)
+})
 </script>
 
 <template>
   <div>
     <Toolbar
-        class="toolbar"
         :editor="editorRef"
         :defaultConfig="toolbarConfig"
         :mode="mode"
@@ -111,7 +121,6 @@ const handleCreated = (editor) => {
     <XSpacer height="20px"/>
     <Editor
         class="editor"
-        style="height: 500px; overflow-y: hidden;"
         v-model="valueHtml"
         :defaultConfig="editorConfig"
         :mode="mode"
@@ -121,15 +130,16 @@ const handleCreated = (editor) => {
 </template>
 
 <style scoped>
-.toolbar {
-  /* overflow: hidden; */
+/* .toolbar {
+  overflow: hidden;
   background-color: var(--dark-bg-s);
   border-radius: 10px;
   border: 1px solid var(--dark-line-m);
-}
+} */
 
 .editor {
-  overflow: hidden;
+  /* overflow: hidden; */
+  background-color: var(--dark-bg-s);
   border-radius: 10px;
   border: 1px solid var(--dark-line-m);
 }

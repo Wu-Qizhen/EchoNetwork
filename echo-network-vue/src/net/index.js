@@ -185,4 +185,4 @@ function getUserInfo() {
     return authObj ? authObj.user : null
 }
 
-export {login, logout, isAuthorized, get, post, getUserInfo}
+export {login, logout, isAuthorized, get, post, defaultFailure, getUserInfo}

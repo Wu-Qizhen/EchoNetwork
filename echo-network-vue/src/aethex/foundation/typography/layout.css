@@ -39,7 +39,7 @@ body {
 
 /* 适用于 Firefox */
 * {
-    scrollbar-color: #333333 #121212; /* 滑块颜色 轨道颜色 */
+    scrollbar-color: #333333 transparent; /* 滑块颜色 轨道颜色（修复直角问题） */
 }
 
 .protected-content {

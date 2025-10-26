@@ -4,14 +4,13 @@
   Created by Wu Qizhen on 2025.10.21
 -->
 <script setup>
-import {getUserInfo, isAuthorized, logout} from "@/net/index.js";
+import {getUserInfo, isAuthorized, logout, post} from "@/net/index.js";
 import router from "@/router/index.js";
-import {onBeforeUnmount, onMounted, reactive, ref, shallowRef} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import XMultiFunBar from "@/aethex/components/XMultiFunBar.vue";
 import XBackgroundSpace from "@/aethex/components/XBackgroundSpace.vue";
 import {ElMessage} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
-import {Editor, Toolbar} from "@wangeditor/editor-for-vue";
 import EditorPage from "@/views/edit/EditorPage.vue";
 import XSpacer from "@/aethex/components/XSpacer.vue";
 
@@ -133,38 +132,54 @@ const removeTag = (index) => {
   articleForm.tags.splice(index, 1)
 }
 
+function isContentEmpty(content) {
+  // 替换所有 &nbsp; 为空格
+  const contentWithSpaces = content.replace(/&nbsp;/g, ' ');
+
+  // 移除所有 HTML 标签（包括 <br> 和 <p>）
+  const plainText = contentWithSpaces.replace(/<[^>]+>/g, '');
+
+  // 检查是否全是空白字符（空格、换行、制表符等）
+  return /^\s*$/.test(plainText);
+}
+
 // 发布文章
 const handlePublish = async () => {
+  // console.log('发布文章：', articleForm)
   if (!articleForm.title.trim()) {
     ElMessage.warning('请输入文章标题')
     return
   }
 
-  if (!articleForm.content.trim()) {
-    ElMessage.warning('请输入文章内容')
-    return
+  if (isContentEmpty(articleForm.content)) {
+    ElMessage.warning('请输入文章内容');
+    return;
   }
 
   publishing.value = true
 
   try {
-    // 这里调用发布文章的API
-    // await publishArticle({
-    //   title: articleForm.title,
-    //   content: articleForm.content,
-    //   circleId: articleForm.circleId || 0,
-    //   tags: articleForm.tags,
-    //   status: 0
-    // })
+    await publishArticle({
+      title: articleForm.title.trim(),
+      content: articleForm.content,
+      circleId: articleForm.circleId || null,
+      tags: articleForm.tags,
+      status: 1 // 直接发布，设置为 1
+    }, () => {
+      ElMessage.success('文章发布成功！')
+      router.push('/')
+    })
 
-    ElMessage.success('文章发布成功！')
-    // 发布成功后跳转到文章页面或首页
-    // router.push('/')
   } catch (error) {
     ElMessage.error('发布失败，请重试')
+    console.error('发布文章失败：', error)
   } finally {
     publishing.value = false
   }
+}
+
+function publishArticle(articleData, success, failure) {
+  post("/api/articles", articleData, success, failure)
 }
 </script>
 
@@ -249,22 +264,8 @@ const handlePublish = async () => {
 
           <!-- 正文区域 -->
           <!-- TODO 样式栏冻结-->
-          <EditorPage></EditorPage>
-
-          <!-- 发布按钮 -->
-          <!--<el-form-item>
-            <el-button
-                type="primary"
-                @click="handlePublish"
-                :loading="publishing"
-                size="large"
-                style="width: 120px;"
-            >
-              {{ publishing ? '发布中...' : '立即发布' }}
-            </el-button>
-          </el-form-item>-->
+          <EditorPage v-model="articleForm.content"></EditorPage>
         </el-form>
-
         <XSpacer height="20px"/>
       </div>
     </div>
@@ -299,15 +300,6 @@ const handlePublish = async () => {
   gap: 8px;
 }
 
-/* .tag-item {
-  margin: 0;
-} */
-
-/* :deep(.el-input__count) {
-  color: #a8abb2;
-  background: transparent;
-} */
-
 :deep(.el-tag) {
   --el-tag-bg-color: var(--dark-bg-s);
   --el-tag-border-color: var(--dark-line-m);
@@ -322,38 +314,6 @@ const handlePublish = async () => {
 :deep(.el-form-item__label) {
   color: #fff;
 }
-
-/* :deep(.el-input__inner) {
-  border-radius: 10px;
-} */
-
-/* :deep(.el-input__wrapper) {
-  --el-input-border-color: #43454a;
-  --el-input-bg-color: transparent;
-  --el-input-text-color: #fff;
-  --el-input-placeholder-color: #a8abb2;
-}
-
-:deep(.el-input__wrapper.is-focus) {
-  --el-input-focus-border-color: #fff;
-} */
-
-/* 移除默认边框 */
-/* :deep(.el-input__wrapper) {
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  padding-left: 0 !important;
-  background: transparent !important;
-} */
-
-/* 添加底部边框 */
-/* :deep(.el-input__wrapper) {
-  border-bottom: 2px solid #43454a !important;
-}
-
-:deep(.el-input__wrapper.is-focus) {
-  border-bottom-color: #a8abb2 !important;
-} */
 
 /* 设置输入框 */
 :deep(.el-input__inner) {
@@ -401,29 +361,6 @@ const handlePublish = async () => {
 
 /* 设置下拉框 */
 /* TODO 聚焦边框颜色 */
-/* :deep(.el-select) {
-  --el-select-bg-color: transparent;
-}
-
-:deep(.el-select:hover .el-input__wrapper) {
-  border-color: #a8abb2 !important;
-}
-
-:deep(.el-select .el-input__wrapper.is-focus) {
-  border-color: #fff !important;
-}
-
-:deep(.el-select-dropdown) {
-  --el-bg-color: #2d2d2d;
-}
-
-:deep(.el-select-dropdown__item) {
-  color: #fff;
-}
-
-:deep(.el-select-dropdown__item.hover) {
-  background-color: #3a3a3a;
-} */
 
 .custom-select-dropdown .el-select-dropdown__item {
   color: #a8abb2; /* 选项文字颜色 */
@@ -433,11 +370,4 @@ const handlePublish = async () => {
   background-color: rgba(255, 255, 255, 0.2) !important; /* 选项悬停背景色 */
   color: #fff !important; /* 选项悬停文字颜色 */
 }
-
-/* 设置下拉选项在被选中时的样式 */
-/* .custom-select-dropdown .el-select-dropdown__item.selected {
-  background-color: rgba(182, 227, 255, 0.2) !important;
-  color: var(--theme-color) !important;
-  font-weight: 600;
-} */
 </style>
