@@ -12,7 +12,7 @@ import '@/aethex/foundation/typography/font.css'
 import '@/aethex/foundation/typography/layout.css'
 import '@/aethex/foundation/ui/components.css'
 import '@/aethex/foundation/texture/texture.css'
-import '@/aethex/foundation/colors/element.css'
+// import '@/aethex/foundation/colors/element.css'
 import 'element-plus/theme-chalk/dark/css-vars.css' // 引入暗黑主题
 import ElementPlus from 'element-plus'
 

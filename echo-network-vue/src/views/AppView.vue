@@ -9,8 +9,7 @@ import router from "@/router/index.js";
 import {computed, onMounted, ref} from "vue";
 import XMultiFunBar from "@/aethex/components/XMultiFunBar.vue";
 import XBackgroundSpace from "@/aethex/components/XBackgroundSpace.vue";
-import BlogArticleList from "@/views/app/ArticleList.vue";
-import RankingList from "@/views/app/RankingList.vue";
+import {ElMessage} from "element-plus";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
@@ -50,7 +49,7 @@ const navButtons = computed(() => {
         type: 'image',
         imageUrl: userInfo.value?.avatarUrl || './res/ic_avatar_default.svg',
         alt: '用户头像',
-        title: userInfo.value?.nickname || userInfo.value?.username || '用户菜单',
+        title: '用户菜单',
         dropdownItems: [
           {text: '个人资料', id: 'profile'},
           {text: '账户设置', id: 'settings'},
@@ -66,7 +65,7 @@ const navButtons = computed(() => {
         content: '登录',
         title: '登录账号',
         dropdownItems: [
-          {text: '用户登录', id: 'user-login'},
+          {text: '用户登录', id: 'login'},
           {text: '注册账号', id: 'register'}
         ]
       }
@@ -79,7 +78,7 @@ function checkLoginStatus() {
   isLoggedIn.value = isAuthorized()
   if (isLoggedIn.value) {
     userInfo.value = getUserInfo()
-    // console.log('用户信息：', userInfo.value) // 调试用
+    // console.log(userInfo.value)
   }
 }
 
@@ -89,37 +88,45 @@ onMounted(() => {
 })
 
 const handleNavItemClick = (data) => {
-  // console.log('导航项点击：', data)
   const item = data.item;
   if (item.id === 'about') {
     router.push('/welcome')
+  } else if (item.id === 'circle') {
+    router.push('/circle')
+  } else if (item.id === 'board') {
+    ElMessage.warning('功能正在施工中')
+    setTimeout(() => {
+      router.go(0)
+    }, 1000)
+  } else {
+    router.push('/')
   }
 }
 
 const handleLogoClick = () => {
-  // console.log('Logo 点击')
   router.push('/welcome')
 }
 
 const handleButtonClick = (data) => {
-  // console.log('按钮点击：', data)
   const button = data.button
 
   if (button.type === 'text' && button.content === '登录') {
     router.push('/auth/login')
   } else if (button.type === 'text' && button.title === '发布文章') {
     router.push('/editor')
+  } else if (button.type === 'image' && button.title === '用户菜单') {
+    router.push({
+      name: 'user',
+      params: {id: userInfo.value.id}
+    })
   }
-
-  // TODO 添加其他处理逻辑
 }
 
 const handleDropdownItemClick = (data) => {
-  // console.log('下拉菜单项点击：', data)
   const dropdownItems = data.item;
 
   switch (dropdownItems.id) {
-    case 'user-login':
+    case 'login':
       router.push('/auth/login')
       break
     case 'register':
@@ -131,16 +138,25 @@ const handleDropdownItemClick = (data) => {
     case 'write':
       router.push('/editor')
       break
-    default:
-      console.log('点击了菜单项：', dropdownItems.id)
+    case 'profile':
+      router.push({
+        name: 'user',
+        params: {id: userInfo.value.id}
+      })
+      break
+    case 'settings':
+      router.push('/settings')
+      break
   }
-
-  // TODO 添加其他处理逻辑
 }
 
 const handleSearch = (data) => {
-  console.log('搜索关键词：', data.query)
-  // TODO 执行搜索逻辑
+  router.push({
+    path: '/search',
+    query: {
+      q: data.query
+    }
+  })
 }
 
 function userLogout() {
@@ -170,45 +186,14 @@ function userLogout() {
   />
 
   <XBackgroundSpace>
-    <div class="root">
-      <!--<div class="content">-->
-      <div class="article-list">
-        <BlogArticleList/>
-      </div>
-
-      <div class="ranking-list">
-        <RankingList/>
-      </div>
-      <!--</div>-->
+    <div class="app">
+      <RouterView></RouterView>
     </div>
   </XBackgroundSpace>
 </template>
 
 <style scoped>
-.root {
+.app {
   width: 100%;
-  box-sizing: border-box;
-  padding: 105px 80px 100px 80px;
-  display: flex;
-  justify-content: center;
-  align-items: start;
-}
-
-/* .content {
-  margin-left: 80px;
-  margin-right: 80px;
-  margin-bottom: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: start;
-} */
-
-.article-list {
-  width: 60%;
-  margin-right: 20px;
-}
-
-.ranking-list {
-  width: 40%;
 }
 </style>

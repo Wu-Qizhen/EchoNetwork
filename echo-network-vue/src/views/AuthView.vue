@@ -91,7 +91,7 @@ onUnmounted(() => {
           <img src="../../res/logo_echo_network_with_double_text.svg" alt="">
         </div>
         <transition :name="transitionName" mode="out-in">
-          <router-view></router-view>
+          <RouterView></RouterView>
         </transition>
         <!--<router-view v-slot="{ Component }">
               <transition :name="transitionName" mode="out-in">

@@ -8,7 +8,7 @@ import {isAuthorized} from "@/net/index.js";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
-    scrollBehavior(to, from, savedPosition) {
+    scrollBehavior() {
         return {
             top: 0,
             behavior: 'smooth'
@@ -54,17 +54,66 @@ const router = createRouter({
             children: [
                 {
                     path: '/',
-                    name: 'home-page',
-                    component: () => import('@/views/app/ArticleList.vue')
-                }
+                    name: 'app-home',
+                    component: () => import('@/views/app/HomePage.vue')
+                },
+                {
+                    path: '/circle/:id',
+                    name: 'app-circle',
+                    props: true,
+                    component: () => import('@/views/app/CirclePage.vue')
+                },
             ]
         },
 
         // 用户
         {
-            path: '/user',
+            path: '/user/:id',
             name: 'user',
-            component: () => import('@/views/UserDisplayView.vue')
+            props: true,
+            component: () => import('@/views/UserView.vue'),
+            children: [
+                {
+                    path: '',
+                    name: 'user-articles',
+                    component: () => import('@/views/user/ArticlePage.vue')
+                },
+                {
+                    path: 'followers',
+                    name: 'user-followers',
+                    component: () => import('@/views/user/FollowerPage.vue')
+                },
+                {
+                    path: 'following',
+                    name: 'user-following',
+                    component: () => import('@/views/user/FollowingPage.vue')
+                },
+                {
+                    path: 'stars',
+                    name: 'user-stars',
+                    component: () => import('@/views/user/StarPage.vue')
+                },
+                {
+                    path: 'circles',
+                    name: 'user-circles',
+                    component: () => import('@/views/user/CirclePage.vue')
+                },
+            ]
+        },
+
+        // 设置
+        {
+            path: '/settings',
+            name: 'settings',
+            component: () => import('@/views/SettingsView.vue')
+        },
+
+        // 文章
+        {
+            path: '/article/:id',
+            name: 'article',
+            component: () => import('@/views/ArticleView.vue'),
+            props: true
         },
 
         // 编辑
@@ -72,6 +121,13 @@ const router = createRouter({
             path: '/editor',
             name: 'editor',
             component: () => import('@/views/EditView.vue'),
+        },
+
+        // 搜索
+        {
+            path: '/search',
+            name: 'search',
+            component: () => import('@/views/SearchView.vue'),
         },
 
         // 协议
@@ -100,6 +156,7 @@ router.beforeEach((to, from, next) => {
         'privacy-policy'
     ];*/
 
+    // TODO 游客不允许进入编辑页面
     const blackList = [
         'editor',
     ];

@@ -80,7 +80,7 @@ import {Aim, GoldMedal, Loading, Medal, Sunny, Trophy, View} from '@element-plus
 const rankingList = ref([])
 const loading = ref(true)
 
-// 模拟API请求
+// 模拟 API 请求
 const fetchHotRanking = async () => {
   try {
     // 模拟API请求延迟
@@ -127,7 +127,7 @@ const handleArticleClick = (article) => {
 // 格式化热度值
 const formatHeat = (heat) => {
   if (heat >= 10000) {
-    return (heat / 10000).toFixed(1) + '万'
+    return (heat / 10000).toFixed(1) + 'W'
   }
   return heat.toString()
 }
@@ -135,7 +135,7 @@ const formatHeat = (heat) => {
 // 格式化阅读量
 const formatViewCount = (count) => {
   if (count >= 10000) {
-    return (count / 10000).toFixed(1) + '万'
+    return (count / 10000).toFixed(1) + 'W'
   }
   return count.toString()
 }

@@ -11,3 +11,10 @@ function getArticles(params, success, failure = defaultFailure) {
     const url = `/api/articles?${queryString}`;
     get(url, success, failure)
 }
+
+function getUser(pathString, success, failure = defaultFailure) {
+    const url = `/api/users/${pathString}`;
+    get(url, success, failure)
+}
+
+export {getArticles, getUser}

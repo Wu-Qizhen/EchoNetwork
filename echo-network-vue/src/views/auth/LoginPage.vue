@@ -79,10 +79,6 @@ function userLogin() {
 </script>
 
 <template>
-  <!--<div class="login-card">-->
-  <!--<div class="login-logo">
-        <img src="../../../res/logo_echo_network_with_double_text.svg" alt="">
-      </div>-->
   <div class="page-container">
     <div class="login-form">
       <p class="theme" style="font-size: 28px">登录</p>
@@ -157,7 +153,6 @@ function userLogin() {
       </el-button>
     </div>
   </div>
-  <!--</div>-->
 </template>
 
 <style scoped>
@@ -173,18 +168,6 @@ a:hover {
   text-decoration: underline;
 }
 
-/* .login-card {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  margin: 0 0;
-  text-align: center;
-  justify-content: flex-start;
-  align-content: center;
-  align-items: center;
-} */
-
 .page-container {
   width: 100%;
 }
@@ -198,53 +181,30 @@ a:hover {
   align-items: center;
 }
 
-/* .login-logo {
-  margin: 30px;
-  align-self: flex-start;
-}
-
-.login-logo img {
-  height: 60px;
-} */
-
 .login-input {
   width: 350px;
   height: 50px;
 }
 
 :deep(.el-input__wrapper) {
-  --el-input-border-color: #43454a;
-  --el-input-bg-color: #1e1f22;
+  --el-input-border-color: var(--dark-line-s);
+  --el-input-bg-color: var(--dark-bg-s);
   --el-input-text-color: #fff;
-  --el-input-placeholder-color: #a8abb2;
+  --el-input-placeholder-color: var(--dark-content-m);
 }
 
 :deep(.el-input__wrapper.is-focus) {
   --el-input-focus-border-color: #fff;
-  /* --el-input-focus-bg-color: #43454a; */
 }
 
 :deep(.el-checkbox__inner) {
-  border-color: #43454a;
-  --el-checkbox-bg-color: #1e1f22;
-  /* --el-checkbox-text-color: #fff; */
+  border-color: var(--dark-line-s);
+  --el-checkbox-bg-color: var(--dark-bg-s);
 }
 
 :deep(.el-checkbox__label) {
-  color: #a8abb2;
+  color: var(--dark-content-m);
 }
-
-/* :deep(.el-checkbox__input.is-checked) {
-
-} */
-
-/* :deep(.el-checkbox__input.is-checked +){
-
-} */
-
-/* :deep(.el-checkbox__input.is-checked + .el-checkbox__label) {
-  --el-checkbox-checked-text-color: #fff;
-} */
 
 .login-button {
   width: 350px;

@@ -187,6 +187,7 @@ function doReset() {
                 </el-input>
               </el-col>
               <el-col :span="6">
+                <!-- TODO 布尔值问题-->
                 <el-button style="height: 50px" type="primary" @click="askCode" :disabled="!isEmailValid||coldTime">
                   {{ coldTime > 0 ? `${coldTime} 秒后再试` : "获取验证码" }}
                 </el-button>
@@ -282,18 +283,18 @@ function doReset() {
   border-color: transparent;
 }
 
-.steps-bar ::v-deep .el-step__title.is-process {
+.steps-bar :deep(.el-step__title.is-process) {
   color: #409eff;
   font-weight: bold;
 }
 
 .steps-bar :deep(.el-step__head.is-wait) {
   background-color: transparent;
-  border-color: gray;
+  border-color: var(--dark-content-s);
 }
 
-.steps-bar ::v-deep .el-step__title.is-wait {
-  color: gray;
+.steps-bar :deep(.el-step__title.is-wait) {
+  color: var(--dark-content-s);
 }
 
 .steps-bar :deep(.el-step__head.is-success) {
@@ -301,7 +302,7 @@ function doReset() {
   border-color: #69aa65;
 }
 
-.steps-bar ::v-deep .el-step__title.is-success {
+.steps-bar :deep(.el-step__title.is-success) {
   color: #69aa65;
 }
 
@@ -310,16 +311,16 @@ function doReset() {
 }
 
 .steps-bar :deep(.is-wait .el-step__icon-inner) {
-  color: gray;
+  color: var(--dark-content-s);
 }
 
 .steps-bar :deep(.is-success .el-step__icon-inner) {
   color: #69aa65;
 }
 
-.steps-bar ::v-deep .el-step__line {
+.steps-bar :deep(.el-step__line) {
   margin: 0 30px;
-  background-color: gray;
+  background-color: var(--dark-content-s);
 }
 
 .reset-form {
@@ -342,10 +343,10 @@ function doReset() {
 }
 
 :deep(.el-input__wrapper) {
-  --el-input-border-color: #43454a;
-  --el-input-bg-color: #1e1f22;
+  --el-input-border-color: var(--dark-line-s);
+  --el-input-bg-color: var(--dark-bg-s);
   --el-input-text-color: #fff;
-  --el-input-placeholder-color: #a8abb2;
+  --el-input-placeholder-color: var(--dark-content-m);
 }
 
 :deep(.el-input__wrapper.is-focus) {

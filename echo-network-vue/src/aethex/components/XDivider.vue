@@ -29,7 +29,7 @@ export default {
     // 文字颜色
     labelColor: {
       type: String,
-      default: 'gray'
+      default: 'var(--dark-line-m)'
     },
     // 内容位置，左 left，右 right，中 center
     contentPosition: {
@@ -44,7 +44,7 @@ export default {
     // 分割线颜色
     lineColor: {
       type: String,
-      default: 'gray'
+      default: 'var(--dark-line-m)'
     }
   },
   watch: {

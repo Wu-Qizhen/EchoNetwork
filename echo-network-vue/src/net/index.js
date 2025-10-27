@@ -23,19 +23,6 @@ function deleteAccessToken() {
     sessionStorage.removeItem(authItemName)
 }
 
-/*function storeAccessToken(token, remember, expire) {
-    const authObj = {
-        token: token,
-        expire: expire
-    }
-    const str = JSON.stringify(authObj);
-    if (remember) {
-        localStorage.setItem(authItemName, str)
-    } else {
-        sessionStorage.setItem(authItemName, str)
-    }
-}*/
-
 function storeAccessToken(token, remember, expire, user) {
     const authObj = {
         token: token,
@@ -103,24 +90,6 @@ function internalGet(url, header, success, failure, /*error = defaultError*/) {
     })
 }
 
-/*function login(username, password, remember, success, failure = defaultFailure) {
-    internalPost(
-        "/api/users/login",
-        {username, password},
-        {
-            'Content-Type': 'application/json' // 将表单字段转换为 key=value&key2=value2 的字符串形式进行传输
-            // 'Content-Type': 'application/x-www-form-urlencoded' // 将表单字段转换为 key=value&key2=value2 的字符串形式进行传输
-        },
-        (data) => {
-            const loginData = data.data;
-            const expireTimestamp = new Date(loginData.expire).getTime();
-            storeAccessToken(loginData.token, remember, expireTimestamp)
-            // storeAccessToken(data.token, remember, data.expire)
-            ElMessage.success(`登录成功，欢迎 ${data.username}`)
-            success(data)
-        }, failure)
-}*/
-
 function login(username, password, remember, success, failure = defaultFailure) {
     internalPost(
         "/api/users/login",
@@ -136,14 +105,6 @@ function login(username, password, remember, success, failure = defaultFailure) 
             success(data)
         }, failure)
 }
-
-/*function logout(success, failure = defaultFailure) {
-    get("/api/users/logout", () => {
-        deleteAccessToken()
-        ElMessage.success("登出成功")
-        success()
-    }, failure)
-}*/
 
 function logout(success) {
     // 先调用后端登出接口
@@ -168,21 +129,9 @@ function isAuthorized() {
     return takeAccessToken() !== null
 }
 
-/*function getUserInfo() {
-    const str = localStorage.getItem(authItemName) || sessionStorage.getItem(authItemName)
-    if (!str) return null
-    const authObj = JSON.parse(str);
-    if (authObj.expire < Date.now()) {
-        deleteAccessToken()
-        ElMessage.error("登录已过期，请重新登录")
-        return null
-    }
-    return authObj.user
-}*/
-
 function getUserInfo() {
     const authObj = takeAccessToken()
     return authObj ? authObj.user : null
 }
 
-export {login, logout, isAuthorized, get, post, defaultFailure, getUserInfo}
+export {login, logout, getUserInfo, isAuthorized, get, post, defaultFailure}

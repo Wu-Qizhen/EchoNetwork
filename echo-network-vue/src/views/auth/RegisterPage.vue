@@ -297,10 +297,10 @@ a:hover {
 }
 
 :deep(.el-input__wrapper) {
-  --el-input-border-color: #43454a;
+  --el-input-border-color: var(--dark-line-s);
   --el-input-bg-color: #1e1f22;
   --el-input-text-color: #fff;
-  --el-input-placeholder-color: #a8abb2;
+  --el-input-placeholder-color: var(--dark-content-m);
 }
 
 :deep(.el-input__wrapper.is-focus) {
@@ -308,12 +308,12 @@ a:hover {
 }
 
 :deep(.el-checkbox__inner) {
-  border-color: #43454a;
-  --el-checkbox-bg-color: #1e1f22;
+  border-color: var(--dark-line-s);
+  --el-checkbox-bg-color: var(--dark-bg-s);
 }
 
 :deep(.el-checkbox__label) {
-  color: #a8abb2;
+  color: var(--dark-content-m);
 }
 
 .register-button {
