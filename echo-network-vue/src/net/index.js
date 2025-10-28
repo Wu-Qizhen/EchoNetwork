@@ -62,6 +62,24 @@ function post(url, data, success, failure = defaultFailure) {
     internalPost(url, data, accessHeader(), success, failure)
 }
 
+function del(url, success, failure = defaultFailure) {
+    internalDelete(url, accessHeader(), success, failure)
+}
+
+function internalDelete(url, header, success, failure) {
+    axios.delete(url, {headers: header})
+        .then(({data}) => {
+            if (data.code === 200) {
+                success(data.data)
+            } else {
+                failure(data.message, data.code, url)
+            }
+        }).catch(err => {
+        const errorMessage = err.response?.data?.message || err.message || "请求失败";
+        failure(errorMessage, err.response?.status, url)
+    })
+}
+
 function internalPost(url, data, header, success, failure) {
     axios.post(url, data, {headers: header})
         .then(({data}) => { // 等价于 then((response) => { const data = response.data; ... })
@@ -134,4 +152,4 @@ function getUserInfo() {
     return authObj ? authObj.user : null
 }
 
-export {login, logout, getUserInfo, isAuthorized, get, post, defaultFailure}
+export {login, logout, getUserInfo, isAuthorized, get, post, del, defaultFailure}

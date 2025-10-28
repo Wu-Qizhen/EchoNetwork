@@ -11,6 +11,7 @@ Created by Wu Qizhen on 2025.10.9
     border-radius: 30px;
     font-weight: 400;
     transition: all 0.3s ease;
+    cursor: pointer;
     box-shadow: 0 4px 10px var(--theme-color-fade);
 }
 

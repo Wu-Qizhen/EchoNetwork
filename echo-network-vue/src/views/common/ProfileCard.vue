@@ -5,61 +5,101 @@
 -->
 <template>
   <div class="profile-card">
-    <div class="avatar-container">
-      <img
-          :src="avatarUrl || '../res/ic_avatar_default.svg'"
-          :alt="username"
-          class="user-avatar"
-      />
+    <!-- 骨架屏 -->
+    <div v-if="internalLoading" class="skeleton-container">
+      <el-skeleton animated class="profile-skeleton">
+        <template #template>
+          <div class="skeleton-avatar">
+            <el-skeleton-item variant="circle" class="avatar-skeleton"/>
+          </div>
+          <div class="skeleton-content">
+            <el-skeleton-item variant="h3" class="name-skeleton"/>
+            <el-skeleton-item variant="text" class="username-skeleton"/>
+            <el-skeleton-item variant="text" class="bio-skeleton"/>
+            <el-skeleton-item variant="text" class="bio-skeleton short"/>
+            <div class="skeleton-button">
+              <el-skeleton-item variant="button" class="button-skeleton"/>
+            </div>
+            <div class="skeleton-meta">
+              <el-skeleton-item variant="text" class="meta-skeleton"/>
+              <el-skeleton-item variant="text" class="meta-skeleton"/>
+              <el-skeleton-item variant="text" class="meta-skeleton"/>
+              <el-skeleton-item variant="text" class="meta-skeleton"/>
+              <el-skeleton-item variant="text" class="meta-skeleton"/>
+            </div>
+          </div>
+        </template>
+      </el-skeleton>
     </div>
 
-    <div class="user-info">
-      <h1 class="user-nickname">{{ nickname }}</h1>
-      <p class="user-username">{{ username }}</p>
-      <p class="user-bio" v-if="bio">{{ bio }}</p>
+    <!-- 实际内容 -->
+    <div v-else class="profile-content">
+      <div class="avatar-container">
+        <img
+            :src="avatarUrl || '../res/ic_avatar_default.svg'"
+            :alt="username"
+            class="user-avatar"
+        />
+      </div>
 
-      <div
-          class="user-settings btn theme"
-          @click="settings"
-          v-if="isCurrentUser"
-      ><p class="zh">编辑资料</p></div>
+      <div class="user-info protected-content">
+        <h1 class="user-nickname">{{ nickname }}</h1>
+        <p class="user-username">{{ username }}</p>
+        <p class="user-bio" v-if="bio">{{ bio }}</p>
 
-      <!-- TODO 关注、取消关注 -->
+        <div
+            class="user-settings btn theme"
+            @click="settings"
+            v-if="isCurrentUser"
+        ><p class="zh">编辑资料</p></div>
 
-      <XSpacer type="vertical"
-               height="20px"
-               v-if="isCurrentUser"/>
-
-      <div class="profile-meta">
-        <!--<div class="meta-item">
-          <el-icon>
-            <Message/>
-          </el-icon>
-          <span>{{ userData.email }}</span>
-        </div>-->
-        <div class="meta-item">
-          <el-icon>
-            <MessageBox/>
-          </el-icon>
-          <span>发表 {{ articleCount }} 篇文章</span>
+        <div
+            class="user-settings btn theme"
+            @click="toggleFollow"
+            v-if="!isCurrentUser"
+        >
+          <p class="zh">{{ following ? '已关注' : '关注' }}</p>
         </div>
-        <div class="meta-item">
-          <el-icon>
-            <User/>
-          </el-icon>
-          <span>拥有 {{ followerCount }} 个粉丝</span>
-        </div>
-        <div class="meta-item">
-          <el-icon>
-            <Calendar/>
-          </el-icon>
-          <span>加入于 {{ formattedCreateTime }}</span>
-        </div>
-        <div class="meta-item">
-          <el-icon>
-            <Clock/>
-          </el-icon>
-          <span>最后登录于 {{ formattedLastLoginTime }}</span>
+
+        <XSpacer type="vertical" height="20px"/>
+
+        <div class="profile-meta">
+          <!--<div class="meta-item">
+            <el-icon>
+              <Message/>
+            </el-icon>
+            <span>{{ userData.email }}</span>
+          </div>-->
+          <div class="meta-item">
+            <el-icon>
+              <MessageBox/>
+            </el-icon>
+            <span>发表 {{ articleCount }} 篇文章</span>
+          </div>
+          <div class="meta-item">
+            <el-icon>
+              <User/>
+            </el-icon>
+            <span>拥有 {{ followerCount }} 个粉丝</span>
+          </div>
+          <div class="meta-item">
+            <el-icon>
+              <CollectionTag/>
+            </el-icon>
+            <span>关注了 {{ followingCount }} 个用户</span>
+          </div>
+          <div class="meta-item">
+            <el-icon>
+              <Calendar/>
+            </el-icon>
+            <span>加入于 {{ formattedCreateTime }}</span>
+          </div>
+          <div class="meta-item">
+            <el-icon>
+              <Clock/>
+            </el-icon>
+            <span>最后登录于 {{ formattedLastLoginTime }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -67,51 +107,67 @@
 </template>
 
 <script setup>
-import {computed, defineProps} from 'vue'
-import {ElIcon} from 'element-plus'
-import {Calendar, Clock, User, MessageBox} from '@element-plus/icons-vue'
+import {computed, onMounted, ref, watch} from 'vue'
+import {ElIcon, ElMessage} from 'element-plus'
+import {Calendar, Clock, User, MessageBox, CollectionTag} from '@element-plus/icons-vue'
 import XSpacer from "@/aethex/components/XSpacer.vue";
 import router from "@/router/index.js";
+import {followUser, getUser, unfollowUser} from "@/net/request.js";
 
 // 定义组件属性
 const props = defineProps({
-  userData: {
-    type: Object,
-    required: true,
-    default: () => ({})
+  userId: {
+    type: [String, Number],
+    required: true
   },
   currentUserId: {
-    type: Number,
-    required: true,
+    type: [Number, String],
+    required: false,
     default: -1
   }
 })
 
-// 使用计算属性提供默认值，避免直接访问 null 的属性
-const userDataSafe = computed(() => props.userData || {})
+// 内部状态
+const internalLoading = ref(true)
+const userData = ref({
+  id: -1,
+  username: '',
+  email: '',
+  nickname: '',
+  bio: '',
+  avatarUrl: '',
+  role: 1,
+  articleCount: 0,
+  followerCount: 0,
+  followingCount: 0,
+  createTime: '',
+  lastLoginTime: '',
+  following: false
+})
 
 // 计算属性：用户基本信息
-const avatarUrl = computed(() => userDataSafe.value.avatarUrl || '../res/ic_avatar_default.svg')
-const nickname = computed(() => userDataSafe.value.nickname || '未知用户')
-const username = computed(() => userDataSafe.value.username || '')
-const bio = computed(() => userDataSafe.value.bio || '')
-const articleCount = computed(() => userDataSafe.value.articleCount || 0)
-const followerCount = computed(() => userDataSafe.value.followerCount || 0)
-const followingCount = computed(() => userDataSafe.value.followingCount || 0)
-const userId = computed(() => userDataSafe.value.id)
+const avatarUrl = computed(() => userData.value.avatarUrl || '/res/ic_avatar_default.svg')
+const nickname = computed(() => userData.value.nickname || '未知用户')
+const username = computed(() => userData.value.username || '')
+const bio = computed(() => userData.value.bio || '')
+const articleCount = computed(() => userData.value.articleCount || 0)
+const followerCount = computed(() => userData.value.followerCount || 0)
+const followingCount = computed(() => userData.value.followingCount || 0)
+const userIdComputed = computed(() => userData.value.id)
+const following = computed(() => userData.value.following)
 
 // 计算属性：检查是否为当前用户
 const isCurrentUser = computed(() => {
-  return props.currentUserId && userId.value && props.currentUserId === userId.value
+  return props.currentUserId && userIdComputed.value && props.currentUserId === userIdComputed.value
 })
 
 // 计算属性：格式化时间
 const formattedCreateTime = computed(() => {
-  return formatDate(userDataSafe.value.createTime)
+  return formatDate(userData.value.createTime)
 })
 
 const formattedLastLoginTime = computed(() => {
-  return formatRelativeTime(userDataSafe.value.lastLoginTime)
+  return formatRelativeTime(userData.value.lastLoginTime)
 })
 
 // 格式化日期
@@ -144,8 +200,75 @@ const formatRelativeTime = (dateString) => {
   }
 }
 
+// 获取用户数据
+const fetchUserData = async () => {
+  internalLoading.value = true
+
+  try {
+    await getUser(`${props.userId}`, (data) => {
+      if (data && data.user) {
+        userData.value = {
+          ...userData.value,
+          ...data.user,
+          following: data.following
+        }
+      }
+    })
+  } catch (error) {
+    console.error('获取用户数据失败：', error)
+    ElMessage.error('获取用户信息失败')
+  } finally {
+    // 强制显示骨架屏至少 1 秒
+    setTimeout(() => {
+      internalLoading.value = false
+    }, 1000)
+  }
+}
+
+// 监听 userId 变化
+watch(() => props.userId, (newUserId) => {
+  if (newUserId) {
+    fetchUserData()
+  }
+})
+
+// 初始化加载
+onMounted(() => {
+  fetchUserData()
+})
+
 function settings() {
   router.push('/settings')
+}
+
+/*function follow() {
+  followUser(userData.value.id, () => {
+    ElMessage.success('关注成功')
+  })
+}
+
+function unfollow() {
+  unfollowUser(userData.value.id, () => {
+    ElMessage.success('取消关注成功')
+  })
+}*/
+
+function toggleFollow() {
+  if (following.value) {
+    // 当前已关注，执行取消关注
+    unfollowUser(userData.value.id, () => {
+      // 更新本地状态
+      userData.value.following = false
+      ElMessage.success('取消关注成功')
+    })
+  } else {
+    // 当前未关注，执行关注
+    followUser(userData.value.id, () => {
+      // 更新本地状态
+      userData.value.following = true
+      ElMessage.success('关注成功')
+    })
+  }
 }
 </script>
 
@@ -158,6 +281,84 @@ function settings() {
   flex-direction: column;
   align-items: start;
   justify-content: flex-start;
+}
+
+/* 骨架屏样式 */
+.skeleton-container {
+  width: 100%;
+  animation: fadeIn 0.3s ease-in;
+}
+
+.profile-skeleton {
+  width: 100%;
+  padding: 0;
+}
+
+.skeleton-avatar {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 20px;
+}
+
+.avatar-skeleton {
+  width: 250px;
+  height: 250px;
+}
+
+.skeleton-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.name-skeleton {
+  width: 60%;
+  height: 28px;
+  margin-bottom: 8px;
+}
+
+.username-skeleton {
+  width: 40%;
+  height: 20px;
+  margin-bottom: 12px;
+}
+
+.bio-skeleton {
+  width: 90%;
+  height: 16px;
+  margin-bottom: 8px;
+}
+
+.bio-skeleton.short {
+  width: 70%;
+}
+
+.skeleton-button {
+  margin: 15px 0;
+}
+
+.button-skeleton {
+  width: 100%;
+  height: 40px;
+  border-radius: 8px;
+}
+
+.skeleton-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* margin-top: 20px; */
+}
+
+.meta-skeleton {
+  width: 100%;
+  height: 16px;
+}
+
+/* 实际内容样式 */
+.profile-content {
+  width: 100%;
+  animation: fadeIn 0.5s ease-in;
 }
 
 .avatar-container {
@@ -238,4 +439,26 @@ function settings() {
     font-size: 18px;
   }
 } */
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Element Plus 深色模式样式覆盖 */
+:deep(.el-skeleton) {
+  --el-skeleton-color: var(--dark-bg-l);
+  --el-skeleton-to-color: var(--dark-bg-xl);
+}
+
+:deep(.el-skeleton__item) {
+  background: linear-gradient(90deg, var(--dark-bg-l) 25%, var(--dark-bg-xl) 37%, var(--dark-bg-l) 63%);
+}
 </style>

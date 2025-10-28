@@ -113,12 +113,20 @@ const handleButtonClick = (data) => {
   if (button.type === 'text' && button.content === '登录') {
     router.push('/auth/login')
   } else if (button.type === 'text' && button.title === '发布文章') {
-    router.push('/editor')
+    // router.push('/editor')
+    window.open(
+        '/editor',
+        '_blank'
+    )
   } else if (button.type === 'image' && button.title === '用户菜单') {
-    router.push({
+    /*router.push({
       name: 'user',
       params: {id: userInfo.value.id}
-    })
+    })*/
+    window.open(
+        '/user/' + userInfo.value.id,
+        '_blank'
+    )
   }
 }
 
@@ -136,27 +144,40 @@ const handleDropdownItemClick = (data) => {
       userLogout()
       break
     case 'write':
-      router.push('/editor')
+      // router.push('/editor')
+      window.open(
+          '/editor',
+          '_blank'
+      )
       break
     case 'profile':
-      router.push({
+      /*router.push({
         name: 'user',
         params: {id: userInfo.value.id}
-      })
+      })*/
+      window.open(
+          '/user/' + userInfo.value.id,
+          '_blank'
+      )
       break
     case 'settings':
-      router.push('/settings')
+      // router.push('/settings')
+      window.open()
       break
   }
 }
 
 const handleSearch = (data) => {
-  router.push({
+  /*router.push({
     path: '/search',
     query: {
       q: data.query
     }
-  })
+  })*/
+  window.open(
+      '/search?q=' + data.query,
+      '_blank'
+  )
 }
 
 function userLogout() {

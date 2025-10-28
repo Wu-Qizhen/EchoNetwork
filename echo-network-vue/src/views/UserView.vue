@@ -6,21 +6,19 @@
 <script setup>
 import XMultiFunBar from "@/aethex/components/XMultiFunBar.vue";
 import XBackgroundSpace from "@/aethex/components/XBackgroundSpace.vue";
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {getUserInfo, isAuthorized, logout} from "@/net/index.js";
 import router from "@/router/index.js";
-import ProfileCard from "@/views/common/ProfileCard.vue";
 import XTabBar from "@/aethex/components/XTabBar.vue";
 import XSpacer from "@/aethex/components/XSpacer.vue";
 import {useRoute} from "vue-router";
-import {getUser} from "@/net/request.js";
+import ProfileCard from "@/views/common/ProfileCard.vue";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
 
 const route = useRoute();
 const userId = computed(() => route.params.id);
-const userData = ref(null)
 
 // 检查登录状态
 function checkLoginStatus() {
@@ -33,7 +31,6 @@ function checkLoginStatus() {
 // 初始化时检查登录状态
 onMounted(() => {
   checkLoginStatus()
-  getUserData()
 })
 
 const navItems = ref([
@@ -45,7 +42,7 @@ const navItems = ref([
 const navButtons = computed(() => [
   {
     type: 'image',
-    imageUrl: userInfo.value?.avatarUrl || '../res/ic_avatar_default.svg',
+    imageUrl: userInfo.value?.avatarUrl || '/res/ic_avatar_default.svg',
     alt: '用户头像',
     title: '用户菜单',
     dropdownItems: [
@@ -72,10 +69,14 @@ const handleButtonClick = (data) => {
 
   if (button.type === 'image' && button.title === '用户菜单') {
     if (userInfo.value) {
-      router.push({
+      /*router.push({
         name: 'user',
         params: {id: userInfo.value.id}
-      })
+      })*/
+      window.open(
+          '/user/' + userInfo.value.id,
+          '_blank'
+      )
     }
   }
 }
@@ -89,10 +90,14 @@ const handleDropdownItemClick = (data) => {
       break
     case 'profile':
       if (userInfo.value) {
-        router.push({
+        /*router.push({
           name: 'user',
           params: {id: userInfo.value.id}
-        })
+        })*/
+        window.open(
+            '/user/' + userInfo.value.id,
+            '_blank'
+        )
       }
       break
     case 'settings':
@@ -101,14 +106,13 @@ const handleDropdownItemClick = (data) => {
   }
 }
 
+// TODO 指标 BUG
 const tabItems = computed(() => {
   if (!userInfo.value) {
     return [
       {text: '文章', id: 'articles'},
       {text: '圈子', id: 'circles'},
       {text: '粉丝', id: 'followers'},
-      {text: '关注', id: 'following'},
-      {text: '收藏', id: 'stars'},
     ]
   }
 
@@ -118,21 +122,21 @@ const tabItems = computed(() => {
       {text: '文章', id: 'articles'},
       {text: '圈子', id: 'circles'},
       {text: '粉丝', id: 'followers'},
+      {text: '关注', id: 'following'},
+      {text: '收藏', id: 'stars'},
     ]
   } else {
     return [
       {text: '文章', id: 'articles'},
       {text: '圈子', id: 'circles'},
       {text: '粉丝', id: 'followers'},
-      {text: '关注', id: 'following'},
-      {text: '收藏', id: 'stars'},
     ]
   }
 })
 
 const handleTabItemClick = (data) => {
   const item = data.item;
-  const targetUserId = userData.value?.id || userId.value;
+  const targetUserId = userId.value;
 
   if (item.id === 'articles') {
     router.push(`/user/${targetUserId}`);
@@ -154,26 +158,13 @@ function userLogout() {
     router.push("/")
   })
 }
-
-function getUserData() {
-  getUser(`${userId.value}`, (data) => {
-    userData.value = data.user
-    userData.value.isFollowing = data.isFollowing
-  })
-}
-
-/*watch(userInfo, (newValue) => {
-  if (newValue) {
-    console.log('用户信息已加载：', newValue)
-  }
-})*/
 </script>
 
 <template>
   <XMultiFunBar
       :nav-items="navItems"
       :nav-buttons="navButtons"
-      logo-image="../res/logo_echo_network_with_text.svg"
+      logo-image="/res/logo_echo_network_with_text.svg"
       :logo-title="'回声网络'"
       :logo-alt="'回声网络'"
       @nav-item-click="handleNavItemClick"
@@ -186,8 +177,8 @@ function getUserData() {
     <div class="user">
       <div class="profile-area">
         <ProfileCard
-            :user-data="userData"
-            :current-user-id="userInfo.value?.id"
+            :user-id="userId"
+            :current-user-id="userInfo?.id"
         ></ProfileCard>
       </div>
 

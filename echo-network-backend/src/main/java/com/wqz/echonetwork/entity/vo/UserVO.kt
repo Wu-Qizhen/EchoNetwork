@@ -19,7 +19,7 @@ data class UserVO(
     var followingCount: Int,
     var articleCount: Int,
     var createTime: LocalDateTime,
-    var lasLoginTime: LocalDateTime,
+    var lastLoginTime: LocalDateTime,
     var role: Int,
     var status: Int
 )

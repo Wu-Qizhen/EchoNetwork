@@ -126,8 +126,8 @@ function userLogin() {
         <el-col>
           <el-form-item style="margin-bottom: 5px">
             <el-checkbox v-model="form.agree">已阅读并同意回声网络 <a
-                @click="router.push('/service-terms')">使用协议</a> 和 <a
-                @click="router.push('/privacy-policy')">隐私政策</a>
+                @click="window.open('/service-terms', '_blank')">使用协议</a> 和 <a
+                @click="window.open('/privacy-policy', '_blank')">隐私政策</a>
             </el-checkbox>
           </el-form-item>
 

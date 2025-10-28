@@ -33,21 +33,20 @@
     </div>
 
     <!-- 文章列表 -->
-    <div v-else class="article-list">
+    <div v-else>
       <!-- 空状态 -->
       <div v-if="!loading && articleList.length === 0" class="empty-state">
         <el-empty description="这里什么也没有"/>
       </div>
 
       <!-- 文章卡片 -->
-      <!-- TODO 交互效果 -->
       <div
           v-for="article in articleList"
           :key="article.id"
           class="article-card"
           @click="goToArticle(article.id)"
       >
-        <el-card shadow="hover" class="dark-card">
+        <el-card class="dark-card">
           <!-- 文章头部 -->
           <div class="article-header">
             <div class="author-info">
@@ -144,7 +143,6 @@ import {ElMessage} from 'element-plus'
 import {ChatDotRound, Star, View} from '@element-plus/icons-vue'
 import {getArticles} from "@/net/request.js";
 import XDivider from "@/aethex/components/XDivider.vue";
-import router from "@/router/index.js";
 import {extractSummary} from "@/utils/htmlToText.js";
 
 const props = defineProps({
@@ -311,10 +309,11 @@ const getArticleSummary = (content) => {
 }
 
 const goToArticle = (articleId) => {
-  router.push({
+  /*router.push({
     name: 'article',
     params: {id: articleId}
-  });
+  });*/
+  window.open(`/article/${articleId}`, '_blank')
 }
 
 onMounted(() => {
@@ -357,11 +356,15 @@ onUnmounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   margin-bottom: 20px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform-origin: center;
 }
 
-/* .dark-card :hover{
-  border-color: white;
-} */
+.dark-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgb(255, 255, 255, 0.1);
+}
 
 .dark-card :deep(.el-card__body) {
   padding: 20px;
@@ -529,7 +532,7 @@ onUnmounted(() => {
 .stat-item {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 /* 空状态和没有更多数据样式 */

@@ -26,7 +26,7 @@
     </div>
 
     <!-- 用户列表 -->
-    <div v-else class="user-list">
+    <div v-else>
       <!-- 空状态 -->
       <div v-if="!loading && userList.length === 0" class="empty-state">
         <el-empty :description="emptyText"/>
@@ -39,11 +39,11 @@
           class="user-card"
           @click="goToUser(user.id)"
       >
-        <el-card shadow="hover" class="dark-card user-card-content">
+        <el-card class="dark-card">
           <div class="user-info">
             <el-avatar
                 :size="48"
-                :src="user.avatarUrl || '../res/ic_avatar_default.svg'"
+                :src="user.avatarUrl || '/res/ic_avatar_default.svg'"
                 class="user-avatar"
             />
             <div class="user-details">
@@ -97,7 +97,6 @@ import {onMounted, onUnmounted, ref, watch} from 'vue'
 import {ElMessage} from 'element-plus'
 import {Document, User} from '@element-plus/icons-vue'
 import XDivider from "@/aethex/components/XDivider.vue";
-import router from "@/router/index.js";
 
 const props = defineProps({
   // 请求配置
@@ -244,10 +243,12 @@ const handleScroll = () => {
 
 // 跳转到用户详情页
 const goToUser = (userId) => {
-  router.push({
+  /*router.push({
     name: 'user',
     params: {id: userId}
-  });
+  });*/
+  /*router.push(`/user/${userId}`)*/
+  window.open(`/user/${userId}`, '_blank')
 }
 
 onMounted(() => {
@@ -269,7 +270,6 @@ onUnmounted(() => {
   width: 100%;
   margin: 0 auto;
   padding: 20px;
-  min-height: 60vh;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   backdrop-filter: blur(10px);
@@ -280,26 +280,25 @@ onUnmounted(() => {
 .dark-mode {
   background-color: rgba(30, 35, 47, 0.6);
   color: var(--dark-content-m);
-  min-height: 60vh;
 }
 
 .dark-card {
   background-color: rgba(45, 45, 45, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 10px;
-  margin-bottom: 12px;
-  transition: all 0.3s ease;
+  margin-bottom: 20px;
   cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform-origin: center;
 }
 
 .dark-card:hover {
-  border-color: rgba(255, 255, 255, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgb(255, 255, 255, 0.1);
 }
 
 .dark-card :deep(.el-card__body) {
-  padding: 16px 20px;
+  padding: 15px 20px;
 }
 
 /* 骨架屏样式 */
@@ -327,6 +326,8 @@ onUnmounted(() => {
 }
 
 .skeleton-info {
+  display: flex;
+  flex-direction: column;
   flex: 1;
 }
 
@@ -342,11 +343,6 @@ onUnmounted(() => {
 }
 
 /* 用户列表样式 */
-.user-card-content {
-  background-color: transparent;
-  border: none;
-}
-
 .user-info {
   display: flex;
   align-items: center;
@@ -378,9 +374,9 @@ onUnmounted(() => {
   line-height: 1.4;
   margin-bottom: 6px;
 
-  /* 最多显示两行 */
+  /* 最多显示一行 */
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -389,19 +385,19 @@ onUnmounted(() => {
   display: flex;
   gap: 16px;
   font-size: 12px;
-  color: var(--dark-content-s);
+  color: var(--dark-content-m);
 }
 
 .stat-item {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 5px;
 }
 
 /* 空状态和没有更多数据样式 */
 .empty-state, .no-more {
   text-align: center;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 /* Element Plus 组件深色模式样式覆盖 */
