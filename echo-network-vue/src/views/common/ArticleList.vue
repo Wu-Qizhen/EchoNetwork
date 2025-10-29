@@ -142,9 +142,27 @@
 import {onMounted, onUnmounted, ref, watch} from 'vue'
 import {ElMessage} from 'element-plus'
 import {ChatDotRound, Star, View} from '@element-plus/icons-vue'
-import {getArticles} from "@/net/request.js";
+import {getArticles, getLikedArticles, getStarredArticles} from "@/net/request.js";
 import XDivider from "@/aethex/components/XDivider.vue";
 import {extractSummary} from "@/utils/htmlToText.js";
+
+/*const props = defineProps({
+  // 请求参数配置
+  requestConfig: {
+    type: Object,
+    default: () => ({})
+  },
+  // 是否启用分页
+  enablePagination: {
+    type: Boolean,
+    default: true
+  },
+  // 没有文章时显示的文字
+  emptyText: {
+    type: String,
+    default: '暂无文章'
+  }
+})*/
 
 const props = defineProps({
   // 请求参数配置
@@ -161,6 +179,11 @@ const props = defineProps({
   emptyText: {
     type: String,
     default: '暂无文章'
+  },
+  // 文章类型：normal-普通文章，liked-点赞文章，starred-收藏文章
+  articleType: {
+    type: String,
+    default: 'normal'
   }
 })
 
@@ -190,7 +213,7 @@ const getRequestParams = (page = currentPage.value) => {
 }
 
 // API 请求
-const fetchArticles = async (isLoadMore = false) => {
+/*const fetchArticles = async (isLoadMore = false) => {
   if (loading.value) return
 
   loading.value = true
@@ -223,10 +246,75 @@ const fetchArticles = async (isLoadMore = false) => {
     loading.value = false
     // initialLoading.value = false 强制显示骨架屏
   }
+}*/
+
+// API 请求
+const fetchArticles = async (isLoadMore = false) => {
+  if (loading.value) return
+
+  loading.value = true
+
+  try {
+    switch (props.articleType) {
+      case 'liked':
+        await getLikedArticles((data) => {
+          articleList.value = data
+          hasMore.value = false
+          totalPages.value = 1
+          currentPage.value = 1
+        })
+        loading.value = false
+        initialLoading.value = false
+        break
+      case 'starred':
+        await getStarredArticles((data) => {
+          articleList.value = data
+          hasMore.value = false  // 收藏列表通常不分页
+          totalPages.value = 1   // 设置总页数
+          currentPage.value = 1  // 重置当前页
+        })
+        loading.value = false  // 关键：手动设置加载完成
+        initialLoading.value = false  // 确保初始加载也结束
+        break
+      default:
+        const params = getRequestParams(isLoadMore ? currentPage.value : 1)
+
+        await getArticles(params, (data) => {
+          if (isLoadMore) {
+            articleList.value.push(...data.list)
+          } else {
+            articleList.value = data.list
+          }
+
+          // 如果启用分页，处理分页逻辑
+          if (props.enablePagination) {
+            totalPages.value = data.totalPages
+            currentPage.value = data.page
+            hasMore.value = currentPage.value < totalPages.value
+          } else {
+            // 不启用分页时，直接标记没有更多数据
+            hasMore.value = false
+          }
+        })
+    }
+  } catch (error) {
+    ElMessage.error('获取文章失败，请稍后重试')
+    console.error('获取文章失败：', error)
+  } finally {
+    loading.value = false
+  }
 }
 
 // 监听请求配置变化，重新加载数据
-watch(() => props.requestConfig, () => {
+/*watch(() => props.requestConfig, () => {
+  currentPage.value = 1
+  articleList.value = []
+  initialLoading.value = true
+  fetchArticles()
+}, {deep: true})*/
+
+// 监听请求配置和文章类型变化，重新加载数据
+watch([() => props.requestConfig, () => props.articleType], () => {
   currentPage.value = 1
   articleList.value = []
   initialLoading.value = true
@@ -358,6 +446,7 @@ onUnmounted(() => {
   border-radius: 10px;
   margin-bottom: 20px;
   cursor: pointer;
+  box-shadow: none;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   transform-origin: center;
 }

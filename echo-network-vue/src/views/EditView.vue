@@ -187,7 +187,7 @@ function publishArticle(articleData, success, failure) {
   <XMultiFunBar
       :nav-items="navItems"
       :nav-buttons="navButtons"
-      logo-image="./res/logo_echo_network_with_text.svg"
+      logo-image="/res/logo_echo_network_with_text.svg"
       :logo-title="'回声网络'"
       :logo-alt="'回声网络'"
       @nav-item-click="handleNavItemClick"
@@ -300,6 +300,10 @@ function publishArticle(articleData, success, failure) {
   gap: 8px;
 }
 
+/* .title-input {
+  width: 100%;
+} */
+
 :deep(.el-tag) {
   --el-tag-bg-color: var(--dark-bg-s);
   --el-tag-border-color: var(--dark-line-m);
@@ -338,6 +342,7 @@ function publishArticle(articleData, success, failure) {
 
 :deep(.title-input .el-input__inner) {
   height: 50px;
+  font-weight: bold;
 }
 
 :deep(.title-input .el-input__clear) {

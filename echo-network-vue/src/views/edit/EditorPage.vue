@@ -73,7 +73,6 @@ onMounted(() => {
   }, 1500)
 })
 
-// TODO 代码块文字重叠
 // 工具栏配置
 const toolbarConfig: Partial<IToolbarConfig> = {
   excludeKeys: [

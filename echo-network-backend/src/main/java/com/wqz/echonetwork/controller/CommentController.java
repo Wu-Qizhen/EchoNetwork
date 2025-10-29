@@ -123,7 +123,7 @@ public class CommentController extends HttpServlet {
 
         // 解析分页参数
         int page = 1;
-        int size = 20;
+        int size = 10;
 
         String pageStr = request.getParameter("page");
         String sizeStr = request.getParameter("size");

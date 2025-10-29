@@ -478,7 +478,7 @@ public class ArticleController extends HttpServlet {
         }
 
         int page = 1;
-        int size = 20;
+        int size = 10;
 
         String pageStr = request.getParameter("page");
         String sizeStr = request.getParameter("size");
@@ -511,7 +511,7 @@ public class ArticleController extends HttpServlet {
     private void handleGetCircleArticles(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Long circleId = Long.parseLong(request.getParameter("circleId"));
         int page = 1;
-        int size = 20;
+        int size = 10;
 
         String pageStr = request.getParameter("page");
         String sizeStr = request.getParameter("size");

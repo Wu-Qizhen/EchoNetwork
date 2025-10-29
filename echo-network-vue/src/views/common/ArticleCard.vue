@@ -130,7 +130,7 @@ import {useRoute} from 'vue-router'
 import {ElMessage} from 'element-plus'
 import {Star, Coin} from '@element-plus/icons-vue'
 import router from "@/router/index.js";
-import {getArticle, likeArticle, starArticle, unlikeArticle} from "@/net/request.js";
+import {getArticle, likeArticle, starArticle, unlikeArticle, unstarArticle} from "@/net/request.js";
 
 /*const props = defineProps({
   articleId: {
@@ -363,7 +363,7 @@ const handleCollect = () => {
         }
     )
   } else {
-    unlikeArticle(article.value.id, () => {
+    unstarArticle(article.value.id, () => {
       article.value.starCount = (article.value.starCount || 0) - 1
       ElMessage.error('已取消收藏')
     })
@@ -387,8 +387,8 @@ onMounted(() => {
   padding: 30px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  /* backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); */
   min-height: 60vh;
 }
 
@@ -735,10 +735,9 @@ onMounted(() => {
     padding: 16px;
   }
 
-  .dark-card {
+  /* .dark-card {
     padding: 16px;
-  }
-
+  } */
   .article-title {
     font-size: 24px;
   }

@@ -15,7 +15,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -113,12 +115,14 @@ public class CircleController extends HttpServlet {
     private void handleGetCircles(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 解析查询参数
         int page = 1;
-        int size = 20;
+        int size = 10;
         String keyword = null;
+        Long userId = null;
 
         String pageStr = request.getParameter("page");
         String sizeStr = request.getParameter("size");
         String keywordParam = request.getParameter("keyword");
+        String userIdStr = request.getParameter("userId");
 
         if (pageStr != null) page = Integer.parseInt(pageStr);
         if (sizeStr != null) size = Integer.parseInt(sizeStr);
@@ -126,10 +130,34 @@ public class CircleController extends HttpServlet {
             keyword = keywordParam.trim();
         }
 
-        // 获取当前用户ID
+        if (userIdStr != null && !userIdStr.trim().isEmpty()) {
+            try {
+                userId = Long.parseLong(userIdStr.trim());
+            } catch (NumberFormatException e) {
+                WriterUtil.paramsError(response);
+                return;
+            }
+        }
+
+        // 获取当前用户 ID
         Long currentUserId = JwtUtil.getCurrentUserId(request);
 
-        PageResult<CircleListItemVO> pageResult = circleService.getCircles(page, size, keyword, currentUserId);
+        PageResult<CircleListItemVO> pageResult;
+
+        // 如果提供了 userId 参数，获取该用户加入的圈子列表
+        if (userId != null) {
+            List<CircleListItemVO> userCircles = circleService.getUserCircles(userId);
+            // 模拟分页处理
+            int total = userCircles.size();
+            int fromIndex = (page - 1) * size;
+            int toIndex = Math.min(fromIndex + size, total);
+            List<CircleListItemVO> pagedCircles = fromIndex < total ? userCircles.subList(fromIndex, toIndex) : new ArrayList<>();
+
+            pageResult = new PageResult<>(pagedCircles, total, page, size);
+        } else {
+            // 否则获取所有圈子列表
+            pageResult = circleService.getCircles(page, size, keyword, currentUserId);
+        }
 
         // 构建响应
         Map<String, Object> data = new HashMap<>();
@@ -224,7 +252,7 @@ public class CircleController extends HttpServlet {
 
         // 解析分页参数
         int page = 1;
-        int size = 20;
+        int size = 10;
 
         String pageStr = request.getParameter("page");
         String sizeStr = request.getParameter("size");

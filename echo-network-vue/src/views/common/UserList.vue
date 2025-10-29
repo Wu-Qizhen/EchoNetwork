@@ -289,6 +289,7 @@ onUnmounted(() => {
   border-radius: 10px;
   margin-bottom: 20px;
   cursor: pointer;
+  box-shadow: none;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   transform-origin: center;
 }

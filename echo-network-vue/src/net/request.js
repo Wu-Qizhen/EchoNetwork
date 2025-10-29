@@ -57,6 +57,27 @@ function unstarArticle(articleId, success, failure = defaultFailure) {
     del(url, {}, success, failure)
 }
 
+function getCircles(params, success, failure = defaultFailure) {
+    const queryString = new URLSearchParams(params).toString();
+    const url = `/api/circles?${queryString}`;
+    get(url, success, failure)
+}
+
+function joinCircle(circleId, success, failure = defaultFailure) {
+    const url = `/api/circles/${circleId}/join`;
+    post(url, {}, success, failure)
+}
+
+function getLikedArticles(success, failure = defaultFailure) {
+    const url = `/api/articles/liked`;
+    get(url, success, failure)
+}
+
+function getStarredArticles(success, failure = defaultFailure) {
+    const url = `/api/articles/starred`;
+    get(url, success, failure)
+}
+
 export {
     getArticles,
     getUser,
@@ -67,5 +88,9 @@ export {
     likeArticle,
     unlikeArticle,
     starArticle,
-    unstarArticle
+    unstarArticle,
+    getCircles,
+    joinCircle,
+    getLikedArticles,
+    getStarredArticles
 }

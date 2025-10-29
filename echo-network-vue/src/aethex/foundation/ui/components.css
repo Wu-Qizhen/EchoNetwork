@@ -15,23 +15,35 @@ Created by Wu Qizhen on 2025.10.9
     box-shadow: 0 4px 10px var(--theme-color-fade);
 }
 
-.btn.theme {
+.btn-s {
+    display: inline-block;
+    padding: 6px 12px;
+    color: white;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 30px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 10px var(--theme-color-fade);
+}
+
+.btn.theme, .btn-s.theme {
     background-color: var(--theme-color);
 }
 
-.btn.lightblue {
+.btn.lightblue, .btn-s.lightblue {
     background-color: rgba(0, 199, 228);
 }
 
-.btn.green {
+.btn.green, .btn-s.green {
     background-color: rgba(82, 224, 166);
 }
 
-.btn.yellow {
+.btn.yellow, .btn-s.yellow {
     background-color: rgba(253, 205, 34);
 }
 
-.btn:hover {
+.btn:hover, .btn-s:hover {
     background-color: var(--theme-color-darken);
     color: rgba(255, 255, 255, 0.7);
     transform: translateY(-2px);

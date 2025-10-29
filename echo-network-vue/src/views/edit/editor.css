@@ -392,7 +392,7 @@
     cursor: pointer;
     font-weight: 400;
     height: 32px;
-    padding: 4.5px 15px;
+    padding: 5px 15px;
     text-align: center;
     touch-action: manipulation;
     transition: all .3s cubic-bezier(.645, .045, .355, 1);
@@ -409,7 +409,7 @@
     border-radius: 5px;
     color: var(--w-e-toolbar-color);
     font-variant: tabular-nums;
-    padding: 4.5px 11px;
+    padding: 5px 11px;
     transition: all .3s;
     width: 100%
 }
@@ -451,7 +451,7 @@ body .w-e-modal, body .w-e-modal * {
 .w-e-text-container [data-slate-editor] code {
     background-color: var(--w-e-textarea-slight-bg-color);
     border-radius: 5px;
-    font-family: monospace;
+    font-family: monospace !important;
     padding: 3px
 }
 
@@ -660,7 +660,7 @@ body .w-e-modal, body .w-e-modal * {
 
 .w-e-text-container [data-slate-editor] pre > code {
     word-wrap: normal;
-    font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+    font-family: "JetBrains Mono Medium", Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace !important;
     -webkit-hyphens: none;
     hyphens: none;
     line-height: 1.5;
@@ -671,18 +671,20 @@ body .w-e-modal, body .w-e-modal * {
     -o-tab-size: 4;
     tab-size: 4;
     text-align: left;
-    text-shadow: 0 1px #fff;
+    /* text-shadow: 0 1px #fff; */ /* 修复内容重叠问题 */
     white-space: pre;
     word-break: normal;
     word-spacing: normal
 }
 
 .w-e-text-container [data-slate-editor] pre > code .token.cdata, .w-e-text-container [data-slate-editor] pre > code .token.comment, .w-e-text-container [data-slate-editor] pre > code .token.doctype, .w-e-text-container [data-slate-editor] pre > code .token.prolog {
-    color: #708090
+    /* color: #708090 */
+    color: var(--dark-content-m)
 }
 
 .w-e-text-container [data-slate-editor] pre > code .token.punctuation {
-    color: #999
+    /* color: #999 */
+    color: #d4b675
 }
 
 .w-e-text-container [data-slate-editor] pre > code .token.namespace {
@@ -690,27 +692,33 @@ body .w-e-modal, body .w-e-modal * {
 }
 
 .w-e-text-container [data-slate-editor] pre > code .token.boolean, .w-e-text-container [data-slate-editor] pre > code .token.constant, .w-e-text-container [data-slate-editor] pre > code .token.deleted, .w-e-text-container [data-slate-editor] pre > code .token.number, .w-e-text-container [data-slate-editor] pre > code .token.property, .w-e-text-container [data-slate-editor] pre > code .token.symbol, .w-e-text-container [data-slate-editor] pre > code .token.tag {
-    color: #905
+    /* color: #905 */
+    color: #27a7b5
 }
 
 .w-e-text-container [data-slate-editor] pre > code .token.attr-name, .w-e-text-container [data-slate-editor] pre > code .token.builtin, .w-e-text-container [data-slate-editor] pre > code .token.char, .w-e-text-container [data-slate-editor] pre > code .token.inserted, .w-e-text-container [data-slate-editor] pre > code .token.selector, .w-e-text-container [data-slate-editor] pre > code .token.string {
-    color: #690
+    /* color: #690 */
+    color: #4e8752
 }
 
 .w-e-text-container [data-slate-editor] pre > code .language-css .token.string, .w-e-text-container [data-slate-editor] pre > code .style .token.string, .w-e-text-container [data-slate-editor] pre > code .token.entity, .w-e-text-container [data-slate-editor] pre > code .token.operator, .w-e-text-container [data-slate-editor] pre > code .token.url {
-    color: #9a6e3a
+    /* color: #9a6e3a */
+    color: #53a5f2
 }
 
 .w-e-text-container [data-slate-editor] pre > code .token.atrule, .w-e-text-container [data-slate-editor] pre > code .token.attr-value, .w-e-text-container [data-slate-editor] pre > code .token.keyword {
-    color: #07a
+    /* color: #07a */
+    color: #c07a4e
 }
 
 .w-e-text-container [data-slate-editor] pre > code .token.class-name, .w-e-text-container [data-slate-editor] pre > code .token.function {
-    color: #dd4a68
+    /* color: #dd4a68 */
+    color: #c177a6;
 }
 
 .w-e-text-container [data-slate-editor] pre > code .token.important, .w-e-text-container [data-slate-editor] pre > code .token.regex, .w-e-text-container [data-slate-editor] pre > code .token.variable {
-    color: #e90
+    /* color: #e90 */
+    color: #bb2929
 }
 
 .w-e-text-container [data-slate-editor] pre > code .token.bold, .w-e-text-container [data-slate-editor] pre > code .token.important {

@@ -12,7 +12,7 @@ import router from "@/router/index.js";
 import XTabBar from "@/aethex/components/XTabBar.vue";
 import XSpacer from "@/aethex/components/XSpacer.vue";
 import {useRoute} from "vue-router";
-import ProfileCard from "@/views/common/ProfileCard.vue";
+import ProfileCard from "@/views/common/UserCard.vue";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
