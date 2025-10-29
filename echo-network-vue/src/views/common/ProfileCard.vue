@@ -259,7 +259,7 @@ function toggleFollow() {
     unfollowUser(userData.value.id, () => {
       // 更新本地状态
       userData.value.following = false
-      ElMessage.success('取消关注成功')
+      ElMessage.error('已取消关注')
     })
   } else {
     // 当前未关注，执行关注

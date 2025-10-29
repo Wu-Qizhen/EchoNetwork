@@ -183,6 +183,6 @@ p {
 }
 
 a {
-  color: #1E90FF;
+  color: var(--theme-color-lighten);
 }
 </style>

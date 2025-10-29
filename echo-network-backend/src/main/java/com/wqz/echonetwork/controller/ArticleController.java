@@ -243,6 +243,17 @@ public class ArticleController extends HttpServlet {
             WriterUtil.writeJson(response, result);
             return;
         }
+
+        String increase = articleService.increaseViewCount(articleId);
+        if (increase != null) {
+            LogUtil.error("文章浏览数增加失败：" + increase);
+            article.setViewCount(article.getViewCount() + 1);
+        }
+
+        ArticleInteractionResponse articleInteractionStatus = articleService.getArticleInteractionStatus(articleId, JwtUtil.getCurrentUserId(request));
+        article.setLiked(articleInteractionStatus.isLiked());
+        article.setStarred(articleInteractionStatus.isStarred());
+
         Result<ArticleVO> result = Result.success("文章获取成功", article);
         WriterUtil.writeJson(response, result);
     }

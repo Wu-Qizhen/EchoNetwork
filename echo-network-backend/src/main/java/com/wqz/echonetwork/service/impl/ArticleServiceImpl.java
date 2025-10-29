@@ -212,6 +212,7 @@ public class ArticleServiceImpl implements ArticleService {
                 }
             }
 
+            // TODO
             return new ArticleVO(
                     articleId,
                     article.getTitle(),
@@ -226,7 +227,9 @@ public class ArticleServiceImpl implements ArticleService {
                     article.getCommentCount(),
                     userVO,
                     circle,
-                    tags
+                    tags,
+                    false,
+                    false
             );
         }
         return null;
@@ -387,6 +390,7 @@ public class ArticleServiceImpl implements ArticleService {
                 return null;
             }
 
+            // TODO
             return new ArticleVO(
                     article.getId(),
                     article.getTitle(),
@@ -401,7 +405,9 @@ public class ArticleServiceImpl implements ArticleService {
                     article.getCommentCount(),
                     userVO,
                     circle,
-                    articleTags
+                    articleTags,
+                    false,
+                    false
             );
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
@@ -563,5 +569,14 @@ public class ArticleServiceImpl implements ArticleService {
         // 批量获取文章详情
         List<Article> articles = articleMapper.findByIds(articleIds);
         return convertToArticleVOList(articles);
+    }
+
+    @Override
+    public String increaseViewCount(Long articleId) {
+        int result = articleMapper.updateViewCount(articleId, 1);
+        if (result > 0) {
+            return null;
+        }
+        return "浏览量更新失败";
     }
 }

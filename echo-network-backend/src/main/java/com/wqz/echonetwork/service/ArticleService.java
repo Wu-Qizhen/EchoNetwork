@@ -46,4 +46,6 @@ public interface ArticleService {
     List<ArticleVO> getLikedArticles(Long userId);
 
     List<ArticleVO> getStarredArticles(Long userId);
+
+    String increaseViewCount(Long articleId);
 }

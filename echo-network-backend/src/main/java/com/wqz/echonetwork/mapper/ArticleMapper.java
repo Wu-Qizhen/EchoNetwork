@@ -587,4 +587,12 @@ public class ArticleMapper {
                 circleId, limit, offset
         );
     }
+
+    public int updateViewCount(Long articleId, int delta) {
+        String sql = delta > 0 ?
+                "UPDATE article SET view_count = view_count + 1 WHERE id = ?" :
+                "UPDATE article SET view_count = GREATEST(0, view_count - 1) WHERE id = ?";
+
+        return SqlUtil.update(sql, articleId);
+    }
 }

@@ -106,7 +106,6 @@ const handleDropdownItemClick = (data) => {
   }
 }
 
-// TODO 指标 BUG
 const tabItems = computed(() => {
   if (!userInfo.value) {
     return [

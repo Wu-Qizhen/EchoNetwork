@@ -52,7 +52,8 @@
             <div class="author-info">
               <el-avatar
                   :size="40"
-                  :src="article.author.avatarUrl || '../res/ic_avatar_default.svg'"
+                  :src="article.author.avatarUrl || '/res/ic_avatar_default.svg'"
+                  style="background-color: var(--dark-bg-l);"
                   class="author-avatar"
               />
               <div class="author-details">

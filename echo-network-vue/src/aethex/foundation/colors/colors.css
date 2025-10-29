@@ -9,6 +9,7 @@ Created by Wu Qizhen on 2025.10.9
     /* --theme-color-darken: rgb(8, 64, 183); */ /* 默认透明度实现暗度效果，可使用实色 */
     --theme-color-darken: rgba(var(--theme-color-rgb), 0.7); /* 用于压暗等微暗场景 */
     --theme-color-fade: rgba(var(--theme-color-rgb), 0.4); /* 用于阴影等更暗场景 */
+    --theme-color-lighten: #1e90ff;
 
     /* 其它自定义颜色 */
     /* TODO 统一颜色 */

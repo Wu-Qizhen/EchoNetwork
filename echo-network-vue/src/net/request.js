@@ -32,4 +32,40 @@ function unfollowUser(userId, success, failure = defaultFailure) {
     del(url, {}, success, failure)
 }
 
-export {getArticles, getUser, getUsers, followUser, unfollowUser}
+function getArticle(articleId, success, failure = defaultFailure) {
+    const url = `/api/articles/${articleId}`;
+    get(url, success, failure)
+}
+
+function likeArticle(articleId, success, failure = defaultFailure) {
+    const url = `/api/articles/${articleId}/like`;
+    post(url, {}, success, failure)
+}
+
+function unlikeArticle(articleId, success, failure = defaultFailure) {
+    const url = `/api/articles/${articleId}/like`;
+    del(url, {}, success, failure)
+}
+
+function starArticle(articleId, success, failure = defaultFailure) {
+    const url = `/api/articles/${articleId}/star`;
+    post(url, {}, success, failure)
+}
+
+function unstarArticle(articleId, success, failure = defaultFailure) {
+    const url = `/api/articles/${articleId}/star`;
+    del(url, {}, success, failure)
+}
+
+export {
+    getArticles,
+    getUser,
+    getUsers,
+    followUser,
+    unfollowUser,
+    getArticle,
+    likeArticle,
+    unlikeArticle,
+    starArticle,
+    unstarArticle
+}

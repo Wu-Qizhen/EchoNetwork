@@ -23,5 +23,7 @@ data class ArticleVO(
     var commentCount: Int, // 评论数
     var author: UserVO, // 作者
     var circle: Circle? = null, // 圈子
-    var tags: MutableSet<Tag> = mutableSetOf() // 标签
+    var tags: MutableSet<Tag> = mutableSetOf(), // 标签
+    var isLiked: Boolean = false,
+    var isStarred: Boolean = false
 )

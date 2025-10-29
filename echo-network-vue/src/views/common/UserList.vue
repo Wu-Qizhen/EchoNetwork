@@ -44,6 +44,7 @@
             <el-avatar
                 :size="48"
                 :src="user.avatarUrl || '/res/ic_avatar_default.svg'"
+                style="background-color: var(--dark-bg-l);"
                 class="user-avatar"
             />
             <div class="user-details">
