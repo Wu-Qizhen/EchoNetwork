@@ -13,7 +13,7 @@ const userId = computed(() => route.params.id);
 </script>
 
 <template>
-  <div class="article-page">
+  <div class="circle-page">
     <CircleList
         :request-config="{
            userId: userId
@@ -25,7 +25,7 @@ const userId = computed(() => route.params.id);
 </template>
 
 <style scoped>
-.article-page {
+.circle-page {
   width: 100%;
   padding-right: 30px;
   padding-bottom: 100px;

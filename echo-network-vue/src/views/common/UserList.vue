@@ -4,7 +4,7 @@
   Created by Wu Qizhen on 2025.10.27
 -->
 <template>
-  <div class="user-container dark-mode">
+  <div class="user-list-container dark-mode">
     <!-- 初始加载骨架屏 -->
     <div v-if="initialLoading" class="skeleton-container">
       <el-skeleton
@@ -267,7 +267,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.user-container {
+.user-list-container {
   width: 100%;
   margin: 0 auto;
   padding: 20px;

@@ -9,9 +9,9 @@ import ArticleList from "@/views/common/ArticleList.vue";
 </script>
 
 <template>
-  <div class="home">
+  <div class="home-page">
     <div class="article-list">
-      <!-- TODO 修复推荐文章获取无限加载-->
+      <!-- TODO 修复分页无限加载 -->
       <ArticleList
           :request-config="{
               sortBy: 'publishTime',
@@ -30,7 +30,7 @@ import ArticleList from "@/views/common/ArticleList.vue";
 </template>
 
 <style scoped>
-.home {
+.home-page {
   width: 100%;
   padding: 105px 80px 100px 80px;
   box-sizing: border-box;

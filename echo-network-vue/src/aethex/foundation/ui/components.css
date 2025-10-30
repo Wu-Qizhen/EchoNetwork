@@ -12,7 +12,6 @@ Created by Wu Qizhen on 2025.10.9
     font-weight: 400;
     transition: all 0.3s ease;
     cursor: pointer;
-    box-shadow: 0 4px 10px var(--theme-color-fade);
 }
 
 .btn-s {
@@ -24,31 +23,62 @@ Created by Wu Qizhen on 2025.10.9
     border-radius: 30px;
     transition: all 0.3s ease;
     cursor: pointer;
-    box-shadow: 0 4px 10px var(--theme-color-fade);
 }
 
 .btn.theme, .btn-s.theme {
     background-color: var(--theme-color);
+    box-shadow: 0 4px 10px var(--theme-color-fade);
 }
 
 .btn.lightblue, .btn-s.lightblue {
     background-color: rgba(0, 199, 228);
+    box-shadow: 0 4px 10px rgba(0, 199, 228, 0.5);
 }
 
 .btn.green, .btn-s.green {
     background-color: rgba(82, 224, 166);
+    box-shadow: 0 4px 10px rgba(82, 224, 166, 0.5);
 }
 
 .btn.yellow, .btn-s.yellow {
     background-color: rgba(253, 205, 34);
+    box-shadow: 0 4px 10px rgba(253, 205, 34, 0.5);
+}
+
+.btn.red, .btn-s.red {
+    background-color: rgb(201, 79, 79);
+    box-shadow: 0 4px 10px rgba(201, 79, 79, 0.5);
 }
 
 .btn:hover, .btn-s:hover {
-    background-color: var(--theme-color-darken);
     color: rgba(255, 255, 255, 0.7);
     transform: translateY(-2px);
     font-weight: 400;
+}
+
+.btn.theme:hover, .btn-s.theme:hover {
+    background-color: var(--theme-color-darken);
     box-shadow: 0 6px 15px var(--theme-color-fade);
+}
+
+.btn.lightblue:hover, .btn-s.lightblue:hover {
+    background-color: rgba(0, 199, 228, 0.7);
+    box-shadow: 0 6px 15px rgba(0, 199, 228, 0.5);
+}
+
+.btn.green:hover, .btn-s.green:hover {
+    background-color: rgba(82, 224, 166, 0.7);
+    box-shadow: 0 6px 15px rgba(82, 224, 166, 0.5);
+}
+
+.btn.yellow:hover, .btn-s.yellow:hover {
+    background-color: rgba(253, 205, 34, 0.7);
+    box-shadow: 0 6px 15px rgba(253, 205, 34, 0.5);
+}
+
+.btn.red:hover, .btn-s.red:hover {
+    background-color: rgba(201, 79, 79, 0.7);
+    box-shadow: 0 6px 15px rgba(201, 79, 79, 0.5);
 }
 
 .card {

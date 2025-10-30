@@ -77,7 +77,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="root">
+  <div class="auth">
     <div class="welcome-bg protected-content">
       <img ref="interactElement" src="../../res/bg_code_intellix_fold.svg" alt="">
     </div>
@@ -108,7 +108,7 @@ body {
   overflow: hidden;
 }
 
-.root {
+.auth {
   width: 100vw;
   height: 100vh;
   position: relative;

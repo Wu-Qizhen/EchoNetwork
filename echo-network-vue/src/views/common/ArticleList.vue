@@ -4,7 +4,7 @@
   Created by Wu Qizhen on 2025.10.13
 -->
 <template>
-  <div class="blog-container dark-mode">
+  <div class="article-list-container dark-mode">
     <!-- 初始加载骨架屏 -->
     <div v-if="initialLoading" class="skeleton-container">
       <el-skeleton
@@ -421,7 +421,7 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.blog-container {
+.article-list-container {
   width: 100%;
   margin: 0 auto;
   padding: 20px;

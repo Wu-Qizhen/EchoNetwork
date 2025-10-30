@@ -4,236 +4,162 @@
   Created by Wu Qizhen on 2025.10.29
 -->
 <template>
-  <div class="circle-container dark-mode">
-    <!-- 初始加载骨架屏 -->
-    <div v-if="initialLoading" class="skeleton-container">
-      <el-skeleton
-          animated
-          class="circle-skeleton"
-      >
+  <div class="circle-card-container">
+    <!-- 骨架屏 -->
+    <div v-if="internalLoading" class="skeleton-container">
+      <el-skeleton animated class="circle-skeleton">
         <template #template>
           <div class="skeleton-header">
+            <div class="skeleton-avatar">
+              <el-skeleton-item variant="circle" class="avatar-skeleton"/>
+            </div>
             <div class="skeleton-header-text">
-              <el-skeleton-item variant="h3" class="title-skeleton"/>
-              <el-skeleton-item variant="text" class="meta-skeleton"/>
+              <el-skeleton-item variant="h3" class="name-skeleton"/>
+              <el-skeleton-item variant="text" class="creator-skeleton"/>
             </div>
           </div>
           <el-skeleton-item variant="text" class="description-skeleton"/>
-          <div class="skeleton-footer">
-            <el-skeleton-item variant="text" class="stat-skeleton"/>
-            <el-skeleton-item variant="text" class="stat-skeleton"/>
-            <el-skeleton-item variant="text" class="action-skeleton"/>
-          </div>
+          <el-skeleton-item variant="text" class="description-skeleton short"/>
         </template>
       </el-skeleton>
     </div>
 
-    <!-- 圈子列表 -->
-    <div v-else>
-      <!-- 空状态 -->
-      <div v-if="!loading && circleList.length === 0" class="empty-state">
-        <el-empty description="暂无圈子"/>
-      </div>
-
-      <!-- 圈子卡片 -->
-      <div
-          v-for="circle in circleList"
-          :key="circle.id"
-          class="circle-card"
-          @click="goToCircle(circle.id)"
-      >
-        <el-card class="dark-card">
-          <!-- 圈子头部 -->
-          <div class="circle-header">
-            <div class="circle-info">
-              <!--<div class="circle-avatar">
-                    <el-avatar
-                        :size="50"
-                        :src="'/res/ic_circle_default.svg'"
-                        style="background-color: var(&#45;&#45;dark-bg-l);"
-                    />
-                  </div>-->
-              <div class="circle-details">
-                <div class="circle-name">
-                  <el-tag type="success"
-                          size="large"
-                          style="
-                          background-color: rgba(var(--theme-color-rgb), 0.2);
-                          border: 1px solid var(--theme-color);
-                          color: #fff;
-                          font-weight: normal;
-                          font-size: 16px"
-                  >{{ circle.name }}
-                  </el-tag>
-                </div>
-                <div class="creator-info">
-                  <span>创建者：{{ circle.creator.nickname }}</span>
-                  <span class="create-time">创建时间：{{ formatTime(circle.createTime) }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="member-status" v-if="circle.member">
-              <el-tag type="success" size="small" v-if="circle.memberRole === 2">圈主</el-tag>
-              <el-tag type="warning" size="small" v-else-if="circle.memberRole === 1">管理员</el-tag>
-              <el-tag type="info" size="small" v-else>成员</el-tag>
-            </div>
-            <div class="member-status" v-else>
-              <div class="btn-s theme" @click.stop="joinCircle(circle.id)">
-                <p class="zh">加入圈子</p>
-              </div>
+    <!-- 实际内容 -->
+    <div v-else class="circle-content">
+      <!-- 圈子头部 -->
+      <div class="circle-header-container">
+        <div class="circle-header">
+          <div class="circle-avatar">
+            <el-avatar
+                :size="80"
+                :src="circleData.avatarUrl || '/res/ic_circle_default.svg'"
+                style="background-color: rgba(var(--theme-color-rgb), 0.3);"
+            />
+          </div>
+          <div class="circle-info">
+            <h1 class="circle-name">{{ circleData.name }}</h1>
+            <div class="creator-info">
+              <span>创建者：<a @click="goToUser" class="creator-link">{{ circleData.creator.nickname }}</a></span>
+              <span class="create-time">创建时间：{{ formatTime(circleData.createTime) }}</span>
             </div>
           </div>
+        </div>
 
-          <!-- 圈子描述 -->
-          <div class="circle-description">
-            <p>{{ circle.description || '这个圈子还没有描述~' }}</p>
+        <!-- 操作按钮 -->
+        <div class="circle-actions">
+          <div
+              class="btn-s theme"
+              @click="handleJoinCircle"
+              v-if="!circleData.member"
+          >
+            <p class="zh">加入圈子</p>
           </div>
+          <div
+              class="btn-s red"
+              @click="handleExitCircle(circleData.id)"
+              v-if="circleData.member"
+          >
+            <p class="zh">退出圈子</p>
+          </div>
+        </div>
 
-          <!-- 圈子底部 -->
-          <div class="circle-footer">
-            <div class="circle-stats">
-              <span class="stat-item">
-                <el-icon><User/></el-icon>
-                {{ circle.memberCount }} 成员
-              </span>
-              <span class="stat-item">
-                <el-icon><Document/></el-icon>
-                {{ circle.articleCount }} 文章
-              </span>
-            </div>
+        <!-- 圈子统计 -->
+        <div class="circle-stats">
+          <div class="stat-item">
+            <el-icon>
+              <User/>
+            </el-icon>
+            <span class="stat-number">{{ circleData.memberCount }}</span>
+            <span class="stat-label">成员</span>
           </div>
-        </el-card>
+          <div class="stat-item">
+            <el-icon>
+              <Document/>
+            </el-icon>
+            <span class="stat-number">{{ circleData.articleCount }}</span>
+            <span class="stat-label">文章</span>
+          </div>
+          <div class="stat-item" v-if="circleData.member">
+            <el-icon>
+              <Star/>
+            </el-icon>
+            <span class="stat-number">{{ getMemberRoleText(circleData.role) }}</span>
+            <span class="stat-label">角色</span>
+          </div>
+        </div>
       </div>
 
-      <!-- 加载更多骨架屏 -->
-      <div v-if="enablePagination && loading && circleList.length > 0" class="loading-more">
-        <el-skeleton
-            v-for="i in 2"
-            :key="`loading-${i}`"
-            animated
-            class="circle-skeleton"
-        >
-          <template #template>
-            <div class="skeleton-header">
-              <div class="skeleton-header-text">
-                <el-skeleton-item variant="h3" class="title-skeleton"/>
-                <el-skeleton-item variant="text" class="meta-skeleton"/>
-              </div>
-            </div>
-            <el-skeleton-item variant="text" class="description-skeleton"/>
-            <div class="skeleton-footer">
-              <el-skeleton-item variant="text" class="stat-skeleton"/>
-              <el-skeleton-item variant="text" class="stat-skeleton"/>
-              <el-skeleton-item variant="text" class="action-skeleton"/>
-            </div>
-          </template>
-        </el-skeleton>
-      </div>
-
-      <!-- 没有更多数据提示 -->
-      <div v-if="!hasMore && circleList.length > 0" class="no-more">
-        <XDivider :label="emptyText"></XDivider>
+      <!-- 圈子描述 -->
+      <div class="circle-description">
+        <p>圈子介绍：{{ circleData.description || '这个圈子还没有描述~' }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {onMounted, onUnmounted, ref, watch} from 'vue'
+import {ref, watch, onMounted} from 'vue'
 import {ElMessage} from 'element-plus'
-import {Document, User} from '@element-plus/icons-vue'
-import {getCircles, joinCircle as joinCircleApi} from "@/net/request.js"
-import XDivider from "@/aethex/components/XDivider.vue"
+import {Document, User, Star} from '@element-plus/icons-vue'
+import {exitCircle, getCircle, joinCircle,} from "@/net/request.js"
 
+// 定义组件属性
 const props = defineProps({
-  // 请求参数配置
-  requestConfig: {
-    type: Object,
-    default: () => ({})
-  },
-  // 是否启用分页
-  enablePagination: {
-    type: Boolean,
-    default: true
-  },
-  // 没有圈子时显示的文字
-  emptyText: {
-    type: String,
-    default: '暂无更多圈子'
+  circleId: {
+    type: [String, Number],
+    required: true
   }
 })
 
-// 响应式数据
-const circleList = ref([])
-const loading = ref(false)
-const initialLoading = ref(true)
-const currentPage = ref(1)
-const hasMore = ref(true)
-const totalPages = ref(0)
-
-// 默认请求参数
-const defaultParams = {
-  page: 1,
-  size: 10
-}
-
-// 获取完整的请求参数
-const getRequestParams = (page = currentPage.value) => {
-  return {
-    ...defaultParams,
-    ...props.requestConfig,
-    page: props.enablePagination ? page : 1,
-    size: props.enablePagination ? (props.requestConfig.size || 10) : (props.requestConfig.limit || 10)
+// 内部状态
+const internalLoading = ref(true)
+const circleData = ref({
+  id: null,
+  name: '',
+  description: '',
+  avatarUrl: '',
+  createTime: '',
+  memberCount: 0,
+  articleCount: 0,
+  member: false,
+  role: null,
+  creator: {
+    id: null,
+    nickname: '',
+    avatarUrl: ''
   }
-}
+})
 
-// API 请求
-const fetchCircles = async (isLoadMore = false) => {
-  if (loading.value) return
-
-  loading.value = true
+// 获取圈子数据
+const fetchCircleData = async () => {
+  internalLoading.value = true
 
   try {
-    // 构建请求参数
-    const params = getRequestParams(isLoadMore ? currentPage.value : 1)
-
-    await getCircles(params, (data) => {
-      if (isLoadMore) {
-        circleList.value.push(...data.list)
-      } else {
-        circleList.value = data.list
-      }
-
-      // 如果启用分页，处理分页逻辑
-      if (props.enablePagination) {
-        totalPages.value = data.totalPages
-        currentPage.value = data.page
-        hasMore.value = currentPage.value < totalPages.value
-      } else {
-        // 不启用分页时，直接标记没有更多数据
-        hasMore.value = false
+    await getCircle(props.circleId, (data) => {
+      if (data) {
+        circleData.value = {...circleData.value, ...data}
       }
     })
   } catch (error) {
-    ElMessage.error('获取圈子列表失败，请稍后重试')
-    console.error('获取圈子列表失败：', error)
+    console.error('获取圈子数据失败：', error)
+    ElMessage.error('获取圈子信息失败')
   } finally {
-    loading.value = false
+    // 强制显示骨架屏至少 1 秒
+    setTimeout(() => {
+      internalLoading.value = false
+    }, 1000)
   }
 }
 
 // 加入圈子
-const joinCircle = async (circleId) => {
+const handleJoinCircle = async () => {
   try {
-    await joinCircleApi(circleId, () => {
+    await joinCircle(circleData.value.id, () => {
       ElMessage.success('成功加入圈子')
-      // 更新当前圈子的成员状态
-      const circle = circleList.value.find(item => item.id === circleId)
-      if (circle) {
-        circle.member = true
-        circle.memberRole = 0 // 普通成员
-        circle.memberCount += 1
-      }
+      // 更新本地状态
+      circleData.value.member = true
+      circleData.value.role = 0 // 普通成员
+      circleData.value.memberCount += 1
     })
   } catch (error) {
     ElMessage.error('加入圈子失败，请稍后重试')
@@ -241,55 +167,51 @@ const joinCircle = async (circleId) => {
   }
 }
 
-// 监听请求配置变化，重新加载数据
-watch(() => props.requestConfig, () => {
-  currentPage.value = 1
-  circleList.value = []
-  initialLoading.value = true
-  fetchCircles()
-}, {deep: true})
-
-// 初始加载
-const initLoad = async () => {
-  // 强制显示 1 秒骨架屏
-  const skeletonTimer = setTimeout(() => {
-    initialLoading.value = false
-    clearTimeout(skeletonTimer)
-  }, 1000)
-
-  // 同时发起数据请求
-  await fetchCircles()
-}
-
-// 加载更多
-const loadMore = async () => {
-  if (!props.enablePagination || loading.value || !hasMore.value) return
-
-  initialLoading.value = true
-
-  // 强制显示加载骨架屏至少 1 秒
-  const loadingTimer = setTimeout(() => {
-    initialLoading.value = false
-    clearTimeout(loadingTimer)
-  }, 1000)
-
-  currentPage.value += 1
-  await Promise.all([fetchCircles(true), loadingTimer])
-}
-
-// 滚动监听
-const handleScroll = () => {
-  if (!props.enablePagination) return
-
-  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-  const windowHeight = window.innerHeight
-  const scrollHeight = document.documentElement.scrollHeight
-
-  // 距离底部 100px 时触发加载更多
-  if (scrollTop + windowHeight >= scrollHeight - 100) {
-    loadMore()
+// 退出圈子
+const handleExitCircle = async (circleId) => {
+  if (circleData.value.role !== 2) {
+    try {
+      await exitCircle(circleId, () => {
+        ElMessage.success('成功退出圈子')
+        // 更新本地状态
+        circleData.value.member = false
+        circleData.value.role = null
+        circleData.value.memberCount -= 1
+      })
+    } catch (error) {
+      ElMessage.error('退出圈子失败，请稍后重试')
+    }
+  } else {
+    ElMessage.error('圈主不能退出圈子')
   }
 }
+
+// 获取成员角色文本
+const getMemberRoleText = (role) => {
+  switch (role) {
+    case 2:
+      return '圈主'
+    case 1:
+      return '管理员'
+    case 0:
+      return '成员'
+    default:
+      return '成员'
+  }
+}
+
+/*const getMemberRoleType = (role) => {
+  switch (role) {
+    case 2:
+      return 'success'
+    case 1:
+      return 'warning'
+    case 0:
+      return 'info'
+    default:
+      return 'info'
+  }
+}*/
 
 // 时间格式化
 const formatTime = (timeString) => {
@@ -311,215 +233,195 @@ const formatTime = (timeString) => {
   }
 }
 
-// 进入圈子详情
-const goToCircle = (circleId) => {
-  window.open(`/circle/${circleId}`, '_blank')
-}
+// 监听 circleId 变化
+watch(() => props.circleId, (newCircleId) => {
+  if (newCircleId) {
+    fetchCircleData()
+  }
+})
 
+// 初始化加载
 onMounted(() => {
-  initLoad()
-  fetchCircles()
-  if (props.enablePagination) {
-    window.addEventListener('scroll', handleScroll)
-  }
+  fetchCircleData()
 })
 
-onUnmounted(() => {
-  if (props.enablePagination) {
-    window.removeEventListener('scroll', handleScroll)
-  }
-})
+function goToUser() {
+  window.open(`/user/${circleData.value.creator.id}`, '_blank')
+}
 </script>
 
 <style scoped>
-.circle-container {
+.circle-card-container {
   width: 100%;
   margin: 0 auto;
-  padding: 20px;
-  min-height: 60vh;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-/* 深色模式样式 */
-.dark-mode {
+  padding: 30px;
   background-color: rgba(30, 35, 47, 0.6);
   color: var(--dark-content-m);
-  min-height: 60vh;
-}
-
-.dark-card {
-  background-color: rgba(45, 45, 45, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  margin-bottom: 20px;
-  cursor: pointer;
-  box-shadow: none;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  transform-origin: center;
-}
-
-.dark-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgb(255, 255, 255, 0.1);
-}
-
-.dark-card :deep(.el-card__body) {
-  padding: 20px;
+  border-radius: 20px;
+  animation: fadeIn 0.5s ease-in;
 }
 
 /* 骨架屏样式 */
-.skeleton-container, .loading-more {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.skeleton-container {
+  width: 100%;
 }
 
 .circle-skeleton {
-  padding: 20px;
-  background-color: rgba(45, 45, 45, 0.7);
-  border-radius: 10px;
+  width: 100%;
 }
 
 .skeleton-header {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+.skeleton-avatar {
+  margin-right: 20px;
+}
+
+.avatar-skeleton {
+  width: 80px;
+  height: 80px;
 }
 
 .skeleton-header-text {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex: 1;
 }
 
-.title-skeleton {
-  width: 30%;
-  height: 24px;
+.name-skeleton {
+  width: 40%;
+  height: 28px;
   margin-bottom: 8px;
 }
 
-.meta-skeleton {
-  width: 50%;
-  height: 16px;
+.creator-skeleton {
+  width: 60%;
+  height: 18px;
 }
 
 .description-skeleton {
   width: 100%;
   height: 18px;
-}
-
-.skeleton-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 16px;
-}
-
-.stat-skeleton {
-  width: 80px;
-  height: 20px;
-  margin-right: 16px;
-}
-
-.action-skeleton {
-  width: 60px;
-  height: 20px;
-}
-
-/* 圈子卡片样式 */
-.circle-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-}
-
-.circle-info {
-  display: flex;
-  align-items: flex-start;
-}
-
-.circle-details {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.circle-name {
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
   margin-bottom: 8px;
 }
 
-.creator-info {
-  font-size: 14px;
-  color: var(--dark-content-m);
+.description-skeleton.short {
+  width: 80%;
+}
+
+/* 实际内容样式 */
+.circle-content {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+}
+
+.circle-header-container {
+  display: flex;
+  align-items: start;
+  justify-content: start;
+  /* margin-bottom: 10px; */
+}
+
+/* 圈子头部样式 */
+.circle-header {
+  display: flex;
+  align-items: flex-start;
+  margin-right: 20px;
+}
+
+.circle-avatar {
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.circle-info {
+  flex: 1;
+}
+
+.circle-name {
+  margin: 0 0 5px 0;
+}
+
+.creator-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 14px;
+  color: var(--dark-content-m);
 }
 
 .create-time {
   font-size: 12px;
 }
 
-.member-status {
-  margin-left: 10px;
+.creator-link {
+  cursor: pointer;
 }
 
+.creator-link:hover {
+  color: var(--theme-color-lighten);
+}
+
+/* 圈子描述样式 */
 .circle-description {
-  margin-bottom: 16px;
   color: var(--dark-content-m);
   line-height: 1.6;
-  font-size: 14px;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-size: 16px;
 }
 
 .circle-description p {
   margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
-.circle-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 16px;
-}
-
+/* 圈子统计样式 */
 .circle-stats {
+  margin-left: auto;
   display: flex;
-  gap: 16px;
-  font-size: 14px;
-  color: var(--dark-content-m);
+  gap: 40px;
 }
 
 .stat-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 10px;
+  color: var(--dark-content-m);
 }
 
-/* 空状态和没有更多数据样式 */
-.empty-state, .no-more {
-  text-align: center;
-  padding: 10px 0;
+.stat-item .el-icon {
+  font-size: 28px;
+  color: var(--theme-color-lighten);
 }
 
-/* Element Plus 组件深色模式样式覆盖 */
+.stat-number {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.stat-label {
+  font-size: 14px;
+}
+
+/* 操作按钮样式 */
+.circle-actions {
+  margin-top: 8px;
+}
+
+/* Element Plus 深色模式样式覆盖 */
 :deep(.el-skeleton) {
   --el-skeleton-color: var(--dark-bg-l);
   --el-skeleton-to-color: var(--dark-bg-xl);
+}
+
+:deep(.el-card) {
+  --el-card-bg-color: var(--dark-bg-s);
+  --el-card-border-color: var(--dark-line-s);
 }
 
 :deep(.el-tag) {
@@ -528,20 +430,15 @@ onUnmounted(() => {
   --el-tag-text-color: var(--dark-content-m);
 }
 
-:deep(.el-card) {
-  --el-card-bg-color: var(--dark-bg-s);
-  --el-card-border-color: var(--dark-line-s);
-}
-
-:deep(.el-button) {
-  --el-button-bg-color: var(--dark-bg-l);
-  --el-button-border-color: var(--dark-line-m);
-  --el-button-text-color: var(--dark-content-m);
-}
-
-:deep(.el-button--primary) {
-  --el-button-bg-color: var(--theme-color-lighten);
-  --el-button-border-color: var(--theme-color-lighten);
-  --el-button-text-color: white;
+/* 动画效果 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

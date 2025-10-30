@@ -4,7 +4,7 @@
   Created by Wu Qizhen on 2025.10.27
 -->
 <template>
-  <div class="article-display-container dark-mode">
+  <div class="article-card-container dark-mode">
     <!-- 加载状态 -->
     <div v-if="loading" class="loading-container">
       <el-skeleton animated>
@@ -381,7 +381,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.article-display-container {
+.article-card-container {
   width: 100%;
   margin: 0 auto;
   padding: 30px;
@@ -731,7 +731,7 @@ onMounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-  .article-display-container {
+  .article-card-container {
     padding: 16px;
   }
 

@@ -28,7 +28,7 @@ const navButtons = computed(() => {
     return [
       /*{
         type: 'icon',
-        svgUrl: './res/ic_message.svg',
+        svgUrl: '/res/ic_message.svg',
         alt: '消息中心',
         title: '消息中心',
         dropdownItems: [
@@ -47,7 +47,7 @@ const navButtons = computed(() => {
       },
       {
         type: 'image',
-        imageUrl: userInfo.value?.avatarUrl || './res/ic_avatar_default.svg',
+        imageUrl: userInfo.value?.avatarUrl || '/res/ic_avatar_default.svg',
         alt: '用户头像',
         title: '用户菜单',
         dropdownItems: [
@@ -193,7 +193,7 @@ function userLogout() {
   <XMultiFunBar
       :nav-items="navItems"
       :nav-buttons="navButtons"
-      logo-image="./res/logo_echo_network_with_text.svg"
+      logo-image="/res/logo_echo_network_with_text.svg"
       :logo-title="'回声网络'"
       :logo-alt="'回声网络'"
       @nav-item-click="handleNavItemClick"

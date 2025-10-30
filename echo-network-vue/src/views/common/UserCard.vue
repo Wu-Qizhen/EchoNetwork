@@ -4,7 +4,7 @@
   Created by Wu Qizhen on 2025.10.22
 -->
 <template>
-  <div class="profile-card">
+  <div class="user-card-container">
     <!-- 骨架屏 -->
     <div v-if="internalLoading" class="skeleton-container">
       <el-skeleton animated class="profile-skeleton">
@@ -273,7 +273,7 @@ function toggleFollow() {
 </script>
 
 <style scoped>
-.profile-card {
+.user-card-container {
   width: 100%;
   padding: 30px;
   margin-bottom: 20px;

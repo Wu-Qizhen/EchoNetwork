@@ -4,7 +4,7 @@
   Created by Wu Qizhen on 2025.10.13
 -->
 <template>
-  <div class="hot-ranking-container dark-mode">
+  <div class="ranking-list-container dark-mode">
     <el-card class="ranking-card" shadow="hover">
       <template #header>
         <div class="card-header">
@@ -147,7 +147,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.hot-ranking-container {
+.ranking-list-container {
   width: 100%;
 }
 

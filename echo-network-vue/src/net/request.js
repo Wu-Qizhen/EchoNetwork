@@ -68,6 +68,11 @@ function joinCircle(circleId, success, failure = defaultFailure) {
     post(url, {}, success, failure)
 }
 
+function exitCircle(circleId, success, failure = defaultFailure) {
+    const url = `/api/circles/${circleId}/exit`;
+    del(url, {}, success, failure)
+}
+
 function getLikedArticles(success, failure = defaultFailure) {
     const url = `/api/articles/liked`;
     get(url, success, failure)
@@ -91,6 +96,12 @@ export {
     unstarArticle,
     getCircles,
     joinCircle,
+    exitCircle,
     getLikedArticles,
     getStarredArticles
+}
+
+export const getCircle = async (circleId, successCallback, failure = defaultFailure) => {
+    const url = `/api/circles/${circleId}`;
+    get(url, successCallback, failure)
 }
