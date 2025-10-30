@@ -105,7 +105,7 @@
       </div>
 
       <!-- 加载更多骨架屏 -->
-      <div v-if="enablePagination && loading && articleList.length > 0" class="loading-more">
+      <div v-if="loadingMore && articleList.length > 0" class="loading-more">
         <el-skeleton
             v-for="i in 2"
             :key="`loading-${i}`"
@@ -190,10 +190,12 @@ const props = defineProps({
 // 响应式数据
 const articleList = ref([])
 const loading = ref(false)
+const loadingMore = ref(false) // 专门用于加载更多的 loading 状态
 const initialLoading = ref(true)
 const currentPage = ref(1)
 const hasMore = ref(true)
 const totalPages = ref(0)
+const isScrolling = ref(false) // 防止滚动事件重复触发
 
 // 默认请求参数
 const defaultParams = {
@@ -203,12 +205,34 @@ const defaultParams = {
 }
 
 // 获取完整的请求参数
-const getRequestParams = (page = currentPage.value) => {
+/*const getRequestParams = (page = currentPage.value) => {
   return {
     ...defaultParams,
     ...props.requestConfig,
     page: props.enablePagination ? page : 1,
     size: props.enablePagination ? (props.requestConfig.size || 10) : (props.requestConfig.limit || 10)
+  }
+}*/
+
+const getRequestParams = (page = currentPage.value) => {
+  const baseParams = {
+    ...defaultParams,
+    ...props.requestConfig
+  }
+
+  if (props.enablePagination) {
+    return {
+      ...baseParams,
+      page: page,
+      size: props.requestConfig.size || defaultParams.size
+    }
+  } else {
+    // 不启用分页时，使用 limit 参数
+    return {
+      ...baseParams,
+      page: 1,
+      size: props.requestConfig.limit || props.requestConfig.size || 20
+    }
   }
 }
 
@@ -248,11 +272,13 @@ const getRequestParams = (page = currentPage.value) => {
   }
 }*/
 
-// API 请求
 const fetchArticles = async (isLoadMore = false) => {
   if (loading.value) return
 
   loading.value = true
+  if (isLoadMore) {
+    loadingMore.value = true
+  }
 
   try {
     switch (props.articleType) {
@@ -263,22 +289,17 @@ const fetchArticles = async (isLoadMore = false) => {
           totalPages.value = 1
           currentPage.value = 1
         })
-        loading.value = false
-        initialLoading.value = false
         break
       case 'starred':
         await getStarredArticles((data) => {
           articleList.value = data
-          hasMore.value = false  // 收藏列表通常不分页
-          totalPages.value = 1   // 设置总页数
-          currentPage.value = 1  // 重置当前页
+          hasMore.value = false
+          totalPages.value = 1
+          currentPage.value = 1
         })
-        loading.value = false  // 关键：手动设置加载完成
-        initialLoading.value = false  // 确保初始加载也结束
         break
       default:
         const params = getRequestParams(isLoadMore ? currentPage.value : 1)
-
         await getArticles(params, (data) => {
           if (isLoadMore) {
             articleList.value.push(...data.list)
@@ -286,13 +307,11 @@ const fetchArticles = async (isLoadMore = false) => {
             articleList.value = data.list
           }
 
-          // 如果启用分页，处理分页逻辑
           if (props.enablePagination) {
             totalPages.value = data.totalPages
             currentPage.value = data.page
             hasMore.value = currentPage.value < totalPages.value
           } else {
-            // 不启用分页时，直接标记没有更多数据
             hasMore.value = false
           }
         })
@@ -300,20 +319,31 @@ const fetchArticles = async (isLoadMore = false) => {
   } catch (error) {
     ElMessage.error('获取文章失败，请稍后重试')
     console.error('获取文章失败：', error)
+    // 出错时重置分页状态
+    if (isLoadMore) {
+      currentPage.value = Math.max(1, currentPage.value - 1)
+    }
   } finally {
-    loading.value = false
+    /*loading.value = false
+    loadingMore.value = false*/
+    // 添加延迟逻辑，确保骨架屏至少显示 1 秒
+    if (isLoadMore) {
+      setTimeout(() => {
+        loading.value = false
+        loadingMore.value = false
+      }, 1000)
+    } else {
+      loading.value = false
+      if (initialLoading.value) {
+        setTimeout(() => {
+          initialLoading.value = false
+        }, 1000)
+      }
+    }
   }
 }
 
 // 监听请求配置变化，重新加载数据
-/*watch(() => props.requestConfig, () => {
-  currentPage.value = 1
-  articleList.value = []
-  initialLoading.value = true
-  fetchArticles()
-}, {deep: true})*/
-
-// 监听请求配置和文章类型变化，重新加载数据
 watch([() => props.requestConfig, () => props.articleType], () => {
   currentPage.value = 1
   articleList.value = []
@@ -323,37 +353,38 @@ watch([() => props.requestConfig, () => props.articleType], () => {
 
 // 初始加载
 const initLoad = async () => {
-  // 强制显示 1 秒骨架屏
-  const skeletonTimer = setTimeout(() => {
-    initialLoading.value = false
-    clearTimeout(skeletonTimer)
-  }, 1000)
-
-  // 同时发起数据请求
+  initialLoading.value = true
   await fetchArticles()
+
+  // 强制显示骨架屏至少 1 秒
+  setTimeout(() => {
+    initialLoading.value = false
+  }, 1000)
 }
 
 // 加载更多
 const loadMore = async () => {
-  if (!props.enablePagination || loading.value || !hasMore.value) return
+  if (!props.enablePagination || loading.value || !hasMore.value || isScrolling.value) {
+    return
+  }
 
-  initialLoading.value = true
-
-  // 强制显示加载骨架屏至少 1 秒
-  const loadingTimer = setTimeout(() => {
-    initialLoading.value = false
-    clearTimeout(loadingTimer)
-  }, 1000)
-
+  isScrolling.value = true
   currentPage.value += 1
-  // requestParams.value.page = currentPage.value
-  // 并行执行数据加载和定时器
-  await Promise.all([fetchArticles(true), loadingTimer])
+
+  // 显示加载更多骨架屏
+  loadingMore.value = true
+
+  await fetchArticles(true)
+
+  // 防止快速滚动重复触发
+  setTimeout(() => {
+    isScrolling.value = false
+  }, 500)
 }
 
-// 滚动监听
+// 滚动监听 - 使用防抖优化
 const handleScroll = () => {
-  if (!props.enablePagination) return
+  if (!props.enablePagination || loading.value || !hasMore.value) return
 
   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
   const windowHeight = window.innerHeight
@@ -398,10 +429,6 @@ const getArticleSummary = (content) => {
 }
 
 const goToArticle = (articleId) => {
-  /*router.push({
-    name: 'article',
-    params: {id: articleId}
-  });*/
   window.open(`/article/${articleId}`, '_blank')
 }
 
@@ -425,7 +452,7 @@ onUnmounted(() => {
   width: 100%;
   margin: 0 auto;
   padding: 20px;
-  min-height: 60vh;
+  /* min-height: 60vh; */
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   backdrop-filter: blur(10px);
@@ -436,7 +463,7 @@ onUnmounted(() => {
 .dark-mode {
   background-color: rgba(30, 35, 47, 0.6);
   color: var(--dark-content-m);
-  min-height: 60vh;
+  /* min-height: 60vh; */
 }
 
 .dark-card {

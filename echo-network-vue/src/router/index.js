@@ -58,7 +58,7 @@ const router = createRouter({
                     component: () => import('@/views/app/HomePage.vue')
                 },
                 {
-                    path: '/circle/:id',
+                    path: '/circle',
                     name: 'app-circle',
                     props: true,
                     component: () => import('@/views/app/CirclePage.vue')
@@ -114,6 +114,14 @@ const router = createRouter({
             name: 'article',
             component: () => import('@/views/ArticleView.vue'),
             props: true
+        },
+
+        // 圈子
+        {
+            path: '/circle/:id',
+            name: 'circle',
+            props: true,
+            component: () => import('@/views/CircleView.vue')
         },
 
         // 编辑

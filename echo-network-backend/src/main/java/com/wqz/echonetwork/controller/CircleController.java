@@ -2,22 +2,18 @@ package com.wqz.echonetwork.controller;
 
 import com.wqz.echonetwork.entity.dto.CircleCreateRequest;
 import com.wqz.echonetwork.entity.dto.CircleJoinResponse;
+import com.wqz.echonetwork.entity.dto.CircleQueryRequest;
 import com.wqz.echonetwork.entity.vo.*;
 import com.wqz.echonetwork.service.CircleService;
 import com.wqz.echonetwork.service.impl.CircleServiceImpl;
-import com.wqz.echonetwork.utils.JsonUtil;
-import com.wqz.echonetwork.utils.JwtUtil;
-import com.wqz.echonetwork.utils.PathUtil;
-import com.wqz.echonetwork.utils.WriterUtil;
+import com.wqz.echonetwork.utils.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -113,6 +109,59 @@ public class CircleController extends HttpServlet {
      * 获取圈子列表
      */
     private void handleGetCircles(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            // 解析查询参数
+            CircleQueryRequest queryRequest = parseQueryParameters(request);
+
+            // 获取当前用户 ID
+            Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+            // 多条件查询
+            PageResult<CircleListItemVO> pageResult = circleService.getCirclesByConditions(queryRequest, currentUserId);
+
+            // 构建响应
+            Map<String, Object> data = new HashMap<>();
+            data.put("list", pageResult.getList());
+            data.put("total", pageResult.getTotal());
+            data.put("page", pageResult.getPage());
+            data.put("size", pageResult.getSize());
+            data.put("totalPages", pageResult.getTotalPages());
+
+            Result<Map<String, Object>> result = Result.success("成功", data);
+            WriterUtil.writeJson(response, result);
+
+        } catch (Exception e) {
+            LogUtil.error("获取圈子列表失败：" + e.getMessage());
+            Result<Object> result = Result.error("获取圈子列表失败");
+            WriterUtil.writeJson(response, result);
+        }
+    }
+
+    private CircleQueryRequest parseQueryParameters(HttpServletRequest request) {
+        CircleQueryRequest queryRequest = new CircleQueryRequest();
+
+        String pageStr = request.getParameter("page");
+        String sizeStr = request.getParameter("size");
+        String keyword = request.getParameter("keyword");
+        String creatorIdStr = request.getParameter("creatorId");
+        String memberIdStr = request.getParameter("memberId");
+        String sortBy = request.getParameter("sortBy");
+        String sortOrder = request.getParameter("sortOrder");
+
+        if (pageStr != null) queryRequest.setPage(Integer.parseInt(pageStr));
+        if (sizeStr != null) queryRequest.setSize(Integer.parseInt(sizeStr));
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            queryRequest.setKeyword("%" + keyword.trim() + "%");
+        }
+        if (creatorIdStr != null) queryRequest.setCreatorId(Long.parseLong(creatorIdStr));
+        if (memberIdStr != null) queryRequest.setMemberId(Long.parseLong(memberIdStr));
+        if (sortBy != null) queryRequest.setSortBy(sortBy);
+        if (sortOrder != null) queryRequest.setSortOrder(sortOrder);
+
+        return queryRequest;
+    }
+
+    /* private void handleGetCircles(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // 解析查询参数
         int page = 1;
         int size = 10;
@@ -169,7 +218,7 @@ public class CircleController extends HttpServlet {
 
         Result<Map<String, Object>> result = Result.success("成功", data);
         WriterUtil.writeJson(response, result);
-    }
+    } */
 
     /**
      * 获取圈子详情

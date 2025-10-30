@@ -2,6 +2,7 @@ package com.wqz.echonetwork.service;
 
 import com.wqz.echonetwork.entity.dto.CircleCreateRequest;
 import com.wqz.echonetwork.entity.dto.CircleJoinResponse;
+import com.wqz.echonetwork.entity.dto.CircleQueryRequest;
 import com.wqz.echonetwork.entity.vo.CircleListItemVO;
 import com.wqz.echonetwork.entity.vo.CircleMemberVO;
 import com.wqz.echonetwork.entity.vo.CircleVO;
@@ -19,6 +20,8 @@ public interface CircleService {
     CircleVO createCircle(CircleCreateRequest request, Long creatorId);
 
     PageResult<CircleListItemVO> getCircles(int page, int size, String keyword, Long currentUserId);
+
+    PageResult<CircleListItemVO> getCirclesByConditions(CircleQueryRequest queryRequest, Long currentUserId);
 
     CircleVO getCircleDetail(Long circleId, Long currentUserId);
 

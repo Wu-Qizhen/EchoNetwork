@@ -9,6 +9,7 @@ import {computed} from "vue";
 import CircleCard from "@/views/common/CircleCard.vue";
 import ArticleList from "@/views/common/ArticleList.vue";
 import XSpacer from "@/aethex/components/XSpacer.vue";
+import CircleList from "@/views/common/CircleList.vue";
 
 const route = useRoute();
 const circleId = computed(() => route.params.id);
@@ -16,28 +17,40 @@ const circleId = computed(() => route.params.id);
 
 <template>
   <div class="circle-page">
-    <CircleCard
-        :circle-id=circleId
-    ></CircleCard>
-
-    <XSpacer height="20px"/>
-
-    <ArticleList
-        :request-config="{
-          circleId: circleId,
-          enablePagination: false
+    <div class="circle-list">
+      <CircleList
+          :request-config="{
+           sortBy: 'createTime',
+           sortOrder: 'DESC',
+           size: 5
         }"
-    ></ArticleList>
+          :enable-pagination="true"
+          :empty-text="'已经到底了'"
+      ></CircleList>
+    </div>
+
+    <div class="recommend-list">
+
+    </div>
   </div>
 </template>
 
 <style scoped>
 .circle-page {
   width: 100%;
-  padding: 105px 20px 100px 20px;
+  padding: 105px 80px 100px 80px;
+  box-sizing: border-box;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: start;
+}
+
+.circle-list {
+  width: 60%;
+  margin-right: 20px;
+}
+
+.recommend-list {
+  width: 40%;
 }
 </style>

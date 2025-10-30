@@ -108,7 +108,7 @@
       </div>
 
       <!-- 加载更多骨架屏 -->
-      <div v-if="enablePagination && loading && circleList.length > 0" class="loading-more">
+      <div v-if="loadingMore && circleList.length > 0" class="loading-more">
         <el-skeleton
             v-for="i in 2"
             :key="`loading-${i}`"
@@ -165,18 +165,19 @@ const props = defineProps({
   }
 })
 
-// 响应式数据
 const circleList = ref([])
 const loading = ref(false)
+const loadingMore = ref(false) // 专门用于加载更多的 loading 状态
 const initialLoading = ref(true)
 const currentPage = ref(1)
 const hasMore = ref(true)
 const totalPages = ref(0)
+const isScrolling = ref(false) // 防止滚动事件重复触发
 
 // 默认请求参数
 const defaultParams = {
   page: 1,
-  size: 10
+  size: 5
 }
 
 // 获取完整的请求参数
@@ -219,8 +220,24 @@ const fetchCircles = async (isLoadMore = false) => {
   } catch (error) {
     ElMessage.error('获取圈子列表失败，请稍后重试')
     console.error('获取圈子列表失败：', error)
+    // 出错时重置分页状态
+    if (isLoadMore) {
+      currentPage.value = Math.max(1, currentPage.value - 1)
+    }
   } finally {
-    loading.value = false
+    if (isLoadMore) {
+      setTimeout(() => {
+        loading.value = false
+        loadingMore.value = false
+      }, 1000)
+    } else {
+      loading.value = false
+      if (initialLoading.value) {
+        setTimeout(() => {
+          initialLoading.value = false
+        }, 1000)
+      }
+    }
   }
 }
 
@@ -253,35 +270,38 @@ watch(() => props.requestConfig, () => {
 
 // 初始加载
 const initLoad = async () => {
-  // 强制显示 1 秒骨架屏
-  const skeletonTimer = setTimeout(() => {
-    initialLoading.value = false
-    clearTimeout(skeletonTimer)
-  }, 1000)
-
-  // 同时发起数据请求
+  initialLoading.value = true
   await fetchCircles()
+
+  // 强制显示骨架屏至少 1 秒
+  setTimeout(() => {
+    initialLoading.value = false
+  }, 1000)
 }
 
 // 加载更多
 const loadMore = async () => {
-  if (!props.enablePagination || loading.value || !hasMore.value) return
+  if (!props.enablePagination || loading.value || !hasMore.value || isScrolling.value) {
+    return
+  }
 
-  initialLoading.value = true
-
-  // 强制显示加载骨架屏至少 1 秒
-  const loadingTimer = setTimeout(() => {
-    initialLoading.value = false
-    clearTimeout(loadingTimer)
-  }, 1000)
-
+  isScrolling.value = true
   currentPage.value += 1
-  await Promise.all([fetchCircles(true), loadingTimer])
+
+  // 显示加载更多骨架屏
+  loadingMore.value = true
+
+  await fetchCircles(true)
+
+  // 防止快速滚动重复触发
+  setTimeout(() => {
+    isScrolling.value = false
+  }, 500)
 }
 
 // 滚动监听
 const handleScroll = () => {
-  if (!props.enablePagination) return
+  if (!props.enablePagination || loading.value || !hasMore.value) return
 
   const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
   const windowHeight = window.innerHeight
@@ -338,7 +358,7 @@ onUnmounted(() => {
   width: 100%;
   margin: 0 auto;
   padding: 20px;
-  min-height: 60vh;
+  /* min-height: 60vh; */
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   backdrop-filter: blur(10px);
@@ -349,7 +369,7 @@ onUnmounted(() => {
 .dark-mode {
   background-color: rgba(30, 35, 47, 0.6);
   color: var(--dark-content-m);
-  min-height: 60vh;
+  /* min-height: 60vh; */
 }
 
 .dark-card {

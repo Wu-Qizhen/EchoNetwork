@@ -2,6 +2,7 @@ package com.wqz.echonetwork.service.impl;
 
 import com.wqz.echonetwork.entity.dto.CircleCreateRequest;
 import com.wqz.echonetwork.entity.dto.CircleJoinResponse;
+import com.wqz.echonetwork.entity.dto.CircleQueryRequest;
 import com.wqz.echonetwork.entity.dto.UserProfileResponse;
 import com.wqz.echonetwork.entity.po.Circle;
 import com.wqz.echonetwork.entity.po.CircleMember;
@@ -13,9 +14,7 @@ import com.wqz.echonetwork.service.CircleService;
 import com.wqz.echonetwork.service.UserService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -83,6 +82,45 @@ public class CircleServiceImpl implements CircleService {
         List<CircleListItemVO> circleVOs = convertToCircleListItemVOList(circles, currentUserId);
 
         return new PageResult<>(circleVOs, total, page, size);
+    }
+
+    @Override
+    public PageResult<CircleListItemVO> getCirclesByConditions(CircleQueryRequest queryRequest, Long currentUserId) {
+        // 构建查询条件
+        Map<String, Object> conditions = buildQueryConditions(queryRequest);
+
+        // 计算分页
+        int page = Optional.ofNullable(queryRequest.getPage()).orElse(1);
+        int size = Optional.ofNullable(queryRequest.getSize()).orElse(10);
+        int offset = (page - 1) * size;
+
+        // 查询数据
+        List<Circle> circles = circleMapper.findByConditions(conditions, offset, size);
+        int total = circleMapper.countByConditions(conditions);
+
+        // 转换为 VO
+        List<CircleListItemVO> circleVOs = convertToCircleListItemVOList(circles, currentUserId);
+
+        return new PageResult<>(circleVOs, total, page, size);
+    }
+
+    private Map<String, Object> buildQueryConditions(CircleQueryRequest queryRequest) {
+        Map<String, Object> conditions = new HashMap<>();
+
+        if (queryRequest.getKeyword() != null) {
+            conditions.put("keyword", queryRequest.getKeyword());
+        }
+        if (queryRequest.getCreatorId() != null) {
+            conditions.put("creatorId", queryRequest.getCreatorId());
+        }
+        if (queryRequest.getMemberId() != null) {
+            conditions.put("memberId", queryRequest.getMemberId());
+        }
+
+        conditions.put("sortBy", queryRequest.getSortBy());
+        conditions.put("sortOrder", queryRequest.getSortOrder());
+
+        return conditions;
     }
 
     @Override

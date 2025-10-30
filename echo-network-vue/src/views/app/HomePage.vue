@@ -11,14 +11,13 @@ import ArticleList from "@/views/common/ArticleList.vue";
 <template>
   <div class="home-page">
     <div class="article-list">
-      <!-- TODO 修复分页无限加载 -->
       <ArticleList
           :request-config="{
               sortBy: 'publishTime',
               sortOrder: 'DESC',
-              size: 10
+              size: 5
           }"
-          :enable-pagination="false"
+          :enable-pagination="true"
           :empty-text="'暂无更多文章，快去发布一篇吧！'"
       />
     </div>

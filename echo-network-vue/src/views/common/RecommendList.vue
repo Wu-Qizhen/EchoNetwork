@@ -1,26 +1,19 @@
 <!--
   代码不注释，同事两行泪！（给！爷！写！）
   Elegance is not a dispensable luxury but a quality that decides between success and failure!
-  Created by Wu Qizhen on 2025.10.13
+  Created by Wu Qizhen on 2025.10.30
 -->
 <template>
-  <div class="ranking-list-container dark-mode">
-    <el-card class="ranking-card">
+  <div class="recommend-list-container dark-mode">
+    <el-card class="recommend-card">
       <template #header>
         <div class="card-header">
           <div class="header-title">
             <el-icon class="title-icon">
               <Trophy/>
             </el-icon>
-            <span>热门榜</span>
+            <span>推荐圈子</span>
           </div>
-          <el-tag size="small"
-                  style="
-                  background-color: #4a2a2a;
-                  border-color: #e6a23c;
-                  color: #e6a23c;"
-          >TOP 10
-          </el-tag>
         </div>
       </template>
 
@@ -33,17 +26,17 @@
       </div>
 
       <!-- 排行榜列表 -->
-      <div v-else class="ranking-list">
+      <div v-else class="recommend-list">
         <div
-            v-for="(article, index) in rankingList"
-            :key="article.id"
-            class="ranking-item"
+            v-for="(circle, index) in recommendList"
+            :key="circle.id"
+            class="recommend-item"
             :class="{
             'top-1': index === 0,
             'top-2': index === 1,
             'top-3': index === 2
           }"
-            @click="handleArticleClick(article)"
+            @click="handleCircleClick(circle)"
         >
           <div class="rank-number">
             <span class="number">{{ index + 1 }}</span>
@@ -54,16 +47,16 @@
             </el-icon>
           </div>
 
-          <div class="article-info">
-            <div class="article-title">{{ article.title }}</div>
+          <div class="circle-info">
+            <div class="circle-title">{{ circle.title }}</div>
             <div class="heat-info">
-              <span class="heat-value">
-                <el-icon><Sunny/></el-icon>
-                {{ formatHeat(article.likeCount) }}
+              <span class="article-count">
+                <el-icon><Files/></el-icon>
+                {{ formatArticleCount(circle.articleCount) }}
               </span>
-              <span class="view-count">
-                <el-icon><View/></el-icon>
-                {{ formatViewCount(article.viewCount) }}
+              <span class="member-count">
+                <el-icon><User/></el-icon>
+                {{ formatMemberCount(circle.memberCount) }}
               </span>
             </div>
           </div>
@@ -71,8 +64,8 @@
       </div>
 
       <!-- 空状态 -->
-      <div v-if="!loading && rankingList.length === 0" class="empty-state">
-        <el-empty description="暂无排行数据" :image-size="80"/>
+      <div v-if="!loading && recommendList.length === 0" class="empty-state">
+        <el-empty description="暂无推荐数据" :image-size="80"/>
       </div>
     </el-card>
   </div>
@@ -80,63 +73,26 @@
 
 <script setup>
 import {onMounted, ref} from 'vue'
-import {Aim, GoldMedal, Loading, Medal, Sunny, Trophy, View} from '@element-plus/icons-vue'
-import {getArticles} from "@/net/request.js";
+import {Aim, Files, GoldMedal, Loading, Medal, Trophy, User} from '@element-plus/icons-vue'
+import {getCircles} from "@/net/request.js";
 
 // 响应式数据
-const rankingList = ref([])
+const recommendList = ref([])
 const loading = ref(true)
 
-// 模拟 API 请求
-/*const fetchHotRanking = async () => {
+const fetchHotRecommend = async () => {
   try {
-    // 模拟 API 请求延迟
-    await new Promise(resolve => setTimeout(resolve, 800))
-
-    // 模拟 API 响应数据
-    const mockResponse = {
-      code: 200,
-      message: "成功",
-      data: [
-        {id: 1, title: "Vue 3 组合式 API 最佳实践与性能优化指南", heat: 9850, viewCount: 12500},
-        {id: 2, title: "深入理解 TypeScript 泛型与类型编程", heat: 8760, viewCount: 11000},
-        {id: 3, title: "微前端架构实战：从零搭建企业级应用", heat: 7650, viewCount: 9800},
-        {id: 4, title: "Node.js 高并发场景下的性能调优策略", heat: 6540, viewCount: 8500},
-        {id: 5, title: "Webpack 5 模块联邦与构建优化实战", heat: 5430, viewCount: 7200},
-        {id: 6, title: "CSS Grid 与 Flexbox 现代布局完全指南", heat: 4320, viewCount: 6100},
-        {id: 7, title: "Docker 容器化部署与 DevOps 实践", heat: 3210, viewCount: 4900},
-        {id: 8, title: "React 18 新特性与并发渲染原理", heat: 2980, viewCount: 3800},
-        {id: 9, title: "GraphQL 在前端项目中的工程化实践", heat: 2650, viewCount: 3200},
-        {id: 10, title: "前端监控体系搭建与性能分析实战", heat: 2340, viewCount: 2800}
-      ],
-      timestamp: new Date().toISOString()
-    }
-
-    if (mockResponse.code === 200) {
-      rankingList.value = mockResponse.data
-    } else {
-      console.error('获取热度排行失败：', mockResponse.message)
-    }
-  } catch (error) {
-    console.error('API 请求错误：', error)
-  } finally {
-    loading.value = false
-  }
-}*/
-
-const fetchHotRanking = async () => {
-  try {
-    await getArticles({
-      sortBy: 'likeCount',
+    await getCircles({
+      sortBy: 'articleCount',
       sortOrder: 'DESC',
       page: 1,
       size: 10
     }, (data) => {
       if (data && data.list) {
-        rankingList.value = data.list
+        recommendList.value = data.list
       } else {
         console.warn('返回的数据结构不符合预期：', data)
-        rankingList.value = [] // 设置为空数组避免后续错误
+        recommendList.value = []
       }
     })
   } catch (error) {
@@ -146,24 +102,22 @@ const fetchHotRanking = async () => {
   }
 }
 
-// 处理文章点击
-const handleArticleClick = (article) => {
+// 处理圈子点击
+const handleCircleClick = (circle) => {
   window.open(
-      '/article/' + article.id,
+      '/circle/' + circle.id,
       '_blank'
   )
 }
 
-// 格式化热度值
-const formatHeat = (heat) => {
-  if (heat >= 10000) {
-    return (heat / 10000).toFixed(1) + 'W'
+const formatArticleCount = (articleCount) => {
+  if (articleCount >= 10000) {
+    return (articleCount / 10000).toFixed(1) + 'W'
   }
-  return heat.toString()
+  return articleCount.toString()
 }
 
-// 格式化阅读量
-const formatViewCount = (count) => {
+const formatMemberCount = (count) => {
   if (count >= 10000) {
     return (count / 10000).toFixed(1) + 'W'
   }
@@ -172,16 +126,16 @@ const formatViewCount = (count) => {
 
 // 组件挂载时获取数据
 onMounted(() => {
-  fetchHotRanking()
+  fetchHotRecommend()
 })
 </script>
 
 <style scoped>
-.ranking-list-container {
+.recommend-list-container {
   width: 100%;
 }
 
-.ranking-card {
+.recommend-card {
   background-color: rgba(30, 35, 47, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
@@ -190,11 +144,11 @@ onMounted(() => {
   -webkit-backdrop-filter: blur(10px); */
 }
 
-.ranking-card:hover {
+.recommend-card:hover {
   box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
 }
 
-:deep(.ranking-card .el-card__header) {
+:deep(.recommend-card .el-card__header) {
   background-color: rgba(45, 45, 45, 0.7);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   padding: 16px 20px;
@@ -244,11 +198,11 @@ onMounted(() => {
 }
 
 /* 排行榜列表 */
-.ranking-list {
+.recommend-list {
   padding: 0;
 }
 
-.ranking-item {
+.recommend-item {
   display: flex;
   align-items: center;
   padding: 12px 16px;
@@ -259,24 +213,24 @@ onMounted(() => {
   border: 1px solid transparent;
 }
 
-.ranking-item:hover {
+.recommend-item:hover {
   background-color: rgba(45, 45, 45, 0.7);
   border-color: rgba(255, 255, 255, 0.2);
   transform: translateX(4px);
 }
 
 /* 前三名特殊样式 */
-.ranking-item.top-1 {
+.recommend-item.top-1 {
   background: linear-gradient(135deg, rgba(249, 176, 148, 0.2) 0%, rgba(255, 223, 124, 0.6) 100%);
   border-color: #e6a23c;
 }
 
-.ranking-item.top-2 {
+.recommend-item.top-2 {
   background: linear-gradient(135deg, #3a3a3a 0%, #2a3a4a 100%);
   border-color: #909399;
 }
 
-.ranking-item.top-3 {
+.recommend-item.top-3 {
   /* background: linear-gradient(135deg, #3a3a3a 0%, #4a462a 100%);
   border-color: #b88230; */
   background: linear-gradient(135deg, #3a3a3a 0%, #4a2a00 100%);
@@ -313,7 +267,7 @@ onMounted(() => {
 }
 
 /* 其他排名的数字样式 */
-.ranking-item:not(.top-1):not(.top-2):not(.top-3) .rank-number {
+.recommend-item:not(.top-1):not(.top-2):not(.top-3) .rank-number {
   background-color: #444;
   color: #a8abb2;
 }
@@ -337,12 +291,12 @@ onMounted(() => {
   color: #cd7f32;
 }
 
-.article-info {
+.circle-info {
   flex: 1;
   min-width: 0;
 }
 
-.article-title {
+.circle-title {
   font-size: 14px;
   font-weight: 500;
   color: var(--dark-content-l);
@@ -356,15 +310,15 @@ onMounted(() => {
 }
 
 /* 前三名标题特殊样式 */
-.top-1 .article-title {
+.top-1 .circle-title {
   color: #ffdf7c;
 }
 
-.top-2 .article-title {
+.top-2 .circle-title {
   color: #c0c0c0;
 }
 
-.top-3 .article-title {
+.top-3 .circle-title {
   color: #cd7f32;
 }
 
@@ -375,7 +329,7 @@ onMounted(() => {
   color: #888;
 }
 
-.heat-value, .view-count {
+.article-count, .member-count {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -385,7 +339,7 @@ onMounted(() => {
   color: white;
 }
 
-.view-count .el-icon {
+.member-count .el-icon {
   color: white;
 }
 
