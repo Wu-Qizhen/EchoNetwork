@@ -83,7 +83,7 @@
             <el-icon>
               <Star/>
             </el-icon>
-            <span class="stat-number">{{ getMemberRoleText(circleData.role) }}</span>
+            <span class="stat-number">{{ getMemberRoleText(circleData.memberRole) }}</span>
             <span class="stat-label">角色</span>
           </div>
         </div>
@@ -118,16 +118,16 @@ const circleData = ref({
   name: '',
   description: '',
   avatarUrl: '',
-  createTime: '',
-  memberCount: 0,
-  articleCount: 0,
-  member: false,
-  role: null,
   creator: {
     id: null,
     nickname: '',
     avatarUrl: ''
-  }
+  },
+  createTime: '',
+  memberCount: 0,
+  articleCount: 0,
+  member: false,
+  memberRole: null
 })
 
 // 获取圈子数据
@@ -158,7 +158,7 @@ const handleJoinCircle = async () => {
       ElMessage.success('成功加入圈子')
       // 更新本地状态
       circleData.value.member = true
-      circleData.value.role = 0 // 普通成员
+      circleData.value.memberRole = 0 // 普通成员
       circleData.value.memberCount += 1
     })
   } catch (error) {
@@ -169,13 +169,13 @@ const handleJoinCircle = async () => {
 
 // 退出圈子
 const handleExitCircle = async (circleId) => {
-  if (circleData.value.role !== 2) {
+  if (circleData.value.memberRole !== 2) {
     try {
       await exitCircle(circleId, () => {
         ElMessage.success('成功退出圈子')
         // 更新本地状态
         circleData.value.member = false
-        circleData.value.role = null
+        circleData.value.memberRole = null
         circleData.value.memberCount -= 1
       })
     } catch (error) {
@@ -187,8 +187,8 @@ const handleExitCircle = async (circleId) => {
 }
 
 // 获取成员角色文本
-const getMemberRoleText = (role) => {
-  switch (role) {
+const getMemberRoleText = (memberRole) => {
+  switch (memberRole) {
     case 2:
       return '圈主'
     case 1:
@@ -200,8 +200,8 @@ const getMemberRoleText = (role) => {
   }
 }
 
-/*const getMemberRoleType = (role) => {
-  switch (role) {
+/*const getMemberRoleType = (memberRole) => {
+  switch (memberRole) {
     case 2:
       return 'success'
     case 1:

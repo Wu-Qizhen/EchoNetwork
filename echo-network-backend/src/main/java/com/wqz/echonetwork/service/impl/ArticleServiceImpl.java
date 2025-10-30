@@ -88,6 +88,9 @@ public class ArticleServiceImpl implements ArticleService {
                         articleMapper.insertArticleTag(articleTag);
                     }
             );
+            if (article.getCircleId() != null) {
+                circleMapper.updateArticleCount(article.getCircleId(), 1);
+            }
             return getArticle(article.getId());
         }
 

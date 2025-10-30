@@ -14,7 +14,13 @@
             </el-icon>
             <span>热门榜</span>
           </div>
-          <el-tag type="danger" size="small">TOP 10</el-tag>
+          <el-tag size="small"
+                  style="
+                  background-color: #4a2a2a;
+                  border-color: #e6a23c;
+                  color: #e6a23c;"
+          >TOP 10
+          </el-tag>
         </div>
       </template>
 
@@ -23,7 +29,7 @@
         <el-icon class="loading-icon">
           <Loading/>
         </el-icon>
-        <span>加载中...</span>
+        <span>加载中</span>
       </div>
 
       <!-- 排行榜列表 -->
@@ -51,9 +57,9 @@
           <div class="article-info">
             <div class="article-title">{{ article.title }}</div>
             <div class="heat-info">
-              <span class="heat-value">
+            <span class="heat-value">
                 <el-icon><Sunny/></el-icon>
-                {{ formatHeat(article.heat) }}
+                {{ formatHeat(article.likeCount) }}
               </span>
               <span class="view-count">
                 <el-icon><View/></el-icon>
@@ -75,18 +81,19 @@
 <script setup>
 import {onMounted, ref} from 'vue'
 import {Aim, GoldMedal, Loading, Medal, Sunny, Trophy, View} from '@element-plus/icons-vue'
+import {getArticles} from "@/net/request.js";
 
 // 响应式数据
 const rankingList = ref([])
 const loading = ref(true)
 
 // 模拟 API 请求
-const fetchHotRanking = async () => {
+/*const fetchHotRanking = async () => {
   try {
-    // 模拟API请求延迟
+    // 模拟 API 请求延迟
     await new Promise(resolve => setTimeout(resolve, 800))
 
-    // 模拟API响应数据
+    // 模拟 API 响应数据
     const mockResponse = {
       code: 200,
       message: "成功",
@@ -108,10 +115,32 @@ const fetchHotRanking = async () => {
     if (mockResponse.code === 200) {
       rankingList.value = mockResponse.data
     } else {
-      console.error('获取热度排行失败:', mockResponse.message)
+      console.error('获取热度排行失败：', mockResponse.message)
     }
   } catch (error) {
-    console.error('API请求错误:', error)
+    console.error('API 请求错误：', error)
+  } finally {
+    loading.value = false
+  }
+}*/
+
+const fetchHotRanking = async () => {
+  try {
+    await getArticles({
+      sortBy: 'likeCount',
+      sortOrder: 'DESC',
+      page: 1,
+      size: 10
+    }, (data) => {
+      if (data && data.list) {
+        rankingList.value = data.list
+      } else {
+        console.warn('返回的数据结构不符合预期：', data)
+        rankingList.value = [] // 设置为空数组避免后续错误
+      }
+    })
+  } catch (error) {
+    console.error('API 请求错误：', error)
   } finally {
     loading.value = false
   }
@@ -119,9 +148,10 @@ const fetchHotRanking = async () => {
 
 // 处理文章点击
 const handleArticleClick = (article) => {
-  console.log('点击文章:', article)
-  // 这里可以跳转到文章详情页
-  // router.push(`/article/${article.id}`)
+  window.open(
+      '/article/' + article.id,
+      '_blank'
+  )
 }
 
 // 格式化热度值
@@ -362,23 +392,23 @@ onMounted(() => {
 
 /* Element Plus 组件深色模式样式覆盖 */
 :deep(.el-card) {
-  --el-card-bg-color: #2d2d2d;
-  --el-card-border-color: #444;
+  --el-card-bg-color: var(--dark-bg-m);
+  --el-card-border-color: var(--dark-line-s);
 }
 
 :deep(.el-tag) {
-  --el-tag-bg-color: #3a3a3a;
-  --el-tag-border-color: #555;
-  --el-tag-text-color: #a8abb2;
+  --el-tag-bg-color: var(--dark-bg-m);
+  --el-tag-border-color: var(--dark-line-m);
+  --el-tag-text-color: var(--dark-content-m);
 }
 
-:deep(.el-tag.el-tag--danger) {
+/* :deep(.el-tag.el-tag--danger) {
   --el-tag-bg-color: #4a2a2a;
   --el-tag-border-color: #e6a23c;
   --el-tag-text-color: #e6a23c;
-}
+} */
 
 :deep(.el-empty__description p) {
-  color: #a8abb2;
+  color: var(--dark-content-m);
 }
 </style>
