@@ -11,6 +11,7 @@ import {computed, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 import {getUserInfo, isAuthorized, logout} from "@/net/index.js";
 import router from "@/router/index.js";
+import XSpacer from "@/aethex/components/XSpacer.vue";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
@@ -121,6 +122,12 @@ function userLogout() {
     <div class="article">
       <div class="article-area">
         <ArticleCard></ArticleCard>
+      </div>
+
+      <XSpacer height="20px"/>
+
+      <div class="comment-area">
+
       </div>
     </div>
   </XBackgroundSpace>

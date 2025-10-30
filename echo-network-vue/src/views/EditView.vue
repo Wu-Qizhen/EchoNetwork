@@ -13,6 +13,7 @@ import {ElMessage} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
 import EditorPage from "@/views/edit/EditorPage.vue";
 import XSpacer from "@/aethex/components/XSpacer.vue";
+import {getCircles} from "@/net/request.js";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
@@ -34,7 +35,7 @@ const navButtons = ref([
   },
   {
     type: 'image',
-    imageUrl: userInfo.value?.avatarUrl || './res/ic_avatar_default.svg',
+    imageUrl: userInfo.value?.avatarUrl || '/res/ic_avatar_default.svg',
     alt: '用户头像',
     title: userInfo.value?.nickname || userInfo.value?.username || '用户菜单',
     dropdownItems: [
@@ -53,10 +54,6 @@ function checkLoginStatus() {
     router.push("/")
   }
 }
-
-onMounted(() => {
-  checkLoginStatus()
-})
 
 const handleNavItemClick = (data) => {
   const item = data.item;
@@ -109,15 +106,93 @@ const articleForm = reactive({
 const tagInput = ref('')
 const publishing = ref(false)
 const articleFormRef = ref()
+const circleOptions = ref([])
+const circleLoading = ref(false)
+const circleSearchTimer = ref(null)
 
-// 模拟圈子数据 - 实际应从后端获取
-const circleOptions = ref([
+// 模拟圈子数据
+/*const circleOptions = ref([
   {id: null, name: '无'},
   {id: 1, name: '技术交流'},
   {id: 2, name: '生活分享'},
   {id: 3, name: '学习笔记'},
   {id: 4, name: '问题求助'}
-])
+])*/
+
+// 远程搜索圈子
+const searchCircles = (keyword) => {
+  if (circleSearchTimer.value) {
+    clearTimeout(circleSearchTimer.value)
+  }
+
+  circleSearchTimer.value = setTimeout(async () => {
+    circleLoading.value = true
+    try {
+      // 调用搜索接口，限制返回 10 条结果
+      await getCircles({
+        keyword: encodeURIComponent(keyword),
+        page: 1,
+        size: 10
+      }, (data) => {
+        if (data && data.list) {
+          circleOptions.value = [
+            {id: null, name: '无'},
+            ...data.list.map(circle => ({
+              id: circle.id,
+              name: circle.name,
+              description: circle.description
+            }))
+          ]
+        } else {
+          console.warn('返回的数据结构不符合预期：', data)
+          circleOptions.value = [{id: null, name: '无'}]
+        }
+      })
+    } catch (error) {
+      console.error('圈子搜索失败：', error)
+      ElMessage.error('圈子搜索失败')
+      // 确保至少有无选项
+      circleOptions.value = [{id: null, name: '无'}]
+    } finally {
+      circleLoading.value = false
+    }
+  }, 800) // 防抖延迟
+}
+
+// 下拉框打开时加载默认数据（用户加入的圈子）
+const loadDefaultCircles = async () => {
+  if (circleOptions.value.length > 0) return // 避免重复加载
+
+  circleLoading.value = true
+  try {
+    // 获取当前用户加入的圈子
+    await getCircles({
+      userId: userInfo.value.id,
+      page: 1,
+      size: 10
+    }, (data) => {
+      if (data && data.list) {
+        circleOptions.value = [
+          {id: null, name: '无'},
+          ...data.list.map(circle => ({
+            id: circle.id,
+            name: circle.name,
+            description: circle.description
+          }))
+        ]
+      } else {
+        console.warn('返回的数据结构不符合预期：', data)
+        circleOptions.value = [{id: null, name: '无'}]
+      }
+    })
+  } catch (error) {
+    console.error('加载默认圈子失败：', error)
+    // 设置默认选项
+    circleOptions.value = [{id: null, name: '无'}]
+  } finally {
+    circleLoading.value = false
+  }
+}
 
 // 添加标签
 const addTag = () => {
@@ -181,6 +256,14 @@ const handlePublish = async () => {
 function publishArticle(articleData, success, failure) {
   post("/api/articles", articleData, success, failure)
 }
+
+onMounted(() => {
+  checkLoginStatus()
+  // 预加载用户加入的圈子
+  if (isLoggedIn.value) {
+    loadDefaultCircles()
+  }
+})
 </script>
 
 <template>
@@ -213,21 +296,46 @@ function publishArticle(articleData, success, failure) {
 
           <div class="operation">
             <!-- 圈子选择 -->
+            <!--<el-form-item label="圈子" prop="circleId" style="width: 30%">
+                  <el-select
+                      v-model="articleForm.circleId"
+                      placeholder="选择圈子（可选）"
+                      filterable
+                      clearable
+                      popper-class="custom-select-dropdown"
+                  >
+                    &lt;!&ndash;:teleported="false"&ndash;&gt;
+                    <el-option
+                        v-for="circle in circleOptions"
+                        :key="circle.id"
+                        :label="circle.name"
+                        :value="circle.id"
+                    />
+                  </el-select>
+                </el-form-item>-->
             <el-form-item label="圈子" prop="circleId" style="width: 30%">
               <el-select
                   v-model="articleForm.circleId"
                   placeholder="选择圈子（可选）"
                   filterable
+                  remote
                   clearable
+                  :remote-method="searchCircles"
+                  :loading="circleLoading"
+                  @focus="loadDefaultCircles"
                   popper-class="custom-select-dropdown"
               >
-                <!--:teleported="false"-->
                 <el-option
                     v-for="circle in circleOptions"
                     :key="circle.id"
                     :label="circle.name"
                     :value="circle.id"
-                />
+                    :title="circle.name || '未知圈子'"
+                >
+                  <div class="circle-option">
+                    <span class="circle-name">{{ circle.name }}</span>
+                  </div>
+                </el-option>
               </el-select>
             </el-form-item>
 
@@ -300,10 +408,6 @@ function publishArticle(articleData, success, failure) {
   gap: 8px;
 }
 
-/* .title-input {
-  width: 100%;
-} */
-
 :deep(.el-tag) {
   --el-tag-bg-color: var(--dark-bg-s);
   --el-tag-border-color: var(--dark-line-m);
@@ -364,15 +468,23 @@ function publishArticle(articleData, success, failure) {
   background-color: #666 !important;
 }
 
-/* 设置下拉框 */
-/* TODO 聚焦边框颜色 */
-
-.custom-select-dropdown .el-select-dropdown__item {
-  color: #a8abb2; /* 选项文字颜色 */
+/* 下拉框样式优化 */
+/* .custom-select-dropdown .el-select-dropdown__item {
+  color: #a8abb2; !* 选项文字颜色 *!
 }
 
 .custom-select-dropdown .el-select-dropdown__item:hover {
-  background-color: rgba(255, 255, 255, 0.2) !important; /* 选项悬停背景色 */
-  color: #fff !important; /* 选项悬停文字颜色 */
+  background-color: rgba(255, 255, 255, 0.2) !important; !* 选项悬停背景色 *!
+  color: #fff !important; !* 选项悬停文字颜色 *!
+} */
+
+:deep(.custom-select-dropdown .el-select-dropdown__item:hover) {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+}
+
+:deep(.custom-select-dropdown .el-select-dropdown__item.is-selected) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: var(--theme-color-lighten) !important;
 }
 </style>
