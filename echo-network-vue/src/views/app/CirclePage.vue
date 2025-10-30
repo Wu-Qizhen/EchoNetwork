@@ -6,10 +6,8 @@
 <script setup>
 import {useRoute} from "vue-router";
 import {computed} from "vue";
-import CircleCard from "@/views/common/CircleCard.vue";
-import ArticleList from "@/views/common/ArticleList.vue";
-import XSpacer from "@/aethex/components/XSpacer.vue";
 import CircleList from "@/views/common/CircleList.vue";
+import RecommendList from "@/views/common/RecommendList.vue";
 
 const route = useRoute();
 const circleId = computed(() => route.params.id);
@@ -30,7 +28,7 @@ const circleId = computed(() => route.params.id);
     </div>
 
     <div class="recommend-list">
-
+      <RecommendList></RecommendList>
     </div>
   </div>
 </template>

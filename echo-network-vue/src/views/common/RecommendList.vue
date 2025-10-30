@@ -48,7 +48,7 @@
           </div>
 
           <div class="circle-info">
-            <div class="circle-title">{{ circle.title }}</div>
+            <div class="circle-title">{{ circle.name }}</div>
             <div class="heat-info">
               <span class="article-count">
                 <el-icon><Files/></el-icon>
