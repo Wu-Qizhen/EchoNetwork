@@ -4,12 +4,26 @@
  * Created by Wu Qizhen on 2025.10.26
  */
 /* TODO 将请求代码移至这里 */
-import {defaultFailure, del, get, post} from "@/net/index.js";
+import {defaultFailure, del, get, post, put} from "@/net/index.js";
 
 function getArticles(params, success, failure = defaultFailure) {
     const queryString = new URLSearchParams(params).toString();
     const url = `/api/articles?${queryString}`;
     get(url, success, failure)
+}
+
+function publishArticle(articleData, success, failure = defaultFailure) {
+    post("/api/articles", articleData, success, failure)
+}
+
+function updateArticle(articleId, data, success, failure = defaultFailure) {
+    const url = `/api/articles/${articleId}`;
+    put(url, data, success, failure)
+}
+
+function deleteArticle(articleId, success, failure = defaultFailure) {
+    const url = `/api/articles/${articleId}`;
+    del(url, success, failure)
 }
 
 function getUser(pathString, success, failure = defaultFailure) {
@@ -85,6 +99,9 @@ function getStarredArticles(success, failure = defaultFailure) {
 
 export {
     getArticles,
+    updateArticle,
+    publishArticle,
+    deleteArticle,
     getUser,
     getUsers,
     followUser,

@@ -63,8 +63,22 @@
                 </div>
               </div>
             </div>
-            <div class="circle-tag" v-if="article.circle">
-              <el-tag type="info" size="small">{{ article.circle.name }}</el-tag>
+            <div
+                class="circle-tag"
+                v-if="article.circle"
+                @click="handleCircleClick(article.circle.id)">
+              <el-tag
+                  type="success"
+                  size="large"
+                  style="
+                          background-color: rgba(var(--theme-color-rgb), 0.2);
+                          border: 1px solid var(--theme-color);
+                          color: #fff;
+                          font-weight: normal;
+                          font-size: 16px"
+              >
+                {{ article.circle.name }}
+              </el-tag>
             </div>
           </div>
 
@@ -432,6 +446,12 @@ const goToArticle = (articleId) => {
   window.open(`/article/${articleId}`, '_blank')
 }
 
+function handleCircleClick(articleId) {
+  window.open(
+      '/circle/' + articleId,
+  )
+}
+
 onMounted(() => {
   initLoad()
   fetchArticles()
@@ -593,6 +613,7 @@ onUnmounted(() => {
 
 .circle-tag {
   margin-left: 10px;
+  cursor: pointer;
 }
 
 .article-content {

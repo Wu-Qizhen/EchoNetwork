@@ -4,7 +4,7 @@
   Created by Wu Qizhen on 2025.10.21
 -->
 <script setup>
-import {getUserInfo, isAuthorized, logout, post} from "@/net/index.js";
+import {getUserInfo, isAuthorized, logout} from "@/net/index.js";
 import router from "@/router/index.js";
 import {onMounted, reactive, ref} from "vue";
 import XMultiFunBar from "@/aethex/components/XMultiFunBar.vue";
@@ -13,7 +13,15 @@ import {ElMessage} from "element-plus";
 import {Plus} from "@element-plus/icons-vue";
 import EditorPage from "@/views/edit/EditorPage.vue";
 import XSpacer from "@/aethex/components/XSpacer.vue";
-import {getCircles} from "@/net/request.js";
+import {
+  getArticle,
+  getCircles,
+  publishArticle,
+  updateArticle as updateArticleApi,
+  deleteArticle as deleteArticleApi
+} from "@/net/request.js";
+import {useRoute} from "vue-router";
+import XAlert from "@/aethex/components/XAlert.vue";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
@@ -69,20 +77,30 @@ const handleLogoClick = () => {
 const handleButtonClick = (data) => {
   const button = data.button
 
-  if (button.type === 'text' && button.content === '发布') {
-    handlePublish()
+  if (button.type === 'text') {
+    if (button.content === '发布' || button.content === '更新') {
+      handlePublish()
+    } else if (button.content === '删除') {
+      deleteArticle()
+    }
   }
 }
 
 const handleDropdownItemClick = (data) => {
-  const dropdownItems = data.item;
+  const dropdownItems = data.item
 
   switch (dropdownItems.id) {
     case 'logout':
       userLogout()
       break
+    case 'update':
+      handlePublish()
+      break
+    case 'draft':
+      ElMessage.warning("功能正在施工中")
+      break
     default:
-      console.log('点击了菜单项：', dropdownItems.id)
+      ElMessage.warning("功能正在施工中")
   }
 }
 
@@ -95,6 +113,8 @@ function userLogout() {
 }
 
 // 文章表单数据
+const route = useRoute()
+const articleData = ref(null)
 const articleForm = reactive({
   title: '',
   content: '',
@@ -102,22 +122,154 @@ const articleForm = reactive({
   tags: [],
   status: 0
 })
-
-const tagInput = ref('')
-const publishing = ref(false)
 const articleFormRef = ref()
+const articleId = ref(null)
 const circleOptions = ref([])
 const circleLoading = ref(false)
 const circleSearchTimer = ref(null)
+const tagInput = ref('')
+const publishing = ref(false)
+const isEditMode = ref(false)
+const canEdit = ref(false)
+const deleteClicked = ref(false)
 
-// 模拟圈子数据
-/*const circleOptions = ref([
-  {id: null, name: '无'},
-  {id: 1, name: '技术交流'},
-  {id: 2, name: '生活分享'},
-  {id: 3, name: '学习笔记'},
-  {id: 4, name: '问题求助'}
-])*/
+// 加载文章数据
+const loadArticle = async () => {
+  if (!articleId.value) return
+
+  try {
+    await getArticle(articleId.value, (response) => {
+          articleData.value = response
+
+          // 检查编辑权限：当前用户是否为文章作者
+          canEdit.value = userInfo.value && userInfo.value.id === response.author.id
+
+          if (!canEdit.value) {
+            ElMessage.error('您没有编辑此文章的权限')
+            router.push('/')
+            return
+          }
+
+          // 填充表单数据
+          articleForm.title = response.title
+          articleForm.content = response.content
+          articleForm.circleId = response.circle?.id || null
+          articleForm.tags = response.tags.map(tag => tag.name)
+          articleForm.status = response.status
+
+          console.log('加载文章成功：', response)
+          console.log('文章数据：', articleForm)
+        },
+        (message, code, url) => {
+          console.warn(`请求地址：${url}，状态码：${code}，错误信息：${message || '未知错误'}`)
+          ElMessage.error(message || '未知错误')
+          router.push('/')
+        }
+    )
+  } catch (error) {
+    console.error('加载文章失败：', error)
+    ElMessage.error('加载文章失败')
+    await router.push('/')
+  }
+}
+
+// 更新文章
+const updateArticle = async () => {
+  if (!articleForm.title.trim()) {
+    ElMessage.warning('请输入文章标题')
+    return
+  }
+
+  if (isContentEmpty(articleForm.content)) {
+    ElMessage.warning('请输入文章内容')
+    return
+  }
+
+  publishing.value = true
+
+  try {
+    await updateArticleApi(
+        articleId.value,
+        {
+          title: articleForm.title.trim(),
+          content: articleForm.content,
+          circleId: articleForm.circleId || null,
+          tags: articleForm.tags,
+          status: articleForm.status
+        },
+        () => {
+          ElMessage.success('文章更新成功！')
+          router.push(`/article/${articleId.value}`)
+        }
+    )
+  } catch (error) {
+    ElMessage.error('更新失败，请重试')
+    console.error('更新文章失败：', error)
+  } finally {
+    publishing.value = false
+  }
+}
+
+// 删除文章
+/*const deleteArticle = () => {
+  ElMessageBox.confirm(
+      '确定要删除这篇文章吗？此操作不可恢复。',
+      '删除确认',
+      {
+        confirmButtonText: '确定删除',
+        cancelButtonText: '取消',
+        type: 'warning',
+        confirmButtonClass: 'el-button--danger'
+      }
+  ).then(async () => {
+    try {
+      await deleteArticleApi(
+          articleId.value,
+          () => {
+            ElMessage.success('文章删除成功')
+            router.push('/')
+          })
+    } catch (error) {
+      console.error('删除文章失败：', error)
+      ElMessage.error('删除失败，请重试')
+    }
+  }).catch(() => {
+    // 用户取消删除
+  })
+}*/
+
+const deleteArticle = () => {
+  // 检查是否已经点击过一次删除按钮
+  if (!deleteClicked.value) {
+    deleteClicked.value = true
+    ElMessage.warning('再次点击删除按钮以确认删除')
+
+    // 3秒后重置状态
+    setTimeout(() => {
+      deleteClicked.value = false
+    }, 3000)
+    return
+  }
+
+  // 双击确认删除
+  deleteClicked.value = false
+  performDelete()
+}
+
+// 实际执行删除操作
+const performDelete = async () => {
+  try {
+    await deleteArticleApi(
+        articleId.value,
+        () => {
+          ElMessage.success('文章删除成功')
+          router.push('/')
+        })
+  } catch (error) {
+    console.error('删除文章失败：', error)
+    ElMessage.error('删除失败，请重试')
+  }
+}
 
 // 远程搜索圈子
 const searchCircles = (keyword) => {
@@ -220,49 +372,132 @@ function isContentEmpty(content) {
 
 // 发布文章
 const handlePublish = async () => {
-  // console.log('发布文章：', articleForm)
   if (!articleForm.title.trim()) {
     ElMessage.warning('请输入文章标题')
     return
   }
 
   if (isContentEmpty(articleForm.content)) {
-    ElMessage.warning('请输入文章内容');
-    return;
+    ElMessage.warning('请输入文章内容')
+    return
   }
 
   publishing.value = true
 
   try {
-    await publishArticle({
-      title: articleForm.title.trim(),
-      content: articleForm.content,
-      circleId: articleForm.circleId || null,
-      tags: articleForm.tags,
-      status: 1 // 直接发布，设置为 1
-    }, () => {
-      ElMessage.success('文章发布成功！')
-      router.push('/')
-    })
-
+    if (isEditMode.value) {
+      // 编辑模式：更新文章
+      await updateArticle()
+    } else {
+      // 创建模式：发布新文章
+      await publishArticle({
+        title: articleForm.title.trim(),
+        content: articleForm.content,
+        circleId: articleForm.circleId || null,
+        tags: articleForm.tags,
+        status: 1
+      }, () => {
+        ElMessage.success('文章发布成功！')
+        router.push('/')
+      })
+    }
   } catch (error) {
-    ElMessage.error('发布失败，请重试')
-    console.error('发布文章失败：', error)
+    ElMessage.error(isEditMode.value ? '更新失败，请重试' : '发布失败，请重试')
+    console.error(`${isEditMode.value ? '更新' : '发布'}文章失败：`, error)
   } finally {
     publishing.value = false
   }
 }
 
-function publishArticle(articleData, success, failure) {
-  post("/api/articles", articleData, success, failure)
+// 根据模式动态设置导航栏
+const updateNavBar = () => {
+  if (isEditMode.value) {
+    navItems.value = [
+      {text: '编辑文章', id: 'edit'},
+      {text: '返回首页', id: 'home'}
+    ]
+
+    navButtons.value = [
+      {
+        type: 'text',
+        content: '更新',
+        title: '更新文章',
+        dropdownItems: [
+          {text: '立即更新', id: 'update'},
+          {text: '存草稿', id: 'draft'}
+        ]
+      },
+      {
+        type: 'text',
+        content: '删除',
+        title: '删除文章',
+        style: 'danger',
+        dropdownItems: []
+      },
+      {
+        type: 'image',
+        imageUrl: userInfo.value?.avatarUrl || '/res/ic_avatar_default.svg',
+        alt: '用户头像',
+        title: userInfo.value?.nickname || userInfo.value?.username || '用户菜单',
+        dropdownItems: [
+          {text: '个人资料', id: 'profile'},
+          {text: '账户设置', id: 'settings'},
+          {text: '退出登录', id: 'logout'}
+        ]
+      }
+    ]
+  } else {
+    // 保持原有的创建模式导航栏
+    navItems.value = [
+      {text: '写文章', id: 'write'},
+      {text: '返回首页', id: 'home'}
+    ]
+
+    navButtons.value = [
+      {
+        type: 'text',
+        content: '发布',
+        title: '立即发布',
+        dropdownItems: [
+          {text: '立即发布', id: 'publish'},
+          {text: '存草稿', id: 'draft'}
+        ]
+      },
+      {
+        type: 'image',
+        imageUrl: userInfo.value?.avatarUrl || '/res/ic_avatar_default.svg',
+        alt: '用户头像',
+        title: userInfo.value?.nickname || userInfo.value?.username || '用户菜单',
+        dropdownItems: [
+          {text: '个人资料', id: 'profile'},
+          {text: '账户设置', id: 'settings'},
+          {text: '退出登录', id: 'logout'}
+        ]
+      }
+    ]
+  }
 }
 
 onMounted(() => {
   checkLoginStatus()
-  // 预加载用户加入的圈子
-  if (isLoggedIn.value) {
+
+  // 检查路由参数，判断是编辑模式还是创建模式
+  articleId.value = route.params.id
+  isEditMode.value = !!articleId.value
+
+  if (isEditMode.value) {
+    // 编辑模式：加载文章数据和用户圈子
+    Promise.all([
+      loadArticle(),
+      loadDefaultCircles()
+    ])
+  } else {
+    // 创建模式：只加载用户圈子
     loadDefaultCircles()
   }
+
+  // 更新导航栏
+  updateNavBar()
 })
 </script>
 
@@ -283,6 +518,15 @@ onMounted(() => {
   <XBackgroundSpace>
     <div class="root">
       <div class="editor frosted-glass">
+        <!-- 编辑模式提示 -->
+        <div v-if="isEditMode">
+          <XSpacer type="vertical" height="10px"/>
+          <XAlert title="编辑模式"
+                  description="您正在编辑已发布的文章"
+                  type="warning"/>
+          <XSpacer type="vertical" height="10px"/>
+        </div>
+
         <el-form :model="articleForm" ref="articleFormRef">
           <!-- 标题输入框 -->
           <el-form-item prop="title">

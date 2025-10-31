@@ -55,7 +55,7 @@ export default {
 
 <script setup lang="ts">
 import './editor.css' // 引入 css
-import {onBeforeUnmount, onMounted, ref, shallowRef, watch} from 'vue'
+import {nextTick, onBeforeUnmount, ref, shallowRef, watch} from 'vue'
 import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
 import XSpacer from "@/aethex/components/XSpacer.vue"
 import {IToolbarConfig} from '@wangeditor/editor'
@@ -67,11 +67,11 @@ const editorRef = shallowRef()
 const valueHtml = ref('')
 
 // 模拟 Ajax 异步获取内容
-onMounted(() => {
+/*onMounted(() => {
   setTimeout(() => {
     valueHtml.value = ''
   }, 1500)
-})
+})*/
 
 // 工具栏配置
 const toolbarConfig: Partial<IToolbarConfig> = {
@@ -94,10 +94,6 @@ onBeforeUnmount(() => {
   editor.destroy()
 })
 
-const handleCreated = (editor) => {
-  editorRef.value = editor // 记录 editor 实例，重要！
-}
-
 const props = defineProps({
   modelValue: String
 })
@@ -108,6 +104,35 @@ const emit = defineEmits(['update:modelValue'])
 watch(valueHtml, (newValue) => {
   emit('update:modelValue', newValue)
 })
+
+// 监听父组件传递的 modelValue 变化，更新编辑器内容
+watch(() => props.modelValue, (newValue) => {
+  if (newValue !== valueHtml.value) {
+    valueHtml.value = newValue || ''
+
+    // 如果编辑器已经创建，强制设置内容
+    if (editorRef.value) {
+      nextTick(() => {
+        editorRef.value.setHtml(newValue || '')
+      })
+    }
+  }
+}, {immediate: true})
+
+/*const handleCreated = (editor) => {
+  editorRef.value = editor // 记录 editor 实例，重要！
+}*/
+
+// 在编辑器创建后，如果已经有内容，设置内容
+const handleCreatedWithContent = (editor) => {
+  editorRef.value = editor
+  // 如果已经有内容，设置到编辑器中
+  if (props.modelValue) {
+    nextTick(() => {
+      editor.setHtml(props.modelValue)
+    })
+  }
+}
 </script>
 
 <template>
@@ -123,7 +148,7 @@ watch(valueHtml, (newValue) => {
         v-model="valueHtml"
         :defaultConfig="editorConfig"
         :mode="mode"
-        @onCreated="handleCreated"
+        @onCreated="handleCreatedWithContent"
     />
   </div>
 </template>

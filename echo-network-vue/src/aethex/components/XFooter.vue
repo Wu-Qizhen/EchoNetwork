@@ -14,58 +14,58 @@
       class="x-footer"
       :style="{ transform: `translateY(${150 - footerVisible}%)` }"
   >
-    <div class="footer-service spacer-bottom protected-content">
-      <div class="footer-service-function">
+    <div class="service spacer-bottom protected-content">
+      <div class="service-function">
         <p class="zh main white">联系我们</p>
         <p class="zh sub remark-highlight">联系邮箱：code_intellix@163.com</p>
         <p class="zh sub remark-highlight">加入我们：hire@code-intellix.com</p>
       </div>
 
-      <div class="footer-service-function">
+      <div class="service-function">
         <p class="zh main white">内容服务</p>
         <a href="#">博客</a>
         <a href="#">圈子</a>
       </div>
 
-      <div class="footer-service-function">
+      <div class="service-function">
         <p class="zh main white">生态合作</p>
         <a href="#">版权与素材</a>
         <a href="#">推广与流量</a>
       </div>
 
-      <div class="footer-service-function">
+      <div class="service-function">
         <XSpacer height="26px"/>
         <a href="#">广告与赞助</a>
         <a href="#">学习与成长</a>
       </div>
 
-      <div class="footer-service-function">
+      <div class="service-function">
         <p class="zh main white">计划</p>
         <a href="#">开源</a>
       </div>
     </div>
 
-    <div class="footer-studio spacer-top-s spacer-bottom protected-content">
+    <div class="studio spacer-top-s spacer-bottom protected-content">
       <a href="#"><img src="../../../res/logo_code_intellix_with_text.png" alt="Code IntelliX"></a>
 
       <a href="#"><img src="../../../res/logo_echo_network_with_text.svg" alt="Echo Network"></a>
 
-      <div class="footer-studio-workspace">
+      <div class="studio-workspace">
         <a href="#"><img src="../../../res/logo_intellic_lab.png" alt="IntelliC Lab">IntelliC Lab</a>
       </div>
 
-      <div class="footer-studio-workspace">
+      <div class="studio-workspace">
         <a href="#"><img src="../../../res/logo_intellid_studio.png" alt="IntelliD Studio">IntelliD Studio</a>
       </div>
 
-      <div class="footer-studio-workspace">
+      <div class="studio-workspace">
         <a href="#"><img src="../../../res/logo_intellia_visual.png" alt="IntelliA Visual">IntelliA Visual</a>
       </div>
     </div>
 
     <hr class="divider">
 
-    <div class="footer-contact spacer-top protected-content">
+    <div class="contact spacer-top protected-content">
       <a href="#"><img src="../../../res/ic_qq.svg" alt="QQ"></a>
       <a href="#"><img src="../../../res/ic_wechat.svg" alt="微信"></a>
       <a href="#"><img src="../../../res/ic_microblog.svg" alt="微博"></a>
@@ -80,18 +80,18 @@
       <a href="#"><img src="../../../res/ic_bilibili.svg" alt="哔哩哔哩"></a>
     </div>
 
-    <div class="footer-links spacer-top protected-content">
+    <div class="links spacer-top protected-content">
       <a class="remark-highlight" @click="router().push('/service-terms')">使用协议</a>
       <a class="remark-highlight" @click="router().push('/privacy-policy')">隐私政策</a>
       <a class="remark-highlight" href="#">反馈</a>
     </div>
 
-    <div class="footer-bottom spacer-top protected-content">
-      <div class="footer-copyright">
+    <div class="bottom spacer-top protected-content">
+      <div class="copyright">
         <p class="en remark-normal">Copyright © 2023-2025 Code IntelliX</p>
       </div>
 
-      <div class="footer-build">
+      <div class="build">
         <p class="en remark-normal">Developed with
           <a class="remark-highlight" href="https://www.jetbrains.com/zh-cn/">IntelliJ IDEA</a>
           by
@@ -201,7 +201,7 @@ export default {
   transform: translateY(0); !* 显示状态 *!
 } */
 
-.footer-bottom {
+.bottom {
   margin-left: 30px;
   margin-right: 30px;
   display: flex;
@@ -209,7 +209,7 @@ export default {
   align-items: baseline;
 }
 
-.footer-links {
+.links {
   margin-left: 30px;
   margin-right: 30px;
   display: flex;
@@ -217,11 +217,11 @@ export default {
   gap: 20px;
 }
 
-.footer-links a:hover {
+.links a:hover {
   color: white;
 }
 
-.footer-contact {
+.contact {
   margin-left: 30px;
   margin-right: 30px;
   display: flex;
@@ -229,12 +229,12 @@ export default {
   gap: 20px;
 }
 
-.footer-contact a img {
+.contact a img {
   width: 20px;
   height: auto;
 }
 
-.footer-studio {
+.studio {
   margin-left: 30px;
   margin-right: 30px;
   display: flex;
@@ -242,17 +242,17 @@ export default {
   gap: 20px;
 }
 
-.footer-studio a img {
+.studio a img {
   height: 20px;
   width: auto;
 }
 
-.footer-studio-workspace {
+.studio-workspace {
   height: 20px;
   width: auto;
 }
 
-.footer-studio-workspace a {
+.studio-workspace a {
   display: flex;
   gap: 5px;
   align-items: center;
@@ -261,7 +261,7 @@ export default {
   font-family: "Google Sans Medium", sans-serif;
 }
 
-.footer-service {
+.service {
   margin-left: 30px;
   margin-right: 30px;
   display: flex;
@@ -269,20 +269,20 @@ export default {
   gap: 100px;
 }
 
-.footer-service-function {
+.service-function {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.footer-service-function a {
+.service-function a {
   text-decoration: none;
   color: #a5a5a7;
   font-size: 0.8em;
   font-family: "MiSans Medium", sans-serif;
 }
 
-.footer-service-function a:hover {
+.service-function a:hover {
   color: white;
 }
 

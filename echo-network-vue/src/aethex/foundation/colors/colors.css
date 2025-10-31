@@ -11,6 +11,16 @@ Created by Wu Qizhen on 2025.10.9
     --theme-color-fade: rgba(var(--theme-color-rgb), 0.4); /* 用于阴影等更暗场景 */
     --theme-color-lighten: #1e90ff;
 
+    /* 预设颜色 */
+    --lightblue: rgb(0, 199, 228);
+    --green: rgb(82, 224, 166);
+    --yellow: rgb(253, 205, 34);
+    --red: rgb(201, 79, 79);
+    --lightblue-rgb: 0, 199, 228;
+    --green-rgb: 82, 224, 166;
+    --yellow-rgb: 253, 205, 34;
+    --red-rgb: 201, 79, 79;
+
     /* 其它自定义颜色 */
     /* TODO 统一颜色 */
     --dark-bg-s: #1e1f22;

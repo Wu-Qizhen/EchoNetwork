@@ -31,23 +31,23 @@ Created by Wu Qizhen on 2025.10.9
 }
 
 .btn.lightblue, .btn-s.lightblue {
-    background-color: rgba(0, 199, 228);
-    box-shadow: 0 4px 10px rgba(0, 199, 228, 0.5);
+    background-color: var(--lightblue);
+    box-shadow: 0 4px 10px rgba(var(--lightblue-rgb), 0.5);
 }
 
 .btn.green, .btn-s.green {
-    background-color: rgba(82, 224, 166);
-    box-shadow: 0 4px 10px rgba(82, 224, 166, 0.5);
+    background-color: var(--green);
+    box-shadow: 0 4px 10px rgba(var(--green-rgb), 0.5);
 }
 
 .btn.yellow, .btn-s.yellow {
-    background-color: rgba(253, 205, 34);
-    box-shadow: 0 4px 10px rgba(253, 205, 34, 0.5);
+    background-color: var(--yellow);
+    box-shadow: 0 4px 10px rgba(var(--yellow-rgb), 0.5);
 }
 
 .btn.red, .btn-s.red {
-    background-color: rgb(201, 79, 79);
-    box-shadow: 0 4px 10px rgba(201, 79, 79, 0.5);
+    background-color: var(--red);
+    box-shadow: 0 4px 10px rgba(var(--red-rgb), 0.5);
 }
 
 .btn:hover, .btn-s:hover {
@@ -62,23 +62,23 @@ Created by Wu Qizhen on 2025.10.9
 }
 
 .btn.lightblue:hover, .btn-s.lightblue:hover {
-    background-color: rgba(0, 199, 228, 0.7);
-    box-shadow: 0 6px 15px rgba(0, 199, 228, 0.5);
+    background-color: rgba(var(--lightblue-rgb), 0.7);
+    box-shadow: 0 6px 15px rgba(var(--lightblue-rgb), 0.5);
 }
 
 .btn.green:hover, .btn-s.green:hover {
-    background-color: rgba(82, 224, 166, 0.7);
-    box-shadow: 0 6px 15px rgba(82, 224, 166, 0.5);
+    background-color: rgba(var(--green-rgb), 0.7);
+    box-shadow: 0 6px 15px rgba(var(--green-rgb), 0.5);
 }
 
 .btn.yellow:hover, .btn-s.yellow:hover {
-    background-color: rgba(253, 205, 34, 0.7);
-    box-shadow: 0 6px 15px rgba(253, 205, 34, 0.5);
+    background-color: rgba(var(--yellow-rgb), 0.7);
+    box-shadow: 0 6px 15px rgba(var(--yellow-rgb), 0.5);
 }
 
 .btn.red:hover, .btn-s.red:hover {
-    background-color: rgba(201, 79, 79, 0.7);
-    box-shadow: 0 6px 15px rgba(201, 79, 79, 0.5);
+    background-color: rgba(var(--red-rgb), 0.7);
+    box-shadow: 0 6px 15px rgba(var(--red-rgb), 0.5);
 }
 
 .card {

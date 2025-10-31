@@ -50,8 +50,22 @@
         </div>
 
         <!-- 圈子标签 -->
-        <div class="circle-tag" v-if="article.circle">
-          <el-tag type="info" size="large">{{ article.circle.name }}</el-tag>
+        <div
+            class="circle-tag"
+            v-if="article.circle"
+            @click="handleCircleClick"
+        >
+          <el-tag
+              type="success"
+              size="large"
+              style="
+                          background-color: rgba(var(--theme-color-rgb), 0.2);
+                          border: 1px solid var(--theme-color);
+                          color: #fff;
+                          font-weight: normal;
+                          font-size: 16px"
+          >{{ article.circle.name }}
+          </el-tag>
         </div>
       </div>
 
@@ -370,6 +384,12 @@ const handleCollect = () => {
   }
 }
 
+function handleCircleClick() {
+  window.open(
+      '/circle/' + article.value.circle.id,
+  )
+}
+
 // 监听路由变化
 watch(() => route.params.id, () => {
   fetchArticleDetail()
@@ -535,6 +555,7 @@ onMounted(() => {
 
 .circle-tag {
   margin-left: 16px;
+  cursor: pointer;
 }
 
 /* 文章标题样式 */

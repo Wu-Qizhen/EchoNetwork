@@ -112,8 +112,8 @@ const router = createRouter({
         {
             path: '/article/:id',
             name: 'article',
-            component: () => import('@/views/ArticleView.vue'),
-            props: true
+            props: true,
+            component: () => import('@/views/ArticleView.vue')
         },
 
         // 圈子
@@ -126,16 +126,17 @@ const router = createRouter({
 
         // 编辑
         {
-            path: '/editor',
+            path: '/editor/:id?',
             name: 'editor',
-            component: () => import('@/views/EditView.vue'),
+            props: true,
+            component: () => import('@/views/EditView.vue')
         },
 
         // 搜索
         {
             path: '/search',
             name: 'search',
-            component: () => import('@/views/SearchView.vue'),
+            component: () => import('@/views/SearchView.vue')
         },
 
         // 协议

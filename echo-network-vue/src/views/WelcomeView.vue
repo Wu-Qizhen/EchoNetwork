@@ -34,7 +34,7 @@ const handleNavItemClick = (data) => {
   } else if (item.id === 'privacy') {
     router.push('/privacy-policy')
   } else if (item.id === 'cooperation') {
-    ElMessage.warning('施工未完成')
+    ElMessage.warning('功能正在施工中')
     setTimeout(() => {
       router.go(0)
     }, 2000)
