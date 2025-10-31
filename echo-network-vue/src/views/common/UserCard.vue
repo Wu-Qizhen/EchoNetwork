@@ -400,7 +400,7 @@ function toggleFollow() {
 
 .user-bio {
   font-size: 16px;
-  color: var(--dark-content-s);
+  color: var(--dark-content-m);
   margin: 0 0 15px;
 }
 

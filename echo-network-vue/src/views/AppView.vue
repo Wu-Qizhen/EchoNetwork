@@ -10,9 +10,11 @@ import {computed, onMounted, ref} from "vue";
 import XMultiFunBar from "@/aethex/components/XMultiFunBar.vue";
 import XBackgroundSpace from "@/aethex/components/XBackgroundSpace.vue";
 import {ElMessage} from "element-plus";
+import {getUser} from "@/net/request.js";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
+const userAvatar = ref(null)
 
 const navItems = ref([
   {text: '首页', id: 'home'},
@@ -47,7 +49,7 @@ const navButtons = computed(() => {
       },
       {
         type: 'image',
-        imageUrl: userInfo.value?.avatarUrl || '/res/ic_avatar_default.svg',
+        imageUrl: userAvatar.value || '/res/ic_avatar_default.svg',
         alt: '用户头像',
         title: '用户菜单',
         dropdownItems: [
@@ -82,9 +84,16 @@ function checkLoginStatus() {
   }
 }
 
+function getUserAvatar() {
+  getUser(userInfo.value.id, (data) => {
+    userAvatar.value = data.avatarUrl
+  })
+}
+
 // 初始化时检查登录状态
 onMounted(() => {
   checkLoginStatus()
+  getUserAvatar()
 })
 
 const handleNavItemClick = (data) => {

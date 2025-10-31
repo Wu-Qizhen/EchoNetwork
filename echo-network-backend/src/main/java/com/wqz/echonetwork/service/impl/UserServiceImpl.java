@@ -80,11 +80,12 @@ public class UserServiceImpl implements UserService {
         }
 
         String encodePassword = PasswordEncoder.encode(password);
+        String nickname = username.length() > 20 ? username.substring(0, 20) : username;
         User user = new User();
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(encodePassword);
-        user.setNickname(username);
+        user.setNickname(nickname);
         user.setCreateTime(LocalDateTime.now());
         user.setLastLoginTime(LocalDateTime.now());
         int insert = userMapper.insert(user);

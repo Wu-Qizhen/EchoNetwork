@@ -31,6 +31,11 @@ function getUser(pathString, success, failure = defaultFailure) {
     get(url, success, failure)
 }
 
+function updateUser(userId, data, success, failure = defaultFailure) {
+    const url = `/api/users/${userId}`;
+    put(url, data, success, failure)
+}
+
 function getUsers(pathString, success, failure = defaultFailure) {
     const url = `/api/users/${pathString}`;
     get(url, success, failure)
@@ -103,6 +108,7 @@ export {
     publishArticle,
     deleteArticle,
     getUser,
+    updateUser,
     getUsers,
     followUser,
     unfollowUser,

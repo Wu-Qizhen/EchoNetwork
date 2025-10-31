@@ -37,6 +37,9 @@ const goToReset = () => {
 
 <template>
   <div class="account-page">
+    <h1>账户设置</h1>
+    <p style="color: var(--dark-content-m); font-size: 14px">更改您的个人账户</p>
+    <XSpacer height="20px"/>
     <h2>更改用户名</h2>
     <XSpacer height="20px"/>
     <XAlert

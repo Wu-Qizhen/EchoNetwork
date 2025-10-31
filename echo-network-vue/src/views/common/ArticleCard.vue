@@ -43,7 +43,7 @@
             <div class="author-name" @click="handleAuthorClick">{{ article.author.nickname }}</div>
             <div class="article-meta">
               <span class="publish-time">{{ formatTime(article.publishTime || article.createTime) }}</span>
-              <span class="word-count">{{ calculateWordCount(article.content) }} 字 </span>
+              <span class="word-count">{{ calculateWordCount(article.content) }} 字</span>
               <span class="read-count">{{ formatViewCount(article.viewCount) }} 浏览</span>
             </div>
           </div>
@@ -434,7 +434,6 @@ onMounted(() => {
   border-radius: 20px;
   /* backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px); */
-  min-height: 60vh;
 }
 
 /* 深色模式样式 */

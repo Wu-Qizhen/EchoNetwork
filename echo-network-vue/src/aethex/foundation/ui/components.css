@@ -4,7 +4,9 @@ Elegance is not a dispensable luxury but a quality that decides between success 
 Created by Wu Qizhen on 2025.10.9
 */
 .btn-l {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 15px 30px;
     color: white;
     text-decoration: none;
@@ -15,7 +17,9 @@ Created by Wu Qizhen on 2025.10.9
 }
 
 .btn-m {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 8px 16px;
     color: white;
     text-decoration: none;
@@ -26,7 +30,9 @@ Created by Wu Qizhen on 2025.10.9
 }
 
 .btn-s {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 6px 12px;
     color: white;
     font-size: 14px;
@@ -34,6 +40,13 @@ Created by Wu Qizhen on 2025.10.9
     border-radius: 30px;
     transition: all 0.3s ease;
     cursor: pointer;
+}
+
+.btn-l.disable,
+.btn-m.disable,
+.btn-s.disable {
+    background-color: var(--dark-bg-l);
+    box-shadow: none;
 }
 
 .btn-l.theme,

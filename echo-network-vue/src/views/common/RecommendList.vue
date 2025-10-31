@@ -345,7 +345,7 @@ onMounted(() => {
 
 /* 空状态 */
 .empty-state {
-  padding: 40px 20px;
+  padding: 10px 0;
 }
 
 /* Element Plus 组件深色模式样式覆盖 */
