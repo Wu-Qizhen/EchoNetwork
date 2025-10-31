@@ -3,9 +3,20 @@
 Elegance is not a dispensable luxury but a quality that decides between success and failure!
 Created by Wu Qizhen on 2025.10.9
 */
-.btn {
+.btn-l {
     display: inline-block;
     padding: 15px 30px;
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-m {
+    display: inline-block;
+    padding: 8px 16px;
     color: white;
     text-decoration: none;
     border-radius: 30px;
@@ -25,58 +36,80 @@ Created by Wu Qizhen on 2025.10.9
     cursor: pointer;
 }
 
-.btn.theme, .btn-s.theme {
+.btn-l.theme,
+.btn-m.theme,
+.btn-s.theme {
     background-color: var(--theme-color);
     box-shadow: 0 4px 10px var(--theme-color-fade);
 }
 
-.btn.lightblue, .btn-s.lightblue {
+.btn-l.lightblue,
+.btn-m.lightblue,
+.btn-s.lightblue {
     background-color: var(--lightblue);
     box-shadow: 0 4px 10px rgba(var(--lightblue-rgb), 0.5);
 }
 
-.btn.green, .btn-s.green {
+.btn-l.green,
+.btn-m.green,
+.btn-s.green {
     background-color: var(--green);
     box-shadow: 0 4px 10px rgba(var(--green-rgb), 0.5);
 }
 
-.btn.yellow, .btn-s.yellow {
+.btn-l.yellow,
+.btn-m.yellow,
+.btn-s.yellow {
     background-color: var(--yellow);
     box-shadow: 0 4px 10px rgba(var(--yellow-rgb), 0.5);
 }
 
-.btn.red, .btn-s.red {
+.btn-l.red,
+.btn-m.red,
+.btn-s.red {
     background-color: var(--red);
     box-shadow: 0 4px 10px rgba(var(--red-rgb), 0.5);
 }
 
-.btn:hover, .btn-s:hover {
+.btn-l:hover,
+.btn-m:hover,
+.btn-s:hover {
     color: rgba(255, 255, 255, 0.7);
     transform: translateY(-2px);
     font-weight: 400;
 }
 
-.btn.theme:hover, .btn-s.theme:hover {
+.btn-l.theme:hover,
+.btn-m.theme:hover,
+.btn-s.theme:hover {
     background-color: var(--theme-color-darken);
     box-shadow: 0 6px 15px var(--theme-color-fade);
 }
 
-.btn.lightblue:hover, .btn-s.lightblue:hover {
+.btn-l.lightblue:hover,
+.btn-m.lightblue:hover,
+.btn-s.lightblue:hover {
     background-color: rgba(var(--lightblue-rgb), 0.7);
     box-shadow: 0 6px 15px rgba(var(--lightblue-rgb), 0.5);
 }
 
-.btn.green:hover, .btn-s.green:hover {
+.btn-l.green:hover,
+.btn-m.green:hover,
+.btn-s.green:hover {
     background-color: rgba(var(--green-rgb), 0.7);
     box-shadow: 0 6px 15px rgba(var(--green-rgb), 0.5);
 }
 
-.btn.yellow:hover, .btn-s.yellow:hover {
+.btn-l.yellow:hover,
+.btn-m.yellow:hover,
+.btn-s.yellow:hover {
     background-color: rgba(var(--yellow-rgb), 0.7);
     box-shadow: 0 6px 15px rgba(var(--yellow-rgb), 0.5);
 }
 
-.btn.red:hover, .btn-s.red:hover {
+.btn-l.red:hover,
+.btn-m.red:hover,
+.btn-s.red:hover {
     background-color: rgba(var(--red-rgb), 0.7);
     box-shadow: 0 6px 15px rgba(var(--red-rgb), 0.5);
 }

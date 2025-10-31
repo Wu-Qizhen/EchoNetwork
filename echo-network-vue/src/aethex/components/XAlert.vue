@@ -110,15 +110,16 @@ const props = defineProps({
 .content {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: start;
+  justify-content: center;
 }
 
 .title {
   font-size: 16px;
-  margin-bottom: 3px;
 }
 
 .description {
+  margin-top: 3px;
   font-size: 14px;
   color: var(--dark-content-m);
 }

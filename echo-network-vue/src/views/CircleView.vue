@@ -92,7 +92,10 @@ const handleDropdownItemClick = (data) => {
       }
       break
     case 'settings':
-      router.push('/settings')
+      window.open(
+          '/settings',
+          '_blank'
+      )
       break
   }
 }

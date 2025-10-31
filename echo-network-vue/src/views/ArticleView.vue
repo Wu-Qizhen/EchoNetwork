@@ -91,7 +91,7 @@ const handleDropdownItemClick = (data) => {
       }
       break
     case 'settings':
-      router.push('/settings')
+      window.open('/settings', '_blank')
       break
   }
 }
@@ -121,7 +121,9 @@ function userLogout() {
   <XBackgroundSpace>
     <div class="article">
       <div class="article-area">
-        <ArticleCard></ArticleCard>
+        <ArticleCard
+            :user-id="userInfo?.id"
+        ></ArticleCard>
       </div>
 
       <XSpacer height="20px"/>

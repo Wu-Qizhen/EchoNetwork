@@ -12,7 +12,7 @@ import router from "@/router/index.js";
 import XTabBar from "@/aethex/components/XTabBar.vue";
 import XSpacer from "@/aethex/components/XSpacer.vue";
 import {useRoute} from "vue-router";
-import ProfileCard from "@/views/common/UserCard.vue";
+import UserCard from "@/views/common/UserCard.vue";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
@@ -101,7 +101,10 @@ const handleDropdownItemClick = (data) => {
       }
       break
     case 'settings':
-      router.push('/settings')
+      window.open(
+          '/settings',
+          '_blank'
+      )
       break
   }
 }
@@ -175,10 +178,10 @@ function userLogout() {
   <XBackgroundSpace>
     <div class="user">
       <div class="profile-area">
-        <ProfileCard
+        <UserCard
             :user-id="userId"
             :current-user-id="userInfo?.id"
-        ></ProfileCard>
+        ></UserCard>
       </div>
 
       <div class="display-area">

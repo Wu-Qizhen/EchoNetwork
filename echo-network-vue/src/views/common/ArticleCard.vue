@@ -49,23 +49,33 @@
           </div>
         </div>
 
-        <!-- 圈子标签 -->
-        <div
-            class="circle-tag"
-            v-if="article.circle"
-            @click="handleCircleClick"
-        >
-          <el-tag
-              type="success"
-              size="large"
-              style="
-                          background-color: rgba(var(--theme-color-rgb), 0.2);
-                          border: 1px solid var(--theme-color);
-                          color: #fff;
-                          font-weight: normal;
-                          font-size: 16px"
-          >{{ article.circle.name }}
-          </el-tag>
+        <div class="header-actions">
+          <!-- 圈子标签 -->
+          <div
+              class="circle-tag"
+              v-if="article.circle"
+              @click="handleCircleClick"
+          >
+            <el-tag
+                type="success"
+                size="large" style="
+                        background-color: rgba(var(--theme-color-rgb), 0.2);
+                        border: 1px solid var(--theme-color);
+                        color: #fff;
+                        font-weight: normal;
+                        font-size: 16px"
+            >{{ article.circle.name }}
+            </el-tag>
+          </div>
+
+          <!-- 添加编辑按钮 -->
+          <div
+              v-if="isAuthor"
+              @click="handleEditClick"
+              class="btn-m theme"
+          >
+            <p class="zh">编辑</p>
+          </div>
         </div>
       </div>
 
@@ -132,7 +142,7 @@
     <!-- 文章不存在 -->
     <div v-else class="article-not-found">
       <el-empty description="文章不存在或已被删除">
-        <div class="btn theme" @click="router.back()"><p class="zh">返回</p></div>
+        <div class="btn-l theme" @click="router.back()"><p class="zh">返回</p></div>
       </el-empty>
     </div>
   </div>
@@ -146,12 +156,14 @@ import {Star, Coin} from '@element-plus/icons-vue'
 import router from "@/router/index.js";
 import {getArticle, likeArticle, starArticle, unlikeArticle, unstarArticle} from "@/net/request.js";
 
-/*const props = defineProps({
-  articleId: {
-    type: String,
-    required: true
+const props = defineProps({
+  userId: {
+    type: Number,
+    default: null
   }
-})*/
+})
+
+const isAuthor = ref(false)
 
 // 模拟文章数据获取函数
 /*const mockGetArticleDetail = (id) => {
@@ -289,6 +301,7 @@ const fetchArticleDetail = async () => {
     const fetchPromise = new Promise((resolve, reject) => {
       getArticle(articleId, (data) => {
         article.value = data
+        isAuthor.value = props.userId && data.author.id === props.userId
         resolve(data)
       }, (error) => {
         reject(error)
@@ -346,9 +359,12 @@ const calculateWordCount = (content) => {
 
 // 处理作者点击
 const handleAuthorClick = () => {
-  window.open(
-      '/user/' + article.value.author.id,
-  )
+  if (article.value && article.value.author) {
+    window.open(
+        '/user/' + article.value.author.id,
+        '_blank'
+    )
+  }
 }
 
 // 处理点赞
@@ -385,9 +401,18 @@ const handleCollect = () => {
 }
 
 function handleCircleClick() {
-  window.open(
-      '/circle/' + article.value.circle.id,
-  )
+  if (article.value && article.value.circle) {
+    window.open(
+        `/circle/${article.value.circle.id}`,
+        '_blank'
+    )
+  }
+}
+
+const handleEditClick = () => {
+  if (article.value) {
+    window.open(`/editor/${article.value.id}`, '_blank')
+  }
 }
 
 // 监听路由变化
@@ -551,6 +576,12 @@ onMounted(() => {
 
 .article-meta span {
   margin-right: 16px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .circle-tag {

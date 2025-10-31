@@ -65,8 +65,8 @@ function checkLoginStatus() {
 
 const handleNavItemClick = (data) => {
   const item = data.item;
-  if (item.id === 'about') {
-    router.push('/welcome')
+  if (item.id === 'home') {
+    router.push('/')
   }
 }
 
@@ -244,7 +244,7 @@ const deleteArticle = () => {
     deleteClicked.value = true
     ElMessage.warning('再次点击删除按钮以确认删除')
 
-    // 3秒后重置状态
+    // 3 秒后重置状态
     setTimeout(() => {
       deleteClicked.value = false
     }, 3000)

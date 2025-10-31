@@ -125,7 +125,7 @@ onUnmounted(() => {
       <h1 class="theme h1 spacer-top-l">回声网络</h1>
       <h2 class="en h2_5 spacer-top-l">Echo with depth in an era of superficiality</h2>
       <h2 class="theme h2 spacer-top-m">在浅薄的时代，做深刻的回响</h2>
-      <a @click="router.push('/')" class="btn theme spacer-top-l">进入博客</a>
+      <a @click="router.push('/')" class="btn-l theme spacer-top-l">进入博客</a>
     </div>
   </div>
 
@@ -188,7 +188,7 @@ onUnmounted(() => {
       <h1 class="theme h1 spacer-top-l">声起于思，回荡成网</h1>
       <h2 class="en h2_5 spacer-top-l">Join the Echo and let the world hear your voice</h2>
       <h2 class="theme h2 spacer-top-m">加入回声，让世界听清你的思想</h2>
-      <a @click="router.push('/')" class="btn theme spacer-top-l">立刻开始</a>
+      <a @click="router.push('/')" class="btn-l theme spacer-top-l">立刻开始</a>
     </div>
   </div>
 

@@ -48,13 +48,13 @@
         <p class="user-bio" v-if="bio">{{ bio }}</p>
 
         <div
-            class="user-settings btn theme"
+            class="user-settings btn-l theme"
             @click="settings"
             v-if="isCurrentUser"
         ><p class="zh">编辑资料</p></div>
 
         <div
-            class="user-settings btn theme"
+            class="user-settings btn-l theme"
             @click="toggleFollow"
             v-if="!isCurrentUser"
         >
@@ -238,7 +238,10 @@ onMounted(() => {
 })
 
 function settings() {
-  router.push('/settings')
+  window.open(
+      '/settings',
+      '_blank'
+  )
 }
 
 /*function follow() {
