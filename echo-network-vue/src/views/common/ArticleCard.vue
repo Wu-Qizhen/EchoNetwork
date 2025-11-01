@@ -58,12 +58,13 @@
           >
             <el-tag
                 type="success"
-                size="large" style="
-                        background-color: rgba(var(--theme-color-rgb), 0.2);
-                        border: 1px solid var(--theme-color);
-                        color: #fff;
-                        font-weight: normal;
-                        font-size: 16px"
+                size="large"
+                style="
+                    background-color: rgba(var(--theme-color-rgb), 0.2);
+                    border: 1px solid var(--theme-color);
+                    color: var(--theme-color-lighten);
+                    font-weight: normal;
+                    font-size: 16px"
             >{{ article.circle.name }}
             </el-tag>
           </div>
@@ -146,6 +147,18 @@
       </el-empty>
     </div>
   </div>
+
+  <div
+      class="comment-area"
+      v-if="article"
+  >
+    <XSpacer height="20px"/>
+
+    <CommentSection
+        :article-id="article.id"
+        :article-author-id="article.author.id"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -155,6 +168,8 @@ import {ElMessage} from 'element-plus'
 import {Star, Coin} from '@element-plus/icons-vue'
 import router from "@/router/index.js";
 import {getArticle, likeArticle, starArticle, unlikeArticle, unstarArticle} from "@/net/request.js";
+import CommentSection from "@/views/common/CommentSection.vue";
+import XSpacer from "@/aethex/components/XSpacer.vue";
 
 const props = defineProps({
   userId: {
@@ -378,7 +393,7 @@ const handleLike = () => {
   } else {
     unlikeArticle(article.value.id, () => {
       article.value.likeCount = (article.value.likeCount || 0) - 1
-      ElMessage.error('已取消点赞')
+      ElMessage.warning('已取消点赞')
     })
   }
 }
@@ -395,7 +410,7 @@ const handleCollect = () => {
   } else {
     unstarArticle(article.value.id, () => {
       article.value.starCount = (article.value.starCount || 0) - 1
-      ElMessage.error('已取消收藏')
+      ElMessage.warning('已取消收藏')
     })
   }
 }
@@ -564,7 +579,7 @@ onMounted(() => {
 }
 
 .author-name:hover {
-  color: var(--dark-content-m);
+  color: var(--theme-color-lighten);
   transform: translateY(-2px);
 }
 
@@ -783,33 +798,26 @@ onMounted(() => {
 /* 响应式设计 */
 @media (max-width: 768px) {
   .article-card-container {
-    padding: 16px;
+    padding: 20px;
   }
 
-  /* .dark-card {
-    padding: 16px;
-  } */
-  .article-title {
+  /* .article-title {
     font-size: 24px;
-  }
-
-  .article-header {
+  } */
+  /* .article-header {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .circle-tag {
+  } */
+  /* .circle-tag {
     margin-left: 0;
     margin-top: 12px;
-  }
-
-  .article-actions {
+  } */
+  /* .article-actions {
     flex-direction: column;
     gap: 16px;
-  }
-
-  .action-group {
+  } */
+  /* .action-group {
     margin: 0;
-  }
+  } */
 }
 </style>

@@ -51,4 +51,24 @@ const circleId = computed(() => route.params.id);
 .recommend-list {
   width: 40%;
 }
+
+@media (max-width: 768px) {
+  .circle-page {
+    width: 100%;
+    padding: 105px 20px 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+  }
+
+  .circle-list {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .recommend-list {
+    display: none;
+  }
+}
 </style>

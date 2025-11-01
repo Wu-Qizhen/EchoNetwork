@@ -71,11 +71,11 @@
                   type="success"
                   size="large"
                   style="
-                          background-color: rgba(var(--theme-color-rgb), 0.2);
-                          border: 1px solid var(--theme-color);
-                          color: #fff;
-                          font-weight: normal;
-                          font-size: 16px"
+                      background-color: rgba(var(--theme-color-rgb), 0.2);
+                      border: 1px solid var(--theme-color);
+                      color: var(--theme-color-lighten);
+                      font-weight: normal;
+                      font-size: 16px"
               >
                 {{ article.circle.name }}
               </el-tag>

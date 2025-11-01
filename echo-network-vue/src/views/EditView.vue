@@ -557,7 +557,7 @@ onMounted(() => {
                     />
                   </el-select>
                 </el-form-item>-->
-            <el-form-item label="圈子" prop="circleId" style="width: 30%">
+            <el-form-item label="圈子" prop="circleId" class="operation-selector">
               <el-select
                   v-model="articleForm.circleId"
                   placeholder="选择圈子（可选）"
@@ -584,7 +584,7 @@ onMounted(() => {
             </el-form-item>
 
             <!-- 标签输入 -->
-            <el-form-item label="标签" prop="tags" style="width: 30%">
+            <el-form-item label="标签" prop="tags" class="operation-selector">
               <el-input
                   v-model="tagInput"
                   placeholder="输入标签后按回车添加"
@@ -643,6 +643,10 @@ onMounted(() => {
   display: flex;
   align-items: start;
   gap: 20px;
+}
+
+.operation-selector {
+  width: 30%;
 }
 
 .tags-container {
@@ -730,5 +734,20 @@ onMounted(() => {
 :deep(.custom-select-dropdown .el-select-dropdown__item.is-selected) {
   background-color: rgba(255, 255, 255, 0.1) !important;
   color: var(--theme-color-lighten) !important;
+}
+
+@media (max-width: 768px) {
+  .editor {
+    padding: 20px;
+  }
+
+  .operation {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .operation-selector {
+    width: 100%;
+  }
 }
 </style>

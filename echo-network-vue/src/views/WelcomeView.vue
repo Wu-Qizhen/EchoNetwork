@@ -84,8 +84,18 @@ const handleMouseLeave = () => {
   interactElement.value.style.transform = 'rotateX(0deg) rotateY(0deg)'
 }
 
+const handleResize = () => {
+  // 检测屏幕宽度是否小于 768px
+  if (window.innerWidth < 768) {
+    // 重定向到移动端页面
+    window.location.href = '/';
+  }
+};
+
 // 组件挂载时添加事件监听
 onMounted(() => {
+  handleResize();
+  window.addEventListener('resize', handleResize);
   document.addEventListener('mousemove', handleMouseMove)
   if (interactElement.value) {
     interactElement.value.addEventListener('mouseleave', handleMouseLeave)
@@ -94,6 +104,7 @@ onMounted(() => {
 
 // 组件卸载时移除事件监听
 onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
   document.removeEventListener('mousemove', handleMouseMove)
   if (interactElement.value) {
     interactElement.value.removeEventListener('mouseleave', handleMouseLeave)

@@ -441,4 +441,22 @@ function goToUser() {
     transform: translateY(0);
   }
 }
+
+@media (max-width: 768px) {
+  .circle-card-container {
+    padding: 20px;
+  }
+
+  /* .circle-header-container {
+    flex-direction: column;
+  } */
+  .circle-stats {
+    display: none;
+  }
+
+  .circle-description {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+}
 </style>

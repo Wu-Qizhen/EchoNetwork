@@ -57,12 +57,13 @@
                   </div>-->
               <div class="circle-details">
                 <div class="circle-name">
-                  <el-tag type="success"
-                          size="large"
-                          style="
+                  <el-tag
+                      type="success"
+                      size="large"
+                      style="
                           background-color: rgba(var(--theme-color-rgb), 0.2);
                           border: 1px solid var(--theme-color);
-                          color: #fff;
+                          color: var(--theme-color-lighten);
                           font-weight: normal;
                           font-size: 16px"
                   >{{ circle.name }}

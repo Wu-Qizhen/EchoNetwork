@@ -713,4 +713,23 @@ nav.scrolled {
   /* border-radius: 10px; */
   background: rgba(255, 255, 255, 0.1);
 }
+
+@media (max-width: 768px) {
+  .nav-logo {
+    display: none;
+  }
+
+  /* .nav-links {
+    margin-left: 0;
+    display: flex;
+  } */
+
+  .nav-item {
+    padding: 10px 15px;
+  }
+
+  .nav-search {
+    display: none;
+  }
+}
 </style>

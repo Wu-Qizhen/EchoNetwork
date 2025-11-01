@@ -181,6 +181,7 @@ function userLogout() {
         <UserCard
             :user-id="userId"
             :current-user-id="userInfo?.id"
+            class="user-card"
         ></UserCard>
       </div>
 
@@ -211,5 +212,31 @@ function userLogout() {
 
 .display-area {
   width: 70%;
+}
+
+@media (max-width: 768px) {
+  .user {
+    width: 100%;
+    padding: 105px 20px 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+  }
+
+  .profile-area {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .user-card {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .display-area {
+    width: 100%;
+  }
 }
 </style>

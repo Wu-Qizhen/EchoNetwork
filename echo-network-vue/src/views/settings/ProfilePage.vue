@@ -495,7 +495,7 @@ onMounted(() => {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
+  gap: 10px;
 }
 
 .stat-item {
@@ -586,24 +586,29 @@ onMounted(() => {
     padding: 20px;
   }
 
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .stat-item {
+    padding: 10px;
+  }
+
+  .avatar-controls {
+    width: 100%;
+  }
+
+  .avatar-url-input {
+    width: 100%;
+  }
+
   .avatar-edit-section {
     flex-direction: column;
     text-align: center;
-    gap: 20px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
   }
 
   .action-buttons {
     flex-direction: column;
-  }
-}
-
-@media (max-width: 480px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
   }
 }
 </style>

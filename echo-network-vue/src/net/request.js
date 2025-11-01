@@ -124,7 +124,27 @@ export {
     getStarredArticles
 }
 
-export const getCircle = async (circleId, successCallback, failure = defaultFailure) => {
+export const getCircle = async (circleId, success, failure = defaultFailure) => {
     const url = `/api/circles/${circleId}`;
-    get(url, successCallback, failure)
+    get(url, success, failure)
+}
+
+export function getArticleComments(articleId, page, size, success, fail) {
+    get(`/api/articles/${articleId}/comments?page=${page}&size=${size}`, success, fail)
+}
+
+export function submitComment(commentData, success, fail) {
+    post('/api/comments', commentData, success, fail)
+}
+
+export function deleteComment(commentId, success, fail) {
+    del(`/api/comments/${commentId}`, {}, success, fail)
+}
+
+export function likeComment(commentId, success, fail) {
+    post(`/api/comments/${commentId}/like`, {}, success, fail)
+}
+
+export function unlikeComment(commentId, success, fail) {
+    del(`/api/comments/${commentId}/like`, {}, success, fail)
 }

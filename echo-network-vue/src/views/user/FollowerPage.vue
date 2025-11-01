@@ -52,4 +52,10 @@ const getFollowers = async (params, callback) => {
   padding-right: 30px;
   padding-bottom: 100px;
 }
+
+@media (max-width: 768px) {
+  .follower-page {
+    padding-right: 0;
+  }
+}
 </style>

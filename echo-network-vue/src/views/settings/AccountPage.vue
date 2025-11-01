@@ -85,4 +85,10 @@ const goToReset = () => {
   background-color: rgba(30, 35, 47, 0.6);
   color: var(--dark-content-m);
 }
+
+@media (max-width: 768px) {
+  .account-page {
+    padding: 20px;
+  }
+}
 </style>

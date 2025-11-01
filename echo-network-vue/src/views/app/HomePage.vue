@@ -46,4 +46,24 @@ import ArticleList from "@/views/common/ArticleList.vue";
 .ranking-list {
   width: 40%;
 }
+
+@media (max-width: 768px) {
+  .home-page {
+    width: 100%;
+    padding: 105px 20px 0 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+  }
+
+  .article-list {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .ranking-list {
+    display: none;
+  }
+}
 </style>
