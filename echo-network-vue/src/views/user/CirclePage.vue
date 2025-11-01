@@ -18,7 +18,7 @@ const userId = computed(() => route.params.id);
         :request-config="{
            userId: userId
         }"
-        :enable-pagination="false"
+        :enable-pagination="true"
         :empty-text="'已经到底了'"
     ></CircleList>
   </div>

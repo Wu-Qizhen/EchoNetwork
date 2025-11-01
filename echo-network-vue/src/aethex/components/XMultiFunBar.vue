@@ -560,8 +560,8 @@ nav.scrolled {
 }
 
 .nav-search:focus-within {
-  border-color: white;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  border-color: var(--theme-color-lighten);
+  box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.3);
 }
 
 .nav-search-input {
@@ -575,11 +575,11 @@ nav.scrolled {
 }
 
 .nav-search-input::placeholder {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--dark-content-m);
 }
 
 .nav-search-button {
-  background: transparent;
+  background: var(--theme-color);
   border: none;
   color: white;
   padding: 8px 16px;
@@ -587,11 +587,11 @@ nav.scrolled {
   transition: all 0.3s ease;
   font-size: 14px;
   white-space: nowrap;
-  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  /* border-left: 1px solid rgba(255, 255, 255, 0.2); */
 }
 
 .nav-search-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--theme-color-darken);
 }
 
 /* 右侧按钮样式 */
@@ -723,7 +723,6 @@ nav.scrolled {
     margin-left: 0;
     display: flex;
   } */
-
   .nav-item {
     padding: 10px 15px;
   }

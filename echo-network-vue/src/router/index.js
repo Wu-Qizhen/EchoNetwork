@@ -148,7 +148,28 @@ const router = createRouter({
         {
             path: '/search',
             name: 'search',
-            component: () => import('@/views/SearchView.vue')
+            component: () => import('@/views/SearchView.vue'),
+            redirect: '/search/articles',
+            children: [
+                {
+                    path: 'articles',
+                    name: 'search-articles',
+                    props: true,
+                    component: () => import('@/views/search/ArticlePage.vue')
+                },
+                {
+                    path: 'users',
+                    name: 'search-users',
+                    props: true,
+                    component: () => import('@/views/search/UserPage.vue')
+                },
+                {
+                    path: 'circles',
+                    name: 'search-circles',
+                    props: true,
+                    component: () => import('@/views/search/CirclePage.vue')
+                }
+            ]
         },
 
         // 协议

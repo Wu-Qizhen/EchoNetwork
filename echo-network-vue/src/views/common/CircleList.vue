@@ -34,7 +34,7 @@
     <div v-else>
       <!-- 空状态 -->
       <div v-if="!loading && circleList.length === 0" class="empty-state">
-        <el-empty description="暂无圈子"/>
+        <el-empty description="这里什么也没有"/>
       </div>
 
       <!-- 圈子卡片 -->

@@ -184,7 +184,7 @@ const handleSearch = (data) => {
     }
   })*/
   window.open(
-      '/search?q=' + data.query,
+      '/search/articles?keyword=' + data.query,
       '_blank'
   )
 }
@@ -210,8 +210,8 @@ function userLogout() {
       @button-click="handleButtonClick"
       @dropdown-item-click="handleDropdownItemClick"
       :show-search="true"
-      search-placeholder="搜索圈子、文章、标签"
-      search-button-text="查找"
+      search-placeholder="搜索文章、圈子、用户"
+      search-button-text="搜索"
       @search="handleSearch"
   />
 

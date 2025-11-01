@@ -6,18 +6,15 @@
 <script setup>
 import ArticleList from "@/views/common/ArticleList.vue";
 import {useRoute} from "vue-router";
-import {computed} from "vue";
 
 const route = useRoute();
-const authorId = computed(() => route.params.id);
+const query = route.query;
 </script>
 
 <template>
   <div class="article-page">
     <ArticleList
-        :request-config="{
-            authorId: authorId
-        }"
+        :request-config="query"
         :enable-pagination="true"
         :empty-text="'已经到底了'"
     ></ArticleList>
@@ -27,13 +24,5 @@ const authorId = computed(() => route.params.id);
 <style scoped>
 .article-page {
   width: 100%;
-  padding-right: 30px;
-  padding-bottom: 100px;
-}
-
-@media (max-width: 768px) {
-  .article-page {
-    padding-right: 0;
-  }
 }
 </style>

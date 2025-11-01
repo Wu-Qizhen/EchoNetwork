@@ -87,8 +87,8 @@ const props = defineProps({
 }
 
 .alert-info {
-  background-color: var(--dark-bg-l);
-  color: var(--dark-content-m);
+  background-color: rgba(var(--theme-color-rgb), 0.2);
+  color: var(--theme-color-lighten);
 }
 
 .alert-error {

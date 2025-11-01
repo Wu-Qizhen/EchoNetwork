@@ -4,21 +4,41 @@
   Created by Wu Qizhen on 2025.10.27
 -->
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {useRoute} from "vue-router";
 import router from "@/router/index.js";
 import {getUserInfo, isAuthorized, logout} from "@/net/index.js";
 import XMultiFunBar from "@/aethex/components/XMultiFunBar.vue";
 import XBackgroundSpace from "@/aethex/components/XBackgroundSpace.vue";
-import UserCard from "@/views/common/UserCard.vue";
-import XTabBar from "@/aethex/components/XTabBar.vue";
-import XSpacer from "@/aethex/components/XSpacer.vue";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
 
 const route = useRoute();
-const userId = computed(() => route.params.id);
+// const fullPath = route.fullPath
+// const path = route.path
+const query = route.query;
+
+const searchType = ref('articles')
+const initialActiveIndex = ref(0)
+
+const calculateInitialActiveIndex = () => {
+  const path = route.path
+  // console.log('当前路径：', path)
+
+  if (path.includes('/search/articles')) {
+    searchType.value = 'articles'
+    return 0
+  } else if (path.includes('/search/circles')) {
+    searchType.value = 'circles'
+    // console.log('当前搜索类型：', searchType.value)
+    return 1
+  } else if (path.includes('/search/users')) {
+    searchType.value = 'users'
+    return 2
+  }
+  return 0
+}
 
 function checkLoginStatus() {
   isLoggedIn.value = isAuthorized()
@@ -28,11 +48,19 @@ function checkLoginStatus() {
 }
 
 onMounted(() => {
+  initialActiveIndex.value = calculateInitialActiveIndex()
+  // console.log('初始激活项索引：', initialActiveIndex.value)
   checkLoginStatus()
 })
 
+watch(() => route.path, () => {
+  initialActiveIndex.value = calculateInitialActiveIndex()
+})
+
 const navItems = ref([
-  {text: '搜索结果', id: 'result'},
+  {text: '搜索文章', id: 'articles'},
+  {text: '搜索圈子', id: 'circles'},
+  {text: '搜索用户', id: 'users'},
   {text: '返回首页', id: 'home'},
 ])
 
@@ -52,8 +80,32 @@ const navButtons = computed(() => [
 
 const handleNavItemClick = (data) => {
   const item = data.item;
+
   if (item.id === 'home') {
     router.push('/')
+  } else {
+    /*let path = '';
+    if (item.id === 'articles') {
+      path = `/search/articles`;
+      searchType.value = 'articles'
+    } else if (item.id === 'circles') {
+      path = `/search/circles`;
+      searchType.value = 'circles'
+    } else if (item.id === 'users') {
+      path = `/search/users`;
+      searchType.value = 'users'
+    }
+
+    router.push({
+      path: path,
+      query: query
+    });*/
+
+    searchType.value = item.id
+    router.push({
+      path: `/search/${item.id}`,
+      query: query
+    });
   }
 }
 
@@ -98,35 +150,17 @@ const handleDropdownItemClick = (data) => {
   }
 }
 
-const tabItems = ref([
-  {text: '文章', id: 'articles'},
-  {text: '圈子', id: 'circles'},
-  {text: '用户', id: 'users'},
-])
-
-const handleTabItemClick = (data) => {
-  const item = data.item;
-  const targetUserId = userId.value;
-
-  if (item.id === 'articles') {
-    router.push(`/search/${targetUserId}`);
-  } else if (item.id === 'followers') {
-    router.push(`/user/${targetUserId}/followers`);
-  } else if (item.id === 'following') {
-    router.push(`/user/${targetUserId}/following`);
-  } else if (item.id === 'circles') {
-    router.push(`/user/${targetUserId}/circles`);
-  } else if (item.id === 'stars') {
-    router.push(`/user/${targetUserId}/stars`);
-  }
-}
-
 function userLogout() {
   logout(() => {
     isLoggedIn.value = false
     userInfo.value = null
     router.push("/")
   })
+}
+
+const handleSearch = (data) => {
+  window.location.href = `/search/${searchType.value}?keyword=${data.query}`;
+  // router.push(`/search/${searchType.value}?keyword=${data.query}`)
 }
 </script>
 
@@ -141,24 +175,15 @@ function userLogout() {
       @logo-click="handleLogoClick"
       @button-click="handleButtonClick"
       @dropdown-item-click="handleDropdownItemClick"
-      :show-search="false"
+      :show-search="true"
+      search-placeholder="搜索文章、圈子、用户"
+      search-button-text="搜索"
+      @search="handleSearch"
+      :initial-active-index="initialActiveIndex"
   />
   <XBackgroundSpace>
-    <div class="user">
-      <div class="profile-area">
-        <UserCard
-            :user-id="userId"
-            :current-user-id="userInfo?.id"
-            class="user-card"
-        ></UserCard>
-      </div>
-
+    <div class="search">
       <div class="display-area">
-        <XTabBar
-            :tab-items="tabItems"
-            @tab-item-click="handleTabItemClick"
-        ></XTabBar>
-        <XSpacer type="vertical" height="20px"></XSpacer>
         <RouterView></RouterView>
       </div>
     </div>
@@ -166,24 +191,20 @@ function userLogout() {
 </template>
 
 <style scoped>
-.user {
+.search {
   width: 100%;
-  padding-top: 105px;
+  padding: 105px 20px 100px 20px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: start;
 }
 
-.profile-area {
-  width: 30%;
-}
-
 .display-area {
-  width: 70%;
+  width: 100%;
 }
 
-@media (max-width: 768px) {
-  .user {
+/* @media (max-width: 768px) {
+  .search {
     width: 100%;
     padding: 105px 20px 0 20px;
     display: flex;
@@ -191,20 +212,5 @@ function userLogout() {
     justify-content: start;
     align-items: center;
   }
-
-  .profile-area {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-
-  .user-card {
-    width: 100%;
-    max-width: 500px;
-  }
-
-  .display-area {
-    width: 100%;
-  }
-}
+} */
 </style>

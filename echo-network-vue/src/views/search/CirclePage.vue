@@ -4,36 +4,25 @@
   Created by Wu Qizhen on 2025.10.27
 -->
 <script setup>
-import ArticleList from "@/views/common/ArticleList.vue";
 import {useRoute} from "vue-router";
-import {computed} from "vue";
+import CircleList from "@/views/common/CircleList.vue";
 
 const route = useRoute();
-const authorId = computed(() => route.params.id);
+const query = route.query;
 </script>
 
 <template>
-  <div class="article-page">
-    <ArticleList
-        :request-config="{
-            authorId: authorId
-        }"
+  <div class="circle-page">
+    <CircleList
+        :request-config="query"
         :enable-pagination="true"
         :empty-text="'已经到底了'"
-    ></ArticleList>
+    ></CircleList>
   </div>
 </template>
 
 <style scoped>
-.article-page {
+.circle-page {
   width: 100%;
-  padding-right: 30px;
-  padding-bottom: 100px;
-}
-
-@media (max-width: 768px) {
-  .article-page {
-    padding-right: 0;
-  }
 }
 </style>
