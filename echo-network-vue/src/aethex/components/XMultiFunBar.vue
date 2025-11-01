@@ -189,7 +189,7 @@
 </template>
 
 <script setup>
-import {nextTick, onBeforeUnmount, onMounted, reactive, ref} from 'vue'
+import {nextTick, onBeforeUnmount, onMounted, reactive, ref, watch} from 'vue'
 import XSpacer from "@/aethex/components/XSpacer.vue";
 
 // 定义组件属性
@@ -309,7 +309,7 @@ const navStyle = reactive({
 })
 
 // 方法
-const initMarker = () => {
+/*const initMarker = () => {
   nextTick(() => {
     const navElement = document.querySelector('.nav-links')
     if (!navElement) return
@@ -321,6 +321,33 @@ const initMarker = () => {
       markerStyle.width = activeItem.offsetWidth + 'px'
       activeIndex.value = Array.from(navElement.querySelectorAll('.nav-item')).indexOf(activeItem)
     }
+  })
+}*/
+
+watch(() => props.initialActiveIndex, (newVal) => {
+  if (newVal !== activeIndex.value) {
+    activeIndex.value = newVal
+    nextTick(() => {
+      updateMarkerByIndex(newVal)
+    })
+  }
+})
+
+const updateMarkerByIndex = (index) => {
+  const navElement = document.querySelector('.nav-links')
+  if (!navElement) return
+
+  const navItems = navElement.querySelectorAll('.nav-item')
+  if (navItems.length > 0 && index >= 0 && index < navItems.length) {
+    const targetItem = navItems[index]
+    markerStyle.left = targetItem.offsetLeft + 'px'
+    markerStyle.width = targetItem.offsetWidth + 'px'
+  }
+}
+
+const initMarker = () => {
+  nextTick(() => {
+    updateMarkerByIndex(activeIndex.value)
   })
 }
 
