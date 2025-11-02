@@ -97,3 +97,25 @@ body {
 .spacer-bottom-l {
     margin-bottom: 30px;
 }
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.gap-s {
+    gap: 10px;
+}
+
+.gap-m {
+    gap: 20px;
+}
+
+.gap-l {
+    gap: 30px;
+}

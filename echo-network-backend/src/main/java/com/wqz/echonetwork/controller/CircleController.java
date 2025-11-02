@@ -3,6 +3,7 @@ package com.wqz.echonetwork.controller;
 import com.wqz.echonetwork.entity.dto.CircleCreateRequest;
 import com.wqz.echonetwork.entity.dto.CircleJoinResponse;
 import com.wqz.echonetwork.entity.dto.CircleQueryRequest;
+import com.wqz.echonetwork.entity.po.Circle;
 import com.wqz.echonetwork.entity.vo.*;
 import com.wqz.echonetwork.service.CircleService;
 import com.wqz.echonetwork.service.impl.CircleServiceImpl;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 代码不注释，同事两行泪！（给！爷！写！）
@@ -58,6 +60,20 @@ public class CircleController extends HttpServlet {
             handleCreateCircle(request, response);
         } else if (path.matches("/\\d+/join")) {
             handleJoinCircle(request, response);
+        } else {
+            WriterUtil.paramsError(response);
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String path = request.getPathInfo();
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
+
+        if (path.matches("/\\d+")) {
+            handleUpdateCircle(request, response);
         } else {
             WriterUtil.paramsError(response);
         }
@@ -322,6 +338,59 @@ public class CircleController extends HttpServlet {
         data.put("totalPages", pageResult.getTotalPages());
 
         Result<Map<String, Object>> result = Result.success("成功", data);
+        WriterUtil.writeJson(response, result);
+    }
+
+    /**
+     * 更新圈子信息
+     */
+    private void handleUpdateCircle(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Long circleId = PathUtil.getIdFromPath(request);
+        Long currentUserId = JwtUtil.getCurrentUserId(request);
+
+        if (circleId == null || currentUserId == null) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        CircleCreateRequest updateRequest = JsonUtil.parseJson(request, CircleCreateRequest.class);
+        if (updateRequest == null || updateRequest.getName() == null || updateRequest.getName().trim().isEmpty()) {
+            WriterUtil.paramsError(response);
+            return;
+        }
+
+        // 检查用户是否有权限更新圈子（创建者）
+        Circle circle = circleService.getCircleById(circleId);
+        if (circle == null) {
+            Result<Object> result = Result.error("圈子不存在");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        if (!Objects.equals(circle.getCreatorId(), currentUserId)) {
+            Result<Object> result = Result.error("没有权限更新此圈子");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        // 检查圈子名称是否与其他圈子重复（除了自己）
+        Circle existingCircle = circleService.getCircleByName(updateRequest.getName());
+        if (existingCircle != null && !Objects.equals(existingCircle.getId(), circleId)) {
+            Result<Object> result = Result.error("圈子名称已存在");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        boolean success = circleService.updateCircle(circleId, updateRequest);
+        if (!success) {
+            Result<Object> result = Result.error("圈子更新失败");
+            WriterUtil.writeJson(response, result);
+            return;
+        }
+
+        // 返回更新后的圈子信息
+        CircleVO updatedCircle = circleService.getCircleDetail(circleId, currentUserId);
+        Result<CircleVO> result = Result.success("圈子更新成功", updatedCircle);
         WriterUtil.writeJson(response, result);
     }
 }

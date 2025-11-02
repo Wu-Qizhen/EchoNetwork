@@ -144,6 +144,13 @@ const router = createRouter({
             component: () => import('@/views/EditView.vue')
         },
 
+        // 创建
+        {
+            path: '/circle/create/:id?',
+            name: 'circle-create',
+            component: () => import('@/views/CreateView.vue')
+        },
+
         // 搜索
         {
             path: '/search',

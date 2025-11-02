@@ -134,7 +134,7 @@ function userLogout() {
           :request-config="{
             circleId: circleId,
           }"
-          :enablePagination: true
+          :enablePagination="true"
       ></ArticleList>
     </div>
   </XBackgroundSpace>

@@ -266,6 +266,31 @@ public class CircleServiceImpl implements CircleService {
         return convertToCircleListItemVOList(circles, userId);
     }
 
+    @Override
+    public boolean updateCircle(Long circleId, CircleCreateRequest updateRequest) {
+        Circle circle = circleMapper.findById(circleId);
+        if (circle == null) {
+            return false;
+        }
+
+        // 更新圈子信息
+        circle.setName(Objects.requireNonNull(updateRequest.getName()).trim());
+        circle.setDescription(Objects.requireNonNull(updateRequest.getDescription()).trim());
+
+        int updated = circleMapper.update(circle);
+        return updated > 0;
+    }
+
+    @Override
+    public Circle getCircleById(Long circleId) {
+        return circleMapper.findById(circleId);
+    }
+
+    @Override
+    public Circle getCircleByName(String name) {
+        return circleMapper.findByName(name);
+    }
+
     // 辅助方法：转换圈子列表为 VO 列表
     private List<CircleListItemVO> convertToCircleListItemVOList(List<Circle> circles, Long currentUserId) {
         if (circles == null || circles.isEmpty()) {

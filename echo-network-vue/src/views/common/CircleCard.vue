@@ -54,12 +54,21 @@
           >
             <p class="zh">加入圈子</p>
           </div>
-          <div
-              class="btn-s red"
-              @click="handleExitCircle(circleData.id)"
-              v-if="circleData.member"
-          >
-            <p class="zh">退出圈子</p>
+          <div class="column gap-s">
+            <div
+                class="btn-s red"
+                @click="handleExitCircle(circleData.id)"
+                v-if="circleData.member&&circleData.memberRole!==2"
+            >
+              <p class="zh">退出圈子</p>
+            </div>
+            <div
+                class="btn-s theme"
+                @click="handleEditClick"
+                v-if="circleData.memberRole===2"
+            >
+              <p class="zh">编辑圈子</p>
+            </div>
           </div>
         </div>
 
@@ -102,6 +111,7 @@ import {ref, watch, onMounted} from 'vue'
 import {ElMessage} from 'element-plus'
 import {Document, User, Star} from '@element-plus/icons-vue'
 import {exitCircle, getCircle, joinCircle,} from "@/net/request.js"
+import router from "@/router/index.js";
 
 // 定义组件属性
 const props = defineProps({
@@ -248,6 +258,10 @@ onMounted(() => {
 function goToUser() {
   window.open(`/user/${circleData.value.creator.id}`, '_blank')
 }
+
+function handleEditClick() {
+  router.push(`/circle/create/${circleData.value.id}`)
+}
 </script>
 
 <style scoped>
@@ -370,6 +384,7 @@ function goToUser() {
 /* 圈子描述样式 */
 .circle-description {
   color: var(--dark-content-m);
+  margin-top: 20px;
   line-height: 1.6;
   font-size: 16px;
 }

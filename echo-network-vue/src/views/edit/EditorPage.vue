@@ -3,56 +3,6 @@
   Elegance is not a dispensable luxury but a quality that decides between success and failure!
   Created by Wu Qizhen on 2025.10.21
 -->
-
-<!--<script lang="ts">
-import './editor.css' // 引入 css
-
-import {onBeforeUnmount, ref, shallowRef, onMounted} from 'vue'
-import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
-import XSpacer from "@/aethex/components/XSpacer.vue";
-
-export default {
-  components: {XSpacer, Editor, Toolbar},
-  setup() {
-    // 编辑器实例，必须用 shallowRef
-    const editorRef = shallowRef()
-
-    // 内容 HTML
-    const valueHtml = ref('<p>hello</p>')
-
-    // 模拟 Ajax 异步获取内容
-    onMounted(() => {
-      setTimeout(() => {
-        valueHtml.value = ''
-      }, 1500)
-    })
-
-    const toolbarConfig = {}
-    const editorConfig = {placeholder: '文章内容'}
-
-    // 组件销毁时，也及时销毁编辑器
-    onBeforeUnmount(() => {
-      const editor = editorRef.value
-      if (editor == null) return
-      editor.destroy()
-    })
-
-    const handleCreated = (editor) => {
-      editorRef.value = editor // 记录 editor 实例，重要！
-    }
-
-    return {
-      editorRef,
-      valueHtml,
-      mode: 'simple', // 或 'default'
-      toolbarConfig,
-      editorConfig,
-      handleCreated,
-    }
-  },
-}
-</script>-->
-
 <script setup lang="ts">
 import './editor.css' // 引入 css
 import {nextTick, onBeforeUnmount, ref, shallowRef, watch} from 'vue'
@@ -65,13 +15,6 @@ const editorRef = shallowRef()
 
 // 内容 HTML
 const valueHtml = ref('')
-
-// 模拟 Ajax 异步获取内容
-/*onMounted(() => {
-  setTimeout(() => {
-    valueHtml.value = ''
-  }, 1500)
-})*/
 
 // 工具栏配置
 const toolbarConfig: Partial<IToolbarConfig> = {

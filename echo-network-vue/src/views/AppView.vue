@@ -10,11 +10,10 @@ import {computed, onMounted, ref} from "vue";
 import XMultiFunBar from "@/aethex/components/XMultiFunBar.vue";
 import XBackgroundSpace from "@/aethex/components/XBackgroundSpace.vue";
 import {ElMessage} from "element-plus";
-import {getUser} from "@/net/request.js";
 
 const isLoggedIn = ref(false)
 const userInfo = ref(null)
-const userAvatar = ref(null)
+// const userAvatar = ref(null)
 
 const navItems = ref([
   {text: '首页', id: 'home'},
@@ -41,6 +40,14 @@ const navButtons = computed(() => {
       },*/
       {
         type: 'text',
+        content: '创建',
+        title: '创建圈子',
+        dropdownItems: [
+          {text: '创建圈子', id: 'create'}
+        ]
+      },
+      {
+        type: 'text',
         content: '发布',
         title: '发布文章',
         dropdownItems: [
@@ -49,7 +56,7 @@ const navButtons = computed(() => {
       },
       {
         type: 'image',
-        imageUrl: userAvatar.value || '/res/ic_avatar_default.svg',
+        imageUrl: userInfo.value?.avatarUrl || '/res/ic_avatar_default.svg',
         alt: '用户头像',
         title: '用户菜单',
         dropdownItems: [
@@ -84,16 +91,16 @@ function checkLoginStatus() {
   }
 }
 
-function getUserAvatar() {
+/*function getUserAvatar() {
   getUser(userInfo.value.id, (data) => {
     userAvatar.value = data.avatarUrl
   })
-}
+}*/
 
 // 初始化时检查登录状态
 onMounted(() => {
   checkLoginStatus()
-  getUserAvatar()
+  // getUserAvatar()
 })
 
 const handleNavItemClick = (data) => {
@@ -121,17 +128,17 @@ const handleButtonClick = (data) => {
 
   if (button.type === 'text' && button.content === '登录') {
     router.push('/auth/login')
+  } else if (button.type === 'text' && button.title === '创建圈子') {
+    window.open(
+        '/circle/create',
+        '_blank'
+    )
   } else if (button.type === 'text' && button.title === '发布文章') {
-    // router.push('/editor')
     window.open(
         '/editor',
         '_blank'
     )
   } else if (button.type === 'image' && button.title === '用户菜单') {
-    /*router.push({
-      name: 'user',
-      params: {id: userInfo.value.id}
-    })*/
     window.open(
         '/user/' + userInfo.value.id,
         '_blank'
@@ -152,18 +159,19 @@ const handleDropdownItemClick = (data) => {
     case 'logout':
       userLogout()
       break
+    case 'create':
+      window.open(
+          '/circle/create',
+          '_blank'
+      )
+      break
     case 'write':
-      // router.push('/editor')
       window.open(
           '/editor',
           '_blank'
       )
       break
     case 'profile':
-      /*router.push({
-        name: 'user',
-        params: {id: userInfo.value.id}
-      })*/
       window.open(
           '/user/' + userInfo.value.id,
           '_blank'
@@ -177,12 +185,6 @@ const handleDropdownItemClick = (data) => {
 }
 
 const handleSearch = (data) => {
-  /*router.push({
-    path: '/search',
-    query: {
-      q: data.query
-    }
-  })*/
   window.open(
       '/search/articles?keyword=' + data.query,
       '_blank'

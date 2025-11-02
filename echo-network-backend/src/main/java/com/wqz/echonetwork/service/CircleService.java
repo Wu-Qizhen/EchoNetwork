@@ -3,6 +3,7 @@ package com.wqz.echonetwork.service;
 import com.wqz.echonetwork.entity.dto.CircleCreateRequest;
 import com.wqz.echonetwork.entity.dto.CircleJoinResponse;
 import com.wqz.echonetwork.entity.dto.CircleQueryRequest;
+import com.wqz.echonetwork.entity.po.Circle;
 import com.wqz.echonetwork.entity.vo.CircleListItemVO;
 import com.wqz.echonetwork.entity.vo.CircleMemberVO;
 import com.wqz.echonetwork.entity.vo.CircleVO;
@@ -34,4 +35,10 @@ public interface CircleService {
     boolean isMember(Long circleId, Long userId);
 
     List<CircleListItemVO> getUserCircles(Long userId);
+
+    boolean updateCircle(Long circleId, CircleCreateRequest updateRequest);
+
+    Circle getCircleById(Long circleId);
+
+    Circle getCircleByName(String name);
 }
