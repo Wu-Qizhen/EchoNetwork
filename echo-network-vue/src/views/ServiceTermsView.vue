@@ -15,7 +15,7 @@ export default defineComponent({
 
 <template>
   <XTitleBar title="回声网络使用协议" sub-title="更新日期：2025 年 10 月 10 日"
-             logo-image="./res/logo_echo_network.svg"/>
+             logo-image="/res/logo_echo_network.svg"/>
 
   <div class="content">
     <h2>一、总则</h2>

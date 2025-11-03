@@ -38,7 +38,6 @@ const navItems = ref([
   {text: '返回首页', id: 'home'},
 ])
 
-// TODO 图片路径 BUG
 const navButtons = computed(() => [
   {
     type: 'image',

@@ -198,24 +198,34 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const authorized = isAuthorized();
 
-    /*const whiteList = [
-        'auth',
+    const whiteList = [
+        'auth-login',
+        'auth-register',
+        'auth-reset',
         'welcome',
         'service-terms',
         'privacy-policy'
-    ];*/
-
-    // TODO 游客不允许进入编辑页面
-    const blackList = [
-        'editor',
     ];
 
+    /*const blackList = [
+        'editor',
+        'circle/create'
+    ];*/
+
+    // 已登录用户尝试访问认证相关页面时，重定向到首页
     if (to.name && to.name.startsWith('auth') && authorized) {
         next('/');
         return;
     }
 
-    if (!authorized && blackList.includes(to.name)) {
+    // 未登录用户尝试访问黑名单页面时，重定向到登录页
+    /*if (!authorized && blackList.includes(to.name)) {
+        next('/auth/login');
+        return;
+    }*/
+
+    // 未登录用户访问白名单外的页面时，也重定向到登录页
+    if (!authorized && !whiteList.includes(to.name)) {
         next('/auth/login');
         return;
     }

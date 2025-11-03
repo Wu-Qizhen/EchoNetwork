@@ -12,10 +12,16 @@ import java.util.Random;
 public class CaptchaUtil { // TODO 锁 IP
 
     private static final Random random = new Random();
-    // TODO 移到配置文件
-    private static final int CAPTCHA_LENGTH = 6;
-    private static final int EXPIRE_SECONDS = 180;
-    private static final int COOL_SECONDS = 60;
+    private static final int CAPTCHA_LENGTH;
+    private static final int EXPIRE_SECONDS;
+    private static final int COOL_SECONDS;
+
+    static {
+        YamlLoader yamlLoader = new YamlLoader("application.yml");
+        CAPTCHA_LENGTH = yamlLoader.getInt("captcha.length");
+        EXPIRE_SECONDS = yamlLoader.getInt("captcha.expiration");
+        COOL_SECONDS = yamlLoader.getInt("captcha.cool");
+    }
 
     public static String generateCaptcha() {
         StringBuilder captcha = new StringBuilder();

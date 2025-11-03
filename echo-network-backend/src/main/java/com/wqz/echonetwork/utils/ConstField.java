@@ -6,6 +6,7 @@ package com.wqz.echonetwork.utils;
  * Created by Wu Qizhen on 2025.10.5
  */
 public class ConstField {
+
     public static final String JWT_BLACK_LIST = "jwt:blacklist:";
 
     public static final String CAPTCHA_LIMIT = "captcha:limit:";

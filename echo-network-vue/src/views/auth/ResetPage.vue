@@ -284,7 +284,7 @@ function doReset() {
 }
 
 .steps-bar :deep(.el-step__title.is-process) {
-  color: #409eff;
+  color: var(--theme-color-lighten);
   font-weight: bold;
 }
 
@@ -299,15 +299,15 @@ function doReset() {
 
 .steps-bar :deep(.el-step__head.is-success) {
   background-color: transparent;
-  border-color: #69aa65;
+  border-color: var(--green);
 }
 
 .steps-bar :deep(.el-step__title.is-success) {
-  color: #69aa65;
+  color: var(--green);
 }
 
 .steps-bar :deep(.el-step__icon-inner) {
-  color: #409eff;
+  color: var(--theme-color-lighten);
 }
 
 .steps-bar :deep(.is-wait .el-step__icon-inner) {
@@ -315,7 +315,7 @@ function doReset() {
 }
 
 .steps-bar :deep(.is-success .el-step__icon-inner) {
-  color: #69aa65;
+  color: var(--green);
 }
 
 .steps-bar :deep(.el-step__line) {

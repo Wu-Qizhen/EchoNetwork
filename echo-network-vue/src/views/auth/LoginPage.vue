@@ -172,7 +172,7 @@ a {
 }
 
 a:hover {
-  color: #409eff;
+  color: var(--theme-color-lighten);
   text-decoration: underline;
 }
 

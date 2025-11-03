@@ -116,7 +116,7 @@ onUnmounted(() => {
   <XMultiFunBar
       :nav-items="navItems"
       :nav-buttons="navButtons"
-      logo-image="./res/logo_echo_network_with_text.svg"
+      logo-image="/res/logo_echo_network_with_text.svg"
       :logo-title="'回声网络'"
       :logo-alt="'回声网络'"
       @nav-item-click="handleNavItemClick"
@@ -128,7 +128,7 @@ onUnmounted(() => {
   <!-- 事件区 -->
   <div class="hero protected-content">
     <div class="hero-img">
-      <img ref="interactElement" src="../../res/bg_code_intellix_fold.svg" alt="回声网络">
+      <img ref="interactElement" :src="'/res/bg_code_intellix_fold.svg'" alt="回声网络">
     </div>
 
     <div class="hero-content">
@@ -149,7 +149,7 @@ onUnmounted(() => {
         <h2 class="theme h2_5">构建属于你的深度表达空间</h2>
 
         <div class="instruction-creator-function-option card spacer-top">
-          <img src="../../res/ic_creating.svg" alt="创作" class="instruction-function-option-img">
+          <img :src="'/res/ic_creating.svg'" alt="创作" class="instruction-function-option-img">
           <div>
             <h2 class="en">发布文章、博客</h2>
             <p class="remark-highlight spacer-top-s">支持长文创作、发布与表达</p>
@@ -169,7 +169,7 @@ onUnmounted(() => {
 
         <div class="instruction-thinker-function-options">
           <div class="instruction-thinker-function-option card spacer-top">
-            <img src="../../res/ic_learning.svg" alt="学习" class="instruction-function-option-img">
+            <img :src="'/res/ic_learning.svg'" alt="学习" class="instruction-function-option-img">
             <div>
               <h2 class="en">阅读、学习、讨论</h2>
               <p class="remark-highlight spacer-top-s">关注流、评论对话与深度推荐，好内容自然浮现</p>
@@ -177,7 +177,7 @@ onUnmounted(() => {
           </div>
 
           <div class="instruction-thinker-function-option card spacer-top">
-            <img src="../../res/ic_circling.svg" alt="圈子" class="instruction-function-option-img">
+            <img :src="'/res/ic_circling.svg'" alt="圈子" class="instruction-function-option-img">
             <div>
               <h2 class="en">加入圈子</h2>
               <p class="remark-highlight spacer-top-s">创建、加入、分享知识</p>
@@ -190,7 +190,7 @@ onUnmounted(() => {
 
   <div class="next protected-content">
     <div class="next-img">
-      <img src="../../res/logo_echo_network_curl.svg" alt="回声网络">
+      <img :src="'/res/logo_echo_network_curl.svg'" alt="回声网络">
     </div>
 
     <div class="next-content">
@@ -210,109 +210,109 @@ onUnmounted(() => {
     <div class="carousel-container spacer-top-m">
       <div class="carousel-track-lan">
         <div class="carousel-item">
-          <img src="../../res/ic_java.svg" class="carousel-image" alt="Java">
+          <img :src="'/res/ic_java.svg'" class="carousel-image" alt="Java">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_javascript.svg" class="carousel-image" alt="JavaScript">
+          <img :src="'/res/ic_javascript.svg'" class="carousel-image" alt="JavaScript">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_typescript.svg" class="carousel-image" alt="TypeScript">
+          <img :src="'/res/ic_typescript.svg'" class="carousel-image" alt="TypeScript">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_python.svg" class="carousel-image" alt="Python">
+          <img :src="'/res/ic_python.svg'" class="carousel-image" alt="Python">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_dart.svg" class="carousel-image" alt="Dart">
+          <img :src="'/res/ic_dart.svg'" class="carousel-image" alt="Dart">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_vbnet.svg" class="carousel-image" alt="Visual Basic.NET">
+          <img :src="'/res/ic_vbnet.svg'" class="carousel-image" alt="Visual Basic.NET">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_csharp.svg" class="carousel-image" alt="C Sharp">
+          <img :src="'/res/ic_csharp.svg'" class="carousel-image" alt="C Sharp">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_php.svg" class="carousel-image" alt="PHP">
+          <img :src="'/res/ic_php.svg'" class="carousel-image" alt="PHP">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_go.svg" class="carousel-image" alt="Go">
+          <img :src="'/res/ic_go.svg'" class="carousel-image" alt="Go">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_android.svg" class="carousel-image" alt="Android">
+          <img :src="'/res/ic_android.svg'" class="carousel-image" alt="Android">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_kotlin.svg" class="carousel-image" alt="Kotlin">
+          <img :src="'/res/ic_kotlin.svg'" class="carousel-image" alt="Kotlin">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_html.svg" class="carousel-image" alt="HTML">
+          <img :src="'/res/ic_html.svg'" class="carousel-image" alt="HTML">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_scala.svg" class="carousel-image" alt="Scala">
+          <img :src="'/res/ic_scala.svg'" class="carousel-image" alt="Scala">
         </div>
 
         <!-- 重复一遍以实现无缝循环 -->
 
         <div class="carousel-item">
-          <img src="../../res/ic_java.svg" class="carousel-image" alt="Java">
+          <img :src="'/res/ic_java.svg'" class="carousel-image" alt="Java">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_javascript.svg" class="carousel-image" alt="JavaScript">
+          <img :src="'/res/ic_javascript.svg'" class="carousel-image" alt="JavaScript">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_typescript.svg" class="carousel-image" alt="TypeScript">
+          <img :src="'/res/ic_typescript.svg'" class="carousel-image" alt="TypeScript">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_python.svg" class="carousel-image" alt="Python">
+          <img :src="'/res/ic_python.svg'" class="carousel-image" alt="Python">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_dart.svg" class="carousel-image" alt="Dart">
+          <img :src="'/res/ic_dart.svg'" class="carousel-image" alt="Dart">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_vbnet.svg" class="carousel-image" alt="Visual Basic.NET">
+          <img :src="'/res/ic_vbnet.svg'" class="carousel-image" alt="Visual Basic.NET">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_csharp.svg" class="carousel-image" alt="C Sharp">
+          <img :src="'/res/ic_csharp.svg'" class="carousel-image" alt="C Sharp">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_php.svg" class="carousel-image" alt="PHP">
+          <img :src="'/res/ic_php.svg'" class="carousel-image" alt="PHP">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_go.svg" class="carousel-image" alt="Go">
+          <img :src="'/res/ic_go.svg'" class="carousel-image" alt="Go">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_android.svg" class="carousel-image" alt="Android">
+          <img :src="'/res/ic_android.svg'" class="carousel-image" alt="Android">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_kotlin.svg" class="carousel-image" alt="Kotlin">
+          <img :src="'/res/ic_kotlin.svg'" class="carousel-image" alt="Kotlin">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_html.svg" class="carousel-image" alt="HTML">
+          <img :src="'/res/ic_html.svg'" class="carousel-image" alt="HTML">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_scala.svg" class="carousel-image" alt="Scala">
+          <img :src="'/res/ic_scala.svg'" class="carousel-image" alt="Scala">
         </div>
       </div>
     </div>
@@ -320,69 +320,69 @@ onUnmounted(() => {
     <div class="carousel-container">
       <div class="carousel-track-tool">
         <div class="carousel-item">
-          <img src="../../res/ic_android_studio.svg" class="carousel-image" alt="Android Studio">
+          <img :src="'/res/ic_android_studio.svg'" class="carousel-image" alt="Android Studio">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_clion.svg" class="carousel-image" alt="CLion">
+          <img :src="'/res/ic_clion.svg'" class="carousel-image" alt="CLion">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_intellij_idea.svg" class="carousel-image" alt="IntelliJ IDEA">
+          <img :src="'/res/ic_intellij_idea.svg'" class="carousel-image" alt="IntelliJ IDEA">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_phpstorm.svg" class="carousel-image" alt="PhpStorm">
+          <img :src="'/res/ic_phpstorm.svg'" class="carousel-image" alt="PhpStorm">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_pycharm.svg" class="carousel-image" alt="PyCharm">
+          <img :src="'/res/ic_pycharm.svg'" class="carousel-image" alt="PyCharm">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_webstorm.svg" class="carousel-image" alt="WebStorm">
+          <img :src="'/res/ic_webstorm.svg'" class="carousel-image" alt="WebStorm">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_vscode.svg" class="carousel-image" alt="VS Code">
+          <img :src="'/res/ic_vscode.svg'" class="carousel-image" alt="VS Code">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_visual_studio.svg" class="carousel-image" alt="Visual Studio">
+          <img :src="'/res/ic_visual_studio.svg'" class="carousel-image" alt="Visual Studio">
         </div>
 
         <!-- 重复一遍以实现无缝循环 -->
 
         <div class="carousel-item">
-          <img src="../../res/ic_android_studio.svg" class="carousel-image" alt="Android Studio">
+          <img :src="'/res/ic_android_studio.svg'" class="carousel-image" alt="Android Studio">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_clion.svg" class="carousel-image" alt="CLion">
+          <img :src="'/res/ic_clion.svg'" class="carousel-image" alt="CLion">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_intellij_idea.svg" class="carousel-image" alt="IntelliJ IDEA">
+          <img :src="'/res/ic_intellij_idea.svg'" class="carousel-image" alt="IntelliJ IDEA">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_phpstorm.svg" class="carousel-image" alt="PhpStorm">
+          <img :src="'/res/ic_phpstorm.svg'" class="carousel-image" alt="PhpStorm">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_pycharm.svg" class="carousel-image" alt="PyCharm">
+          <img :src="'/res/ic_pycharm.svg'" class="carousel-image" alt="PyCharm">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_webstorm.svg" class="carousel-image" alt="WebStorm">
+          <img :src="'/res/ic_webstorm.svg'" class="carousel-image" alt="WebStorm">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_vscode.svg" class="carousel-image" alt="VS Code">
+          <img :src="'/res/ic_vscode.svg'" class="carousel-image" alt="VS Code">
         </div>
 
         <div class="carousel-item">
-          <img src="../../res/ic_visual_studio.svg" class="carousel-image" alt="Visual Studio">
+          <img :src="'/res/ic_visual_studio.svg'" class="carousel-image" alt="Visual Studio">
         </div>
       </div>
     </div>

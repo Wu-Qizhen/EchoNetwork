@@ -79,7 +79,7 @@ onUnmounted(() => {
 <template>
   <div class="auth">
     <div class="welcome-bg protected-content">
-      <img ref="interactElement" src="../../res/bg_code_intellix_fold.svg" alt="">
+      <img ref="interactElement" :src="'/res/bg_code_intellix_fold.svg'" alt="">
     </div>
     <div class="welcome-title protected-content">
       <h1 class="en h1">Echo of Thought, Here</h1>
@@ -88,7 +88,7 @@ onUnmounted(() => {
     <div class="welcome-page">
       <div class="welcome-card">
         <div class="echo-network-logo protected-content">
-          <img src="../../res/logo_echo_network_with_double_text.svg" alt="">
+          <img :src="'/res/logo_echo_network_with_double_text.svg'" alt="">
         </div>
         <transition :name="transitionName" mode="out-in">
           <RouterView></RouterView>

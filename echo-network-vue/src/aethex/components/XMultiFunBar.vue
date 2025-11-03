@@ -197,7 +197,7 @@ const props = defineProps({
   // Logo 相关属性
   logoImage: {
     type: String,
-    default: './res/logo_code_intellix_with_text.png'
+    default: '/res/logo_code_intellix_with_text.png'
   },
   logoTitle: {
     type: String,

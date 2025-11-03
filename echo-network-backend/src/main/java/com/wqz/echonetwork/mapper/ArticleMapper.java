@@ -5,6 +5,7 @@ import com.wqz.echonetwork.entity.po.ArticleTag;
 import com.wqz.echonetwork.entity.po.Tag;
 import com.wqz.echonetwork.utils.JsonUtil;
 import com.wqz.echonetwork.utils.SqlUtil;
+import com.wqz.echonetwork.utils.StringUtil;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -273,7 +274,7 @@ public class ArticleMapper {
         String sortOrder = (String) conditions.getOrDefault("sortOrder", "DESC");
 
         // 驼峰转下划线
-        sortBy = camelToUnderscore(sortBy);
+        sortBy = StringUtil.camelToUnderscore(sortBy);
 
         // 防止 SQL 注入
         Set<String> allowedSortFields = Set.of("create_time", "publish_time", "update_time", "view_count", "like_count", "star_count", "comment_count");
@@ -282,28 +283,6 @@ public class ArticleMapper {
         }
 
         sql.append(" ORDER BY a.").append(sortBy).append(" ").append(sortOrder);
-    }
-
-    /**
-     * 驼峰命名转下划线命名
-     */
-    private String camelToUnderscore(String camelCase) {
-        if (camelCase == null || camelCase.isEmpty()) {
-            return camelCase;
-        }
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < camelCase.length(); i++) {
-            char c = camelCase.charAt(i);
-            if (Character.isUpperCase(c)) {
-                if (i > 0) {
-                    result.append("_");
-                }
-                result.append(Character.toLowerCase(c));
-            } else {
-                result.append(c);
-            }
-        }
-        return result.toString();
     }
 
     /* private void buildOrderClause(Map<String, Object> conditions, StringBuilder sql) {

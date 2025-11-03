@@ -36,7 +36,7 @@
     <div v-else class="profile-content">
       <div class="avatar-container">
         <img
-            :src="avatarUrl || '../res/ic_avatar_default.svg'"
+            :src="avatarUrl || '/res/ic_avatar_default.svg'"
             :alt="username"
             class="user-avatar"
         />
@@ -111,7 +111,6 @@ import {computed, onMounted, ref, watch} from 'vue'
 import {ElIcon, ElMessage} from 'element-plus'
 import {Calendar, Clock, User, MessageBox, CollectionTag} from '@element-plus/icons-vue'
 import XSpacer from "@/aethex/components/XSpacer.vue";
-import router from "@/router/index.js";
 import {followUser, getUser, unfollowUser} from "@/net/request.js";
 
 // 定义组件属性

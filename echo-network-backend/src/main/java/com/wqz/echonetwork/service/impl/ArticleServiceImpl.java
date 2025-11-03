@@ -173,23 +173,6 @@ public class ArticleServiceImpl implements ArticleService {
     public ArticleVO getArticle(Long articleId) {
         Article article = articleMapper.findByIdPublished(articleId);
         if (article != null) {
-            /* User user = userMapper.findById(article.getAuthorId());
-            if (user == null || user.getId() == null) {
-                return null;
-            } */
-
-            /* UserVO userVO = new UserVO(
-                    user.getId(),
-                    user.getUsername(),
-                    user.getEmail(),
-                    user.getNickname(),
-                    user.getBio(),
-                    user.getAvatarUrl(),
-                    user.getRole(),
-                    user.getFollowerCount(),
-                    Objects.requireNonNull(user.getLastLoginTime())
-            ); */
-
             UserProfileResponse profile = userService.getProfile(article.getAuthorId(), article.getAuthorId());
             if (profile == null) {
                 return null;

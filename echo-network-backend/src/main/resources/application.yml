@@ -15,6 +15,10 @@ app:
     password: # TODO Git 删除
     port: 465
     ssl: true
+  captcha:
+    length: 6
+    expiration: 180 # 秒
+    cool: 60 # 秒
   rabbitmq:
     addresses: localhost
     username: guest

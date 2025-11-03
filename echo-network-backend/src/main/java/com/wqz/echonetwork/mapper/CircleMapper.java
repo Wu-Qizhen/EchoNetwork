@@ -2,6 +2,7 @@ package com.wqz.echonetwork.mapper;
 
 import com.wqz.echonetwork.entity.po.Circle;
 import com.wqz.echonetwork.utils.SqlUtil;
+import com.wqz.echonetwork.utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -194,7 +195,6 @@ public class CircleMapper {
         return count != null ? count : 0;
     }
 
-    // TODO 提取工具类
     /**
      * 构建 WHERE 子句
      */
@@ -225,7 +225,7 @@ public class CircleMapper {
         String sortOrder = (String) conditions.getOrDefault("sortOrder", "DESC");
 
         // 驼峰转下划线
-        sortBy = camelToUnderscore(sortBy);
+        sortBy = StringUtil.camelToUnderscore(sortBy);
 
         // 防止 SQL 注入
         Set<String> allowedSortFields = Set.of("create_time", "name", "member_count", "article_count");
@@ -234,27 +234,5 @@ public class CircleMapper {
         }
 
         sql.append(" ORDER BY c.").append(sortBy).append(" ").append(sortOrder);
-    }
-
-    /**
-     * 驼峰命名转下划线命名
-     */
-    private String camelToUnderscore(String camelCase) {
-        if (camelCase == null || camelCase.isEmpty()) {
-            return camelCase;
-        }
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < camelCase.length(); i++) {
-            char c = camelCase.charAt(i);
-            if (Character.isUpperCase(c)) {
-                if (i > 0) {
-                    result.append("_");
-                }
-                result.append(Character.toLowerCase(c));
-            } else {
-                result.append(c);
-            }
-        }
-        return result.toString();
     }
 }
