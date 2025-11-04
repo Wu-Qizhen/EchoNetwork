@@ -663,21 +663,21 @@ onMounted(() => {
 }
 
 :deep(.el-card) {
-  --el-card-bg-color: #2d2d2d;
-  --el-card-border-color: #444;
+  --el-card-bg-color: var(--dark-bg-m);
+  --el-card-border-color: var(--dark-line-s);
 }
 
 :deep(.el-form-item__label) {
-  color: #fff;
+  color: white;
 }
 
 /* 设置输入框 */
 :deep(.el-input__inner) {
-  color: #fff;
+  color: white;
 }
 
 :deep(.el-input__inner)::placeholder {
-  color: #a8abb2;
+  color: var(--dark-content-m);
 }
 
 :deep(.title-input) {
@@ -705,15 +705,15 @@ onMounted(() => {
 
 /* 设置标签 */
 :deep(.el-tag .el-tag__close:hover) {
-  background-color: #555 !important;
+  background-color: var(--dark-line-m) !important;
 }
 
 :deep(.el-tag .el-tag__close:focus) {
-  background-color: #555 !important;
+  background-color: var(--dark-line-m) !important;
 }
 
 :deep(.el-tag .el-tag__close:active) {
-  background-color: #666 !important;
+  background-color: var(--dark-line-l) !important;
 }
 
 /* 下拉框样式优化 */
@@ -723,12 +723,12 @@ onMounted(() => {
 
 .custom-select-dropdown .el-select-dropdown__item:hover {
   background-color: rgba(255, 255, 255, 0.2) !important; !* 选项悬停背景色 *!
-  color: #fff !important; !* 选项悬停文字颜色 *!
+  color: white !important; !* 选项悬停文字颜色 *!
 } */
 
 :deep(.custom-select-dropdown .el-select-dropdown__item:hover) {
   background-color: rgba(255, 255, 255, 0.2) !important;
-  color: #fff !important;
+  color: white !important;
 }
 
 :deep(.custom-select-dropdown .el-select-dropdown__item.is-selected) {

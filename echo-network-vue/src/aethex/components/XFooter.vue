@@ -277,7 +277,7 @@ export default {
 
 .service-function a {
   text-decoration: none;
-  color: #a5a5a7;
+  color: var(--dark-content-m);
   font-size: 0.8em;
   font-family: "MiSans Medium", sans-serif;
 }

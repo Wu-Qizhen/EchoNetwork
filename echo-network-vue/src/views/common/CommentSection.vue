@@ -766,13 +766,13 @@ onMounted(() => {
 
 :deep(.el-pagination.is-background .el-pager li:not(.is-disabled).is-active) {
   background-color: var(--theme-color);
-  color: #fff;
+  color: white;
 }
 
 :deep(.el-pagination.is-background .btn-prev:not(.is-disabled):hover),
 :deep(.el-pagination.is-background .btn-next:not(.is-disabled):hover),
 :deep(.el-pagination.is-background .el-pager li:not(.is-disabled):hover) {
-  color: #fff;
+  color: white;
 }
 
 /* 对话框样式 */

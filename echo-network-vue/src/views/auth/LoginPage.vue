@@ -165,7 +165,7 @@ function openPrivacyPolicy() {
 
 <style scoped>
 a {
-  color: #fff;
+  color: white;
   font-size: 14px;
   font-weight: bold;
   text-decoration: none;
@@ -197,12 +197,12 @@ a:hover {
 :deep(.el-input__wrapper) {
   --el-input-border-color: var(--dark-line-s);
   --el-input-bg-color: var(--dark-bg-s);
-  --el-input-text-color: #fff;
+  --el-input-text-color: white;
   --el-input-placeholder-color: var(--dark-content-m);
 }
 
 :deep(.el-input__wrapper.is-focus) {
-  --el-input-focus-border-color: #fff;
+  --el-input-focus-border-color: white;
 }
 
 :deep(.el-checkbox__inner) {

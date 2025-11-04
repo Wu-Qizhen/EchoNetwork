@@ -509,7 +509,7 @@ onMounted(() => {
 .stat-value {
   font-size: 24px;
   font-weight: 600;
-  color: #fff;
+  color: white;
   margin-bottom: 5px;
 }
 

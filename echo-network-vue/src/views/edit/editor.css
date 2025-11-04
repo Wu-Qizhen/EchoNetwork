@@ -388,7 +388,7 @@
     background-color: var(--w-e-modal-button-bg-color);
     border: none /* 1px solid var(--w-e-modal-button-border-color) */;
     border-radius: 5px;
-    color: #fff /* var(--w-e-toolbar-color) */;
+    color: white /* var(--w-e-toolbar-color) */;
     cursor: pointer;
     font-weight: 400;
     height: 32px;

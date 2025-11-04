@@ -387,7 +387,7 @@ function toggleFollow() {
   font-weight: 600;
   line-height: 1.25;
   margin: 0 0 5px;
-  color: #fff;
+  color: white;
 }
 
 .user-username {

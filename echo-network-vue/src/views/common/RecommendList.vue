@@ -179,7 +179,7 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   padding: 40px 20px;
-  color: #a8abb2;
+  color: var(--dark-content-m);
 }
 
 .loading-icon {
@@ -253,23 +253,23 @@ onMounted(() => {
 /* 前三名数字样式 */
 .top-1 .rank-number {
   background: linear-gradient(135deg, #ffdf7c 0%, #f99a18 100%);
-  color: #fff;
+  color: white;
 }
 
 .top-2 .rank-number {
   background: linear-gradient(135deg, #909399 0%, #73767a 100%);
-  color: #fff;
+  color: white;
 }
 
 .top-3 .rank-number {
   background: linear-gradient(135deg, #b88230 0%, #966c25 100%);
-  color: #fff;
+  color: white;
 }
 
 /* 其他排名的数字样式 */
 .recommend-item:not(.top-1):not(.top-2):not(.top-3) .rank-number {
-  background-color: #444;
-  color: #a8abb2;
+  background-color: var(--dark-line-s);
+  color: var(--dark-content-m);
 }
 
 .crown-icon {

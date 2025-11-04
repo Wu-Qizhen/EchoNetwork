@@ -624,7 +624,7 @@ onUnmounted(() => {
   font-size: 18px;
   font-weight: 600;
   margin: 0 0 12px 0;
-  color: #fff;
+  color: white;
   line-height: 1.4;
 
   /* 确保标题单行显示 */
