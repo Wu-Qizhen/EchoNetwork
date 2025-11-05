@@ -146,7 +146,7 @@ public class ArticleServiceImpl implements ArticleService {
             }
 
             // 返回更新后的文章信息
-            return getArticle(articleId);
+            return getArticle(articleId, authorId);
         }
         return null;
     }
@@ -198,7 +198,6 @@ public class ArticleServiceImpl implements ArticleService {
                 }
             }
 
-            // TODO
             return new ArticleVO(
                     articleId,
                     article.getTitle(),
@@ -216,6 +215,59 @@ public class ArticleServiceImpl implements ArticleService {
                     tags,
                     false,
                     false
+            );
+        }
+        return null;
+    }
+
+    @Override
+    public ArticleVO getArticle(Long articleId, Long userId) {
+        Article article = articleMapper.findByIdPublished(articleId);
+        if (article != null) {
+            UserProfileResponse profile = userService.getProfile(article.getAuthorId(), article.getAuthorId());
+            if (profile == null) {
+                return null;
+            }
+            UserVO userVO = profile.getUser();
+
+            Circle circle = null;
+            if (article.getCircleId() != null) {
+                circle = circleMapper.findById(article.getCircleId());
+                if (circle.getId() == null) {
+                    circle = null;
+                }
+            }
+
+            Set<Tag> tags = new HashSet<>();
+            article.getTagIds();
+            if (!article.getTagIds().isEmpty()) {
+                for (Long tagId : article.getTagIds()) {
+                    Tag tag = tagMapper.findById(tagId);
+                    if (tag != null) {
+                        tags.add(tag);
+                    }
+                }
+            }
+
+            ArticleInteractionResponse articleInteractionStatus = this.getArticleInteractionStatus(articleId, userId);
+
+            return new ArticleVO(
+                    articleId,
+                    article.getTitle(),
+                    article.getContent(),
+                    Objects.requireNonNull(article.getCreateTime()),
+                    Objects.requireNonNull(article.getUpdateTime()),
+                    Objects.requireNonNull(article.getPublishTime()),
+                    article.getStatus(),
+                    article.getViewCount(),
+                    article.getLikeCount(),
+                    article.getStarCount(),
+                    article.getCommentCount(),
+                    userVO,
+                    circle,
+                    tags,
+                    articleInteractionStatus.isLiked(),
+                    articleInteractionStatus.isStarred()
             );
         }
         return null;
@@ -376,7 +428,6 @@ public class ArticleServiceImpl implements ArticleService {
                 return null;
             }
 
-            // TODO
             return new ArticleVO(
                     article.getId(),
                     article.getTitle(),

@@ -237,7 +237,7 @@ public class ArticleController extends HttpServlet {
             WriterUtil.paramsError(response);
             return;
         }
-        ArticleVO article = articleService.getArticle(articleId);
+        ArticleVO article = articleService.getArticle(articleId, JwtUtil.getCurrentUserId(request));
         if (article == null) {
             Result<Object> result = Result.error("文章不存在");
             WriterUtil.writeJson(response, result);
@@ -250,9 +250,9 @@ public class ArticleController extends HttpServlet {
             article.setViewCount(article.getViewCount() + 1);
         }
 
-        ArticleInteractionResponse articleInteractionStatus = articleService.getArticleInteractionStatus(articleId, JwtUtil.getCurrentUserId(request));
+        /* ArticleInteractionResponse articleInteractionStatus = articleService.getArticleInteractionStatus(articleId, JwtUtil.getCurrentUserId(request));
         article.setLiked(articleInteractionStatus.isLiked());
-        article.setStarred(articleInteractionStatus.isStarred());
+        article.setStarred(articleInteractionStatus.isStarred()); */
 
         Result<ArticleVO> result = Result.success("文章获取成功", article);
         WriterUtil.writeJson(response, result);

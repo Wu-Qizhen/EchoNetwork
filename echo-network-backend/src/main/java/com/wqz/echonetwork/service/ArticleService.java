@@ -23,6 +23,8 @@ public interface ArticleService {
 
     ArticleVO getArticle(Long articleId);
 
+    ArticleVO getArticle(Long articleId, Long userId);
+
     List<ArticleVO> getRecommend(Integer limit);
 
     PageResult<ArticleVO> getArticlesByConditions(ArticleQueryRequest queryRequest);

@@ -12,7 +12,7 @@ app:
   mail:
     host: smtp.163.com
     username: code_intellix@163.com
-    password: # TODO Git 删除
+    password:
     port: 465
     ssl: true
   captcha:
