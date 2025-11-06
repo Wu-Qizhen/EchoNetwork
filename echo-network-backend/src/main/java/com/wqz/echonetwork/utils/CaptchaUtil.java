@@ -18,9 +18,9 @@ public class CaptchaUtil { // TODO 锁 IP
 
     static {
         YamlLoader yamlLoader = new YamlLoader("application.yml");
-        CAPTCHA_LENGTH = yamlLoader.getInt("captcha.length");
-        EXPIRE_SECONDS = yamlLoader.getInt("captcha.expiration");
-        COOL_SECONDS = yamlLoader.getInt("captcha.cool");
+        CAPTCHA_LENGTH = yamlLoader.getInt("app.captcha.length");
+        EXPIRE_SECONDS = yamlLoader.getInt("app.captcha.expiration");
+        COOL_SECONDS = yamlLoader.getInt("app.captcha.cool");
     }
 
     public static String generateCaptcha() {

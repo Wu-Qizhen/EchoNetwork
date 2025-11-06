@@ -187,8 +187,12 @@ function doReset() {
                 </el-input>
               </el-col>
               <el-col :span="6">
-                <!-- TODO 布尔值问题-->
-                <el-button style="height: 50px" type="primary" @click="askCode" :disabled="!isEmailValid||coldTime">
+                <el-button
+                    style="height: 50px"
+                    type="primary"
+                    @click="askCode"
+                    :disabled="!isEmailValid || coldTime > 0"
+                >
                   {{ coldTime > 0 ? `${coldTime} 秒后再试` : "获取验证码" }}
                 </el-button>
               </el-col>
