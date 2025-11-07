@@ -15,7 +15,7 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserMapper userMapper = new UserMapper();
 
-    @Override
+    /* @Override
     public String askEmailVerifyCode(String type, String email) {
         String key = type + ":" + email;
 
@@ -40,6 +40,45 @@ public class AuthServiceImpl implements AuthService {
 
         // RedisUtil.printPoolStats();
         // LogUtil.info("验证码：" + captcha);
+        return null;
+    } */
+
+    @Override
+    public String askEmailVerifyCode(String type, String email, String ip) {
+        String key = type + ":" + email;
+
+
+        if (CaptchaUtil.isIpBanned(ip)) {
+            long remaining = CaptchaUtil.getIpBanRemaining(ip);
+            return String.format("IP 已被暂时封禁，请 %d 小时 %d 分钟后再试",
+                    remaining / 3600, (remaining % 3600) / 60);
+        }
+
+        if (CaptchaUtil.isInCool(key)) {
+            long remaining = CaptchaUtil.getCoolRemaining(key);
+            return String.format("请求频繁，请 %d 秒后再试", remaining);
+        }
+
+        User user = userMapper.findByEmail(email);
+        if (type.equals("register") && user != null) {
+            return "邮箱已被注册";
+        }
+        if (type.equals("reset") && user == null) {
+            return "邮箱不存在";
+        }
+
+        String captcha = CaptchaUtil.generateAndStoreCaptcha(key, ip);
+        if (captcha == null) {
+            if (CaptchaUtil.isIpBanned(ip)) {
+                long remaining = CaptchaUtil.getIpBanRemaining(ip);
+                return String.format("请求过于频繁，IP 已被暂时封禁，请 %d 小时 %d 分钟后再试",
+                        remaining / 3600, (remaining % 3600) / 60);
+            }
+            return "验证码生成失败，请稍后再试";
+        }
+
+        MailSender.sendVerificationCode(email, captcha, type);
+
         return null;
     }
 }

@@ -11,4 +11,6 @@ public class ConstField {
 
     public static final String CAPTCHA_LIMIT = "captcha:limit:";
     public static final String CAPTCHA_DATA = "captcha:data:";
+    public static final String CAPTCHA_IP_LIMIT = "captcha:ip:limit:";
+    public static final String CAPTCHA_IP_BAN = "captcha:ip:ban:";
 }

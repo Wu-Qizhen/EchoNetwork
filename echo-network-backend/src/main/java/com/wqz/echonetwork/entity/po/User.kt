@@ -13,7 +13,7 @@ data class User(
     var id: Long? = null, // 用户 ID
     var username: String = "", // 用户名
     var email: String = "", // 邮箱
-    var phone: String? = null, // 手机号 TODO
+    var phone: String? = null, // 手机号
     var password: String = "", // 密码
     var nickname: String = "", // 昵称
     var bio: String = "", // 个人简介或签名

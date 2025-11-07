@@ -19,6 +19,9 @@ app:
     length: 6
     expiration: 180 # 秒
     cool: 60 # 秒
+    ip-limit-count: 1      # 同一 IP 在时间窗口内最多请求次数
+    ip-limit-window: 30   # IP 限制时间窗口（秒）
+    ip-ban-seconds: 60    # IP 封禁时间（秒）
   rabbitmq:
     addresses: localhost
     username: guest

@@ -19,7 +19,7 @@ public class RedisUtil {
         YamlLoader yamlLoader = new YamlLoader("application.yml");
         String redisHost = yamlLoader.getString("app.redis.host");
         int redisPort = yamlLoader.getInt("app.redis.port");
-        // String redisPassword = yamlLoader.getString("app.redis.password"); TODO 密码设置不生效
+        // String redisPassword = yamlLoader.getString("app.redis.password"); 密码设置不生效
         int redisDatabase = yamlLoader.getInt("app.redis.database");
         int redisTimeout = yamlLoader.getInt("app.redis.timeout");
         int redisMaxActive = yamlLoader.getInt("app.redis.lettuce.pool.max-active");

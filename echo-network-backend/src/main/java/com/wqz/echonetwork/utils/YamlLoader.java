@@ -26,7 +26,7 @@ public class YamlLoader {
      */
     private void loadConfig(String configPath) {
         try {
-            InputStream inputStream = null;
+            InputStream inputStream;
 
             // 1. 首先尝试从类路径加载
             inputStream = getClass().getClassLoader().getResourceAsStream(configPath);
@@ -72,6 +72,14 @@ public class YamlLoader {
         return String.valueOf(value);
     }
 
+    public String getString(String key, String defaultValue) {
+        Object value = getNestedValue(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        return String.valueOf(value);
+    }
+
     /**
      * 获取整数配置值
      */
@@ -79,11 +87,43 @@ public class YamlLoader {
         return getValue(key, Integer.class);
     }
 
+    public Integer getInt(String key, Integer defaultValue) {
+        Object value = getNestedValue(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Integer) {
+            return (Integer) value;
+        }
+        try {
+            return Integer.valueOf(String.valueOf(value));
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
     /**
      * 获取布尔配置值
      */
     public Boolean getBoolean(String key) {
         return getValue(key, Boolean.class);
+    }
+
+    public Boolean getBoolean(String key, Boolean defaultValue) {
+        Object value = getNestedValue(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        if (value instanceof Boolean) {
+            return (Boolean) value;
+        }
+        String stringValue = String.valueOf(value).toLowerCase();
+        if ("true".equals(stringValue)) {
+            return true;
+        } else if ("false".equals(stringValue)) {
+            return false;
+        }
+        return defaultValue;
     }
 
     /**

@@ -6,5 +6,5 @@ package com.wqz.echonetwork.service;
  * Created by Wu Qizhen on 2025.10.19
  */
 public interface AuthService {
-    String askEmailVerifyCode(String type, String email);
+    String askEmailVerifyCode(String type, String email, String ip);
 }
