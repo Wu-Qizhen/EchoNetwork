@@ -192,7 +192,7 @@ const props = defineProps({
   // 没有文章时显示的文字
   emptyText: {
     type: String,
-    default: '暂无文章'
+    default: '暂无更多文章'
   },
   // 文章类型：normal-普通文章，liked-点赞文章，starred-收藏文章
   articleType: {

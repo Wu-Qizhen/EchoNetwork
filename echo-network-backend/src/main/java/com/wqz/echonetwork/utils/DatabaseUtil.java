@@ -15,7 +15,7 @@ import java.util.*;
  * Elegance is not a dispensable luxury but a quality that decides between success and failure!
  * Created by Wu Qizhen on 2025.10.18
  */
-public class DatabaseUtil { // TODO 资源释放（使用 Kotlin 解决）
+public class DatabaseUtil {
 
     private String driver;
     private String url;
