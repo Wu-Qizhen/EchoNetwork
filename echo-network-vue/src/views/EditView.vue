@@ -615,7 +615,6 @@ onMounted(() => {
           </div>
 
           <!-- 正文区域 -->
-          <!-- TODO 样式栏冻结-->
           <EditorPage v-model="articleForm.content"></EditorPage>
         </el-form>
         <XSpacer height="20px"/>
