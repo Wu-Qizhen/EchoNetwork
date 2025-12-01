@@ -47,7 +47,6 @@ public class AuthServiceImpl implements AuthService {
     public String askEmailVerifyCode(String type, String email, String ip) {
         String key = type + ":" + email;
 
-
         if (CaptchaUtil.isIpBanned(ip)) {
             long remaining = CaptchaUtil.getIpBanRemaining(ip);
             return String.format("IP 已被暂时封禁，请 %d 小时 %d 分钟后再试",

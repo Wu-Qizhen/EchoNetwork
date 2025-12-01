@@ -119,7 +119,7 @@ public class DatabaseUtil {
                 if (generatedKeys.next()) {
                     return generatedKeys.getLong(1);
                 } else {
-                    throw new SQLException("插入失败，无法获取自增ID");
+                    throw new SQLException("插入失败，无法获取自增 ID");
                 }
             }
         }
